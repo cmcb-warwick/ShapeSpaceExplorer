@@ -1149,8 +1149,9 @@ dlg_title = 'New Experiment info';
 num_lines = 1;
 def = {[pwd '/experiment#!/ImageStacks/'],[pwd '/experiment#!/ContourData/'],[pwd '/experiment#!/CellContourOutput/']};
 answer = inputdlg(prompt,dlg_title,num_lines,def);
-
-currentfoldername=cd;
+cPath=mfilename('fullpath');
+[currentfoldername,~,~] = fileparts(cPath);
+%currentfoldername=cd;
 folder=[currentfoldername '/CSG_folder_info'];
 t=dir('CSG_folder_info/*folder_info_exp_*.mat');
 v=zeros(size(t));
