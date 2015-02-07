@@ -247,40 +247,14 @@ experiment_number = handles.experiment_number;
 Stacknumber = handles.Stack_number;
 %global Frame_no ActiveFig number_of_frames Stack Frame_curves cmap Cell_numbers Stackno
 %Stackno=Stacknumber;
-if experiment_number==1
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment1/ImageStacks/ImageStack%02d',Stacknumber))
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment1/ContourData/Segmentation_attempt_5/ImageStack%02dCurveData',Stacknumber))
-    handles.Stack=eval(sprintf('ImageStack%02d',Stacknumber));
-    clear(sprintf('ImageStack%02d',Stacknumber))
-elseif experiment_number==2
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment2/ImageStacks2/ImageStack%03d',Stacknumber))
-    %load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment2/ContourData/ImageStack%03dCurveData',Stacknumber))
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment2/ContourData/attempt2/ImageStack%03dCurveData',Stacknumber))
-    handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-    clear(sprintf('ImageStack%03d',Stacknumber))
-elseif experiment_number==3
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ImageStacks/ImageStack%03d',Stacknumber))
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ContourData/ImageStack%03dCurveData',Stacknumber))
-    handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-    clear(sprintf('ImageStack%03d',Stacknumber))
-elseif experiment_number==4
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ImageStacks/ImageStack%03d',Stacknumber))
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ContourData/Attempt2/ImageStack%03dCurveData',Stacknumber))
-    handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-    clear(sprintf('ImageStack%03d',Stacknumber))
-elseif experiment_number==5
-    load(sprintf('/Users/samjefferyes/Desktop/Temp_test_data/ImageStack%03d',Stacknumber))
-    load(sprintf('/Users/samjefferyes/Desktop/Temp_test_data/ImageStack%03dCurveData',Stacknumber))
-    handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-    clear(sprintf('ImageStack%03d',Stacknumber))
-elseif experiment_number>5
+
     load(sprintf('CSG_folder_info/folder_info_exp_%d',experiment_number))
     out_fn=foldername;
     load(sprintf([out_fn{1} 'ImageStack%03d'],Stacknumber))
     load(sprintf([out_fn{2} 'ImageStack%03dCurveData'],Stacknumber))
     handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
     clear(sprintf('ImageStack%03d',Stacknumber))
-end
+
 handles.Frame_curves=Frame_curves;
 handles.Cell_numbers=Cell_numbers;
 handles.number_of_frames=size(handles.Stack,3);
@@ -1241,33 +1215,11 @@ if cont
         end
         Stacknumber=str2double(answer{2});
         if ~isfield(handles,'Stack')
-            if experiment_number==1
-                load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment1/ImageStacks/ImageStack%02d',Stacknumber))
-                handles.Stack=eval(sprintf('ImageStack%02d',Stacknumber));
-                clear(sprintf('ImageStack%02d',Stacknumber))
-            elseif experiment_number==2
-                load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment2/ImageStacks2/ImageStack%03d',Stacknumber))
-                handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-                clear(sprintf('ImageStack%03d',Stacknumber))
-            elseif experiment_number==3
-                load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ImageStacks/ImageStack%03d',Stacknumber))
-                handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-                clear(sprintf('ImageStack%03d',Stacknumber))
-            elseif experiment_number==4
-                load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ImageStacks/ImageStack%03d',Stacknumber))
-                handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-                clear(sprintf('ImageStack%03d',Stacknumber))
-            elseif experiment_number==5
-                load(sprintf('/Users/samjefferyes/Desktop/Temp_test_data/ImageStack%03d',Stacknumber))
-                handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-                clear(sprintf('ImageStack%03d',Stacknumber))
-            elseif experiment_number>5
                 load(sprintf('CSG_folder_info/folder_info_exp_%d',experiment_number))
                 out_fn=foldername;
                 load(sprintf([out_fn{1} 'ImageStack%03d'],Stacknumber))
                 handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-                clear(sprintf('ImageStack%03d',Stacknumber))
-            end
+                clear(sprintf('ImageStack%03d',Stacknumber))    
         end
         if ~isfield(handles,'Merge_points')
             for j=1:length(handles.Frame_curves)
@@ -1329,38 +1281,9 @@ if cont
         handles.Stack_number=str2double(answer{2});
         experiment_number=str2double(answer{1});
         Stacknumber=str2double(answer{2});
-        if experiment_number==1
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment1/ImageStacks/ImageStack%02d',Stacknumber))
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment1/ContourData/Segmentation_attempt_5/ImageStack%02dCurveData',Stacknumber))
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment1/CellContourOutput/CellFrameData%03d',Stacknumber),'CellFrameData')
-            handles.Stack=eval(sprintf('ImageStack%02d',Stacknumber));
-            clear(sprintf('ImageStack%02d',Stacknumber))
-        elseif experiment_number==2
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment2/ImageStacks2/ImageStack%03d',Stacknumber))
-            %load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment2/ContourData/ImageStack%03dCurveData',Stacknumber))
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment2/ContourData/attempt2/ImageStack%03dCurveData',Stacknumber))
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment2/CellContourOutput/CellFrameData%03d',Stacknumber),'CellFrameData')
-            handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-            clear(sprintf('ImageStack%03d',Stacknumber))
-        elseif experiment_number==3
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ImageStacks/ImageStack%03d',Stacknumber))
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ContourData/ImageStack%03dCurveData',Stacknumber))
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/CellContourOutput/CellFrameData%03d',Stacknumber),'CellFrameData')
-            handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-            clear(sprintf('ImageStack%03d',Stacknumber))
-        elseif experiment_number==4
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ImageStacks/ImageStack%03d',Stacknumber))
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ContourData/Attempt2/ImageStack%03dCurveData',Stacknumber))
-            load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/CellContourOutput/Attempt2/CellFrameData%03d',Stacknumber),'CellFrameData')
-            handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-            clear(sprintf('ImageStack%03d',Stacknumber))
-        elseif experiment_number==5
-            load(sprintf('/Users/samjefferyes/Desktop/Temp_test_data/ImageStack%03d',Stacknumber))
-            load(sprintf('/Users/samjefferyes/Desktop/Temp_test_data/ImageStack%03dCurveData',Stacknumber))
-            load(sprintf('/Users/samjefferyes/Desktop/Temp_test_data/CellFrameData%03d',Stacknumber),'CellFrameData')
-            handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
-            clear(sprintf('ImageStack%03d',Stacknumber))
-        elseif experiment_number>5
+        
+        
+      
             load(sprintf('CSG_folder_info/folder_info_exp_%d',experiment_number))
             out_fn=foldername;
             load(sprintf([out_fn{1} 'ImageStack%03d'],Stacknumber))
@@ -1368,7 +1291,7 @@ if cont
             load(sprintf([out_fn{3} 'CellFrameData%03d'],Stacknumber),'CellFrameData')
             handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
             clear(sprintf('ImageStack%03d',Stacknumber))
-        end
+        
         [f_c,c_n]=LoadOldAnalysis(Cell_numbers,CellFrameData);
         handles.Frame_curves=f_c;
         handles.Cell_numbers=c_n;
