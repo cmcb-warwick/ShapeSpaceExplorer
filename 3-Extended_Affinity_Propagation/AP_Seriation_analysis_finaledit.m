@@ -457,7 +457,7 @@ while improved
             improved=true;
         end
     end
-    count=count+1
+    count=count+1;
 end
 CM=dCorrMat(p,p);
 

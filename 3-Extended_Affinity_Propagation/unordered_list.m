@@ -1,4 +1,4 @@
-function unordered_list(CellShapeData,APe_output_foldername)
+function unordered_list()
 %This shows the unordered AP clusters and a few example exemplars and
 %example members of each corresponding cluster
 
@@ -11,6 +11,19 @@ function unordered_list(CellShapeData,APe_output_foldername)
 %NOTE: This can be very slow if there are many clusters, this code could be
 %sped up a lot by changing subplot, go here: http://uk.mathworks.com/matlabcentral/newsreader/view_thread/16962
 
+APe_output_foldername = uigetdir(matlabroot,'Select Experiment Folder');
+dataFile = fullfile(APe_output_foldername, 'CellShapeData.mat');
+
+if exist(dataFile, 'file')
+    data = load(dataFile);
+    CellShapeData= data.CellShapeData;
+else 
+    display('-------')
+    display('The file "Bigcellarrayandindex.mat" does not exist in your Experiment folder.');
+    display('Please check whether previous steps have been succesfully completed.');
+    display('-------')
+    exit(0);
+end
 
 
 load([APe_output_foldername '/APclusterOutput.mat'])
