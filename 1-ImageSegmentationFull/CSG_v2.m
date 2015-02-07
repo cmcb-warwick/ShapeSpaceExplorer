@@ -944,28 +944,16 @@ function [ CellArray, CellFrameData, savefoldername ] = CellContour_CellArray_ge
 %Run ViewStackSeg_v5(1,5) or ViewStackSeg_v5(1,6) to see if you agree with
 %these decisions
 
+cPath=mfilename('fullpath');
+[currentfoldername,~,~] = fileparts(cPath);
+folder=fullfile(currentfoldername, '/CSG_folder_info/')
+cfile =fullfile(folder, ['folder_info_exp_' num2str(experiment_number) '.mat']);
 
-if experiment_number==1
-    foldername='/Volumes/annelab/sam/Microscope_data/experiment1/CellContourOutput/';
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment1/ContourData/Segmentation_attempt_5/ImageStack%02dCurveData',Stacknumber))
-elseif experiment_number==2
-    foldername='/Volumes/annelab/sam/Microscope_data/experiment2/CellContourOutput/';
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment2/ContourData/attempt2/ImageStack%03dCurveData',Stacknumber))
-elseif experiment_number==3
-    foldername='/Volumes/annelab/sam/Microscope_data/experiment3/CellContourOutput/';
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ContourData/ImageStack%03dCurveData',Stacknumber))
-elseif experiment_number==4
-    foldername='/Volumes/annelab/sam/Microscope_data/experiment3/CellContourOutput/Attempt2/';
-    load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ContourData/Attempt2/ImageStack%03dCurveData',Stacknumber))
-elseif experiment_number==5
-    foldername='/Users/samjefferyes/Desktop/Temp_test_data/';
-    load(sprintf('/Users/samjefferyes/Desktop/Temp_test_data/ImageStack%03dCurveData',Stacknumber))
-elseif experiment_number>5
-    load(sprintf('CSG_folder_info/folder_info_exp_%d',experiment_number))
+    load(cfile);
     out_fn=foldername;
     foldername=out_fn{3};
     load(sprintf([out_fn{2} 'ImageStack%03dCurveData'],Stacknumber))
-end
+
 
 
 
