@@ -36,3 +36,5 @@ end
 
 sFile = fullfile(folder, 'Bigcellarrayandindex.mat');
 save(sFile, 'BigCellArray', 'cell_indices', '-v7.3');
+
+display('Program finished as expected')
