@@ -1151,14 +1151,19 @@ def = {[pwd '/experiment#!/ImageStacks/'],[pwd '/experiment#!/ContourData/'],[pw
 answer = inputdlg(prompt,dlg_title,num_lines,def);
 cPath=mfilename('fullpath');
 [currentfoldername,~,~] = fileparts(cPath);
-%currentfoldername=cd;
-folder=[currentfoldername '/CSG_folder_info'];
-t=dir('CSG_folder_info/*folder_info_exp_*.mat');
-v=zeros(size(t));
-for i=1:size(t,1)
-    v(i)=str2num(t(i).name(17:(end-4)));
+
+
+folder=fullfile(currentfoldername, '/CSG_folder_info/');
+t=dir([folder '*folder_info_exp_*.mat']);
+if isempty(t)
+    M=0;
+else
+    v=zeros(size(t));
+    for i=1:size(t,1)
+        v(i)=str2num(t(i).name(17:(end-4)));
+    end
+    M=max(v);
 end
-M=max(v);
 if length(answer)==3
     foldername=answer;
 end
