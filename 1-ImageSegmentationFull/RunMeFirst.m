@@ -67,7 +67,7 @@ end
 
 clear('ImageStack');
 
-parfor i=1:numframes
+for i=1:numframes
    [Frame_curves{i},Bin_images{i}] =CellSeg(anustack(:,:,i),sbw,rbw);
 end
 
@@ -124,8 +124,10 @@ function [ Image_Cell_Regions,Binary_images ] = CellSeg( GRAYimage,sbw,rbw)
 pretendRGBimage=cat(3,GRAYimage,GRAYimage,GRAYimage);
 pretendRGBimage=pretendRGBimage/(max(pretendRGBimage(:)));
 
-currentfoldername=cd; 
-addpath([currentfoldername '/New_Download/edison_matlab_interface'])
+
+cPath=mfilename('fullpath');
+[currentfoldername,~,~] = fileparts(cPath);
+addpath(fullfile(currentfoldername, '/New_Download/edison_matlab_interface'));
 [~, labels,modes] = edison_wrapper(pretendRGBimage,@RGB2Luv, 'SpatialBandWidth',sbw,'RangeBandWidth',rbw);
 % tic
 % for i=unique(labels(:))'
