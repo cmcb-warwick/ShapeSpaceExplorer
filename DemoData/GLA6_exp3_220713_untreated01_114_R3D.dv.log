@@ -1,0 +1,2278 @@
+#
+#Tag 0x00FF0408
+
+Resolve3D softWoRx-Acquire Version: 5.5.0 Release 6
+
+Running on host: cn71rt00331
+
+Resolve3D Image File: /data1/sjefferyes/GLA6_exp3_220713_untreated01_114_R3D.dv
+GLA6_exp3_220713_untreated
+Created  Mon Jul 22 23:15:21 2013
+
+
+Optics:
+  Objective:	Olympus 20X/0.75, U Apo 340, IX70, 1-UB765
+  Lens ID:  	10205
+  Aux Magn: 	1.00
+
+Image Properties:
+  XY Dimensions:            	1024 x 1024
+  ZWT Dimensions (expected):	1 x 1 x 181
+  Pixel Size:               	0.32250 0.32250 0.200
+  Binning:                  	1x1
+  Flat-field Calibration:   	Off
+
+Camera:
+  Type:        	CoolSNAP_HQ / ICX285         
+  Gain:        	1.00X
+  Speed:       	10000KHz
+  Temp Setting:	-25.0C
+
+
+Resolve3D Macro:
+--------------------------------------------------------
+# Created by DeltaVision Experiment Designer (version: 5.5.0 Release 6)
+# Experiment Macro Name: Resolve3D
+
+# Move Polychroic Turret In To Place
+SET_POLYCHROIC Quad-mCh
+
+# Open image files for Point Visiting
+OPF2 all
+
+# Time-lapse loop.
+FIRST_T
+DO 181
+  FILTERS GFP,GFP,10%
+  ACTSHUT 17
+
+  FIRSTPOINT
+
+  # Point visiting loop.
+  DO PointList
+    CCD 0.800000
+    WRT2F
+    NEXTPOINT
+  ENDDO
+
+
+  # Update all open file headers
+  WRT_HDRS
+
+  # Time Lapse wait. Will wait 300.000 seconds
+  # from the beginning of the current time point
+  TLAPSE 300.000
+  NEXT_T
+ENDDO
+
+# Return to the first point in point visit list
+FIRSTPOINT
+
+# Close image file(s) 
+CLF2
+
+BEEP
+
+#
+#
+#KEY Experiment Designer Keys: Don't Modify
+#
+#KEY EXPERIMENT_TYPE STANDARD
+#KEY DO_FAST_ACQUISITION F
+#KEY LAMPS_OFF_AT_END F
+#KEY DO_Z_SECTIONING F
+#KEY CHANNEL 0.800000,GFP,GFP,10%
+#KEY EX_SHUTTERS 3,EX=T,TRANS=F,LASER=F
+#KEY EM_SHUTTERS 1,CCD1=T
+#KEY POLYCHROIC Quad-mCh
+#KEY DO_REFERENCE_IMAGE F
+#KEY DO_CELL_TRACK F
+#KEY DO_AUTOFOCUS F
+#KEY DO_ULTIMATEFOCUS F
+#KEY DO_OAI_SCANNING F
+#KEY DO_TIME_LAPSE T
+#KEY NUM_TIME_POINTS 181
+#KEY TIME_LAPSE 0,5,0,0
+#KEY TOTAL_TIME 15,0,0,0
+#KEY DO_POINT_VISITING T
+#KEY POINT_VISIT_LIST all
+#KEY DO_PANEL_COLLECTION F
+#
+#
+--------------------------------------------------------
+
+Experiment Record:
+------------------
+Image 1.
+           Time:       Mon Jul 22 23:19:33 2013
+           Time Point: 0.000 secs
+           Intensity:  Min = 191, Max = 1612, Mean = 476.90112
+           Photosensor reading: 481737.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 2.
+           Time:       Mon Jul 22 23:24:26 2013
+           Time Point: 292.517 secs
+           Intensity:  Min = 193, Max = 1651, Mean = 473.27832
+           Photosensor reading: 482309.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 3.
+           Time:       Mon Jul 22 23:29:26 2013
+           Time Point: 592.486 secs
+           Intensity:  Min = 184, Max = 1582, Mean = 471.10550
+           Photosensor reading: 482754.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 4.
+           Time:       Mon Jul 22 23:34:26 2013
+           Time Point: 892.827 secs
+           Intensity:  Min = 187, Max = 1620, Mean = 469.65323
+           Photosensor reading: 483065.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 5.
+           Time:       Mon Jul 22 23:39:26 2013
+           Time Point: 1192.534 secs
+           Intensity:  Min = 184, Max = 1536, Mean = 468.01010
+           Photosensor reading: 483261.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 6.
+           Time:       Mon Jul 22 23:44:25 2013
+           Time Point: 1492.409 secs
+           Intensity:  Min = 187, Max = 1562, Mean = 465.51462
+           Photosensor reading: 483310.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 7.
+           Time:       Mon Jul 22 23:49:25 2013
+           Time Point: 1792.430 secs
+           Intensity:  Min = 188, Max = 1676, Mean = 463.81702
+           Photosensor reading: 482603.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 8.
+           Time:       Mon Jul 22 23:54:26 2013
+           Time Point: 2092.619 secs
+           Intensity:  Min = 190, Max = 1696, Mean = 461.54507
+           Photosensor reading: 481777.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 9.
+           Time:       Mon Jul 22 23:59:25 2013
+           Time Point: 2392.470 secs
+           Intensity:  Min = 183, Max = 1620, Mean = 459.39676
+           Photosensor reading: 481146.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 10.
+           Time:       Tue Jul 23 00:04:26 2013
+           Time Point: 2692.666 secs
+           Intensity:  Min = 187, Max = 1654, Mean = 457.79514
+           Photosensor reading: 481467.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 11.
+           Time:       Tue Jul 23 00:09:25 2013
+           Time Point: 2992.433 secs
+           Intensity:  Min = 192, Max = 1648, Mean = 456.60477
+           Photosensor reading: 482271.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 12.
+           Time:       Tue Jul 23 00:14:26 2013
+           Time Point: 3292.921 secs
+           Intensity:  Min = 188, Max = 2017, Mean = 455.64328
+           Photosensor reading: 482636.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 13.
+           Time:       Tue Jul 23 00:19:25 2013
+           Time Point: 3592.370 secs
+           Intensity:  Min = 187, Max = 1565, Mean = 453.92728
+           Photosensor reading: 482076.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 14.
+           Time:       Tue Jul 23 00:24:26 2013
+           Time Point: 3892.571 secs
+           Intensity:  Min = 183, Max = 1620, Mean = 452.10226
+           Photosensor reading: 481050.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 15.
+           Time:       Tue Jul 23 00:29:25 2013
+           Time Point: 4192.370 secs
+           Intensity:  Min = 186, Max = 1646, Mean = 450.06604
+           Photosensor reading: 481035.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 16.
+           Time:       Tue Jul 23 00:34:25 2013
+           Time Point: 4492.457 secs
+           Intensity:  Min = 179, Max = 1654, Mean = 448.72440
+           Photosensor reading: 481885.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 17.
+           Time:       Tue Jul 23 00:39:25 2013
+           Time Point: 4792.472 secs
+           Intensity:  Min = 187, Max = 1589, Mean = 448.18454
+           Photosensor reading: 482804.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 18.
+           Time:       Tue Jul 23 00:44:26 2013
+           Time Point: 5092.989 secs
+           Intensity:  Min = 179, Max = 1760, Mean = 447.09683
+           Photosensor reading: 482458.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 19.
+           Time:       Tue Jul 23 00:49:25 2013
+           Time Point: 5392.469 secs
+           Intensity:  Min = 182, Max = 1999, Mean = 445.06528
+           Photosensor reading: 480739.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 20.
+           Time:       Tue Jul 23 00:54:26 2013
+           Time Point: 5692.702 secs
+           Intensity:  Min = 182, Max = 1656, Mean = 442.63284
+           Photosensor reading: 479833.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 21.
+           Time:       Tue Jul 23 00:59:25 2013
+           Time Point: 5992.456 secs
+           Intensity:  Min = 182, Max = 1464, Mean = 440.86401
+           Photosensor reading: 480005.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 22.
+           Time:       Tue Jul 23 01:04:26 2013
+           Time Point: 6292.712 secs
+           Intensity:  Min = 181, Max = 1556, Mean = 439.50375
+           Photosensor reading: 479962.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 23.
+           Time:       Tue Jul 23 01:09:25 2013
+           Time Point: 6592.510 secs
+           Intensity:  Min = 187, Max = 1617, Mean = 438.25818
+           Photosensor reading: 479286.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 24.
+           Time:       Tue Jul 23 01:14:25 2013
+           Time Point: 6892.509 secs
+           Intensity:  Min = 181, Max = 1523, Mean = 436.55038
+           Photosensor reading: 478803.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 25.
+           Time:       Tue Jul 23 01:19:26 2013
+           Time Point: 7192.547 secs
+           Intensity:  Min = 178, Max = 1620, Mean = 435.12280
+           Photosensor reading: 478387.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 26.
+           Time:       Tue Jul 23 01:24:26 2013
+           Time Point: 7493.071 secs
+           Intensity:  Min = 185, Max = 1575, Mean = 433.39954
+           Photosensor reading: 478056.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 27.
+           Time:       Tue Jul 23 01:29:25 2013
+           Time Point: 7792.494 secs
+           Intensity:  Min = 176, Max = 1616, Mean = 432.35779
+           Photosensor reading: 477910.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 28.
+           Time:       Tue Jul 23 01:34:25 2013
+           Time Point: 8092.479 secs
+           Intensity:  Min = 176, Max = 1617, Mean = 430.71527
+           Photosensor reading: 477697.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 29.
+           Time:       Tue Jul 23 01:39:25 2013
+           Time Point: 8392.539 secs
+           Intensity:  Min = 184, Max = 1514, Mean = 429.46631
+           Photosensor reading: 477587.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 30.
+           Time:       Tue Jul 23 01:44:26 2013
+           Time Point: 8692.619 secs
+           Intensity:  Min = 182, Max = 1669, Mean = 428.18582
+           Photosensor reading: 477452.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 31.
+           Time:       Tue Jul 23 01:49:26 2013
+           Time Point: 8992.598 secs
+           Intensity:  Min = 174, Max = 1548, Mean = 427.02637
+           Photosensor reading: 477305.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 32.
+           Time:       Tue Jul 23 01:54:26 2013
+           Time Point: 9293.074 secs
+           Intensity:  Min = 177, Max = 1591, Mean = 425.70859
+           Photosensor reading: 477155.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 33.
+           Time:       Tue Jul 23 01:59:25 2013
+           Time Point: 9592.548 secs
+           Intensity:  Min = 173, Max = 1520, Mean = 424.52530
+           Photosensor reading: 477169.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 34.
+           Time:       Tue Jul 23 02:04:25 2013
+           Time Point: 9892.565 secs
+           Intensity:  Min = 172, Max = 1577, Mean = 423.20963
+           Photosensor reading: 476999.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 35.
+           Time:       Tue Jul 23 02:09:25 2013
+           Time Point: 10192.555 secs
+           Intensity:  Min = 178, Max = 1533, Mean = 422.26398
+           Photosensor reading: 476964.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 36.
+           Time:       Tue Jul 23 02:14:26 2013
+           Time Point: 10492.769 secs
+           Intensity:  Min = 175, Max = 1489, Mean = 420.59512
+           Photosensor reading: 476824.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 37.
+           Time:       Tue Jul 23 02:19:26 2013
+           Time Point: 10792.595 secs
+           Intensity:  Min = 175, Max = 1474, Mean = 419.32214
+           Photosensor reading: 476637.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 38.
+           Time:       Tue Jul 23 02:24:26 2013
+           Time Point: 11092.762 secs
+           Intensity:  Min = 180, Max = 1490, Mean = 417.98651
+           Photosensor reading: 476587.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 39.
+           Time:       Tue Jul 23 02:29:26 2013
+           Time Point: 11392.698 secs
+           Intensity:  Min = 177, Max = 1570, Mean = 417.09259
+           Photosensor reading: 476577.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 40.
+           Time:       Tue Jul 23 02:34:26 2013
+           Time Point: 11692.952 secs
+           Intensity:  Min = 177, Max = 1530, Mean = 415.79611
+           Photosensor reading: 476377.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 41.
+           Time:       Tue Jul 23 02:39:25 2013
+           Time Point: 11992.572 secs
+           Intensity:  Min = 178, Max = 1533, Mean = 414.56488
+           Photosensor reading: 476487.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 42.
+           Time:       Tue Jul 23 02:44:26 2013
+           Time Point: 12292.592 secs
+           Intensity:  Min = 171, Max = 2296, Mean = 413.28616
+           Photosensor reading: 476497.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 43.
+           Time:       Tue Jul 23 02:49:26 2013
+           Time Point: 12592.632 secs
+           Intensity:  Min = 175, Max = 2014, Mean = 412.10526
+           Photosensor reading: 476511.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 44.
+           Time:       Tue Jul 23 02:54:26 2013
+           Time Point: 12893.122 secs
+           Intensity:  Min = 178, Max = 1551, Mean = 411.04233
+           Photosensor reading: 476548.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 45.
+           Time:       Tue Jul 23 02:59:26 2013
+           Time Point: 13192.618 secs
+           Intensity:  Min = 173, Max = 1624, Mean = 410.23767
+           Photosensor reading: 476661.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 46.
+           Time:       Tue Jul 23 03:04:26 2013
+           Time Point: 13493.180 secs
+           Intensity:  Min = 162, Max = 2178, Mean = 409.19629
+           Photosensor reading: 476771.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 47.
+           Time:       Tue Jul 23 03:09:25 2013
+           Time Point: 13792.594 secs
+           Intensity:  Min = 175, Max = 1524, Mean = 408.60703
+           Photosensor reading: 476919.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 48.
+           Time:       Tue Jul 23 03:14:26 2013
+           Time Point: 14092.913 secs
+           Intensity:  Min = 176, Max = 1628, Mean = 407.44244
+           Photosensor reading: 476994.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 49.
+           Time:       Tue Jul 23 03:19:26 2013
+           Time Point: 14392.753 secs
+           Intensity:  Min = 169, Max = 1726, Mean = 406.90976
+           Photosensor reading: 476989.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 50.
+           Time:       Tue Jul 23 03:24:26 2013
+           Time Point: 14692.813 secs
+           Intensity:  Min = 171, Max = 1548, Mean = 405.59784
+           Photosensor reading: 477066.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 51.
+           Time:       Tue Jul 23 03:29:26 2013
+           Time Point: 14992.768 secs
+           Intensity:  Min = 176, Max = 1582, Mean = 405.05701
+           Photosensor reading: 477069.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 52.
+           Time:       Tue Jul 23 03:34:26 2013
+           Time Point: 15293.235 secs
+           Intensity:  Min = 168, Max = 1676, Mean = 404.26044
+           Photosensor reading: 476990.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 53.
+           Time:       Tue Jul 23 03:39:26 2013
+           Time Point: 15592.632 secs
+           Intensity:  Min = 173, Max = 1580, Mean = 403.36258
+           Photosensor reading: 476986.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 54.
+           Time:       Tue Jul 23 03:44:26 2013
+           Time Point: 15892.710 secs
+           Intensity:  Min = 172, Max = 2433, Mean = 402.61749
+           Photosensor reading: 477043.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 55.
+           Time:       Tue Jul 23 03:49:26 2013
+           Time Point: 16192.702 secs
+           Intensity:  Min = 172, Max = 2840, Mean = 402.12158
+           Photosensor reading: 476946.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 56.
+           Time:       Tue Jul 23 03:54:26 2013
+           Time Point: 16492.760 secs
+           Intensity:  Min = 172, Max = 2386, Mean = 401.42361
+           Photosensor reading: 476880.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 57.
+           Time:       Tue Jul 23 03:59:26 2013
+           Time Point: 16792.706 secs
+           Intensity:  Min = 172, Max = 3821, Mean = 400.89038
+           Photosensor reading: 476989.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 58.
+           Time:       Tue Jul 23 04:04:26 2013
+           Time Point: 17092.923 secs
+           Intensity:  Min = 167, Max = 2378, Mean = 399.87955
+           Photosensor reading: 477052.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 59.
+           Time:       Tue Jul 23 04:09:26 2013
+           Time Point: 17392.848 secs
+           Intensity:  Min = 173, Max = 2221, Mean = 398.97684
+           Photosensor reading: 476779.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 60.
+           Time:       Tue Jul 23 04:14:26 2013
+           Time Point: 17692.760 secs
+           Intensity:  Min = 161, Max = 3036, Mean = 398.33481
+           Photosensor reading: 476781.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 61.
+           Time:       Tue Jul 23 04:19:26 2013
+           Time Point: 17992.825 secs
+           Intensity:  Min = 172, Max = 3548, Mean = 397.48871
+           Photosensor reading: 476745.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 62.
+           Time:       Tue Jul 23 04:24:26 2013
+           Time Point: 18293.144 secs
+           Intensity:  Min = 175, Max = 2276, Mean = 395.79825
+           Photosensor reading: 476663.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 63.
+           Time:       Tue Jul 23 04:29:26 2013
+           Time Point: 18592.759 secs
+           Intensity:  Min = 176, Max = 1549, Mean = 394.28027
+           Photosensor reading: 476712.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 64.
+           Time:       Tue Jul 23 04:34:26 2013
+           Time Point: 18892.996 secs
+           Intensity:  Min = 171, Max = 1506, Mean = 393.47772
+           Photosensor reading: 476581.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 65.
+           Time:       Tue Jul 23 04:39:26 2013
+           Time Point: 19192.781 secs
+           Intensity:  Min = 174, Max = 1520, Mean = 392.52148
+           Photosensor reading: 476463.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 66.
+           Time:       Tue Jul 23 04:44:26 2013
+           Time Point: 19493.313 secs
+           Intensity:  Min = 173, Max = 1530, Mean = 391.22363
+           Photosensor reading: 476470.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 67.
+           Time:       Tue Jul 23 04:49:26 2013
+           Time Point: 19792.742 secs
+           Intensity:  Min = 176, Max = 1871, Mean = 390.23254
+           Photosensor reading: 476413.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 68.
+           Time:       Tue Jul 23 04:54:26 2013
+           Time Point: 20093.289 secs
+           Intensity:  Min = 168, Max = 1949, Mean = 389.60834
+           Photosensor reading: 476434.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 69.
+           Time:       Tue Jul 23 04:59:26 2013
+           Time Point: 20392.744 secs
+           Intensity:  Min = 173, Max = 1956, Mean = 388.72226
+           Photosensor reading: 476437.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 70.
+           Time:       Tue Jul 23 05:04:26 2013
+           Time Point: 20693.066 secs
+           Intensity:  Min = 172, Max = 2013, Mean = 387.60751
+           Photosensor reading: 476283.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 71.
+           Time:       Tue Jul 23 05:09:26 2013
+           Time Point: 20992.747 secs
+           Intensity:  Min = 168, Max = 2194, Mean = 386.35004
+           Photosensor reading: 476112.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 72.
+           Time:       Tue Jul 23 05:14:26 2013
+           Time Point: 21292.852 secs
+           Intensity:  Min = 166, Max = 2032, Mean = 386.19528
+           Photosensor reading: 476118.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 73.
+           Time:       Tue Jul 23 05:19:26 2013
+           Time Point: 21592.877 secs
+           Intensity:  Min = 167, Max = 2606, Mean = 385.73828
+           Photosensor reading: 476026.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 74.
+           Time:       Tue Jul 23 05:24:26 2013
+           Time Point: 21893.111 secs
+           Intensity:  Min = 171, Max = 1820, Mean = 384.99536
+           Photosensor reading: 475941.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 75.
+           Time:       Tue Jul 23 05:29:26 2013
+           Time Point: 22192.783 secs
+           Intensity:  Min = 167, Max = 1944, Mean = 384.05954
+           Photosensor reading: 476060.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 76.
+           Time:       Tue Jul 23 05:34:26 2013
+           Time Point: 22492.830 secs
+           Intensity:  Min = 167, Max = 3025, Mean = 383.28354
+           Photosensor reading: 476008.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 77.
+           Time:       Tue Jul 23 05:39:26 2013
+           Time Point: 22792.812 secs
+           Intensity:  Min = 172, Max = 3651, Mean = 382.63272
+           Photosensor reading: 475972.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 78.
+           Time:       Tue Jul 23 05:44:26 2013
+           Time Point: 23093.105 secs
+           Intensity:  Min = 174, Max = 2559, Mean = 381.98761
+           Photosensor reading: 476023.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 79.
+           Time:       Tue Jul 23 05:49:26 2013
+           Time Point: 23392.797 secs
+           Intensity:  Min = 170, Max = 2670, Mean = 381.15720
+           Photosensor reading: 476106.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 80.
+           Time:       Tue Jul 23 05:54:26 2013
+           Time Point: 23692.975 secs
+           Intensity:  Min = 168, Max = 2692, Mean = 380.21570
+           Photosensor reading: 476203.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 81.
+           Time:       Tue Jul 23 05:59:26 2013
+           Time Point: 23992.858 secs
+           Intensity:  Min = 168, Max = 3126, Mean = 379.55856
+           Photosensor reading: 476174.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 82.
+           Time:       Tue Jul 23 06:04:26 2013
+           Time Point: 24293.082 secs
+           Intensity:  Min = 167, Max = 2937, Mean = 378.80823
+           Photosensor reading: 476085.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 83.
+           Time:       Tue Jul 23 06:09:26 2013
+           Time Point: 24592.924 secs
+           Intensity:  Min = 164, Max = 2737, Mean = 378.11160
+           Photosensor reading: 476087.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 84.
+           Time:       Tue Jul 23 06:14:26 2013
+           Time Point: 24893.211 secs
+           Intensity:  Min = 167, Max = 3908, Mean = 377.31311
+           Photosensor reading: 475941.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 85.
+           Time:       Tue Jul 23 06:19:26 2013
+           Time Point: 25192.891 secs
+           Intensity:  Min = 163, Max = 4095, Mean = 376.64417
+           Photosensor reading: 475921.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 86.
+           Time:       Tue Jul 23 06:24:26 2013
+           Time Point: 25492.869 secs
+           Intensity:  Min = 173, Max = 3607, Mean = 375.71384
+           Photosensor reading: 475830.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 87.
+           Time:       Tue Jul 23 06:29:26 2013
+           Time Point: 25792.836 secs
+           Intensity:  Min = 162, Max = 2696, Mean = 374.78726
+           Photosensor reading: 475776.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 88.
+           Time:       Tue Jul 23 06:34:26 2013
+           Time Point: 26092.951 secs
+           Intensity:  Min = 171, Max = 2423, Mean = 373.44601
+           Photosensor reading: 475613.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 89.
+           Time:       Tue Jul 23 06:39:26 2013
+           Time Point: 26392.856 secs
+           Intensity:  Min = 165, Max = 3921, Mean = 372.77640
+           Photosensor reading: 475649.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 90.
+           Time:       Tue Jul 23 06:44:26 2013
+           Time Point: 26692.926 secs
+           Intensity:  Min = 167, Max = 2600, Mean = 371.55426
+           Photosensor reading: 475446.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 91.
+           Time:       Tue Jul 23 06:49:26 2013
+           Time Point: 26992.988 secs
+           Intensity:  Min = 163, Max = 4095, Mean = 371.01840
+           Photosensor reading: 475357.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 92.
+           Time:       Tue Jul 23 06:54:26 2013
+           Time Point: 27292.916 secs
+           Intensity:  Min = 166, Max = 2108, Mean = 370.29211
+           Photosensor reading: 475275.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 93.
+           Time:       Tue Jul 23 06:59:26 2013
+           Time Point: 27593.465 secs
+           Intensity:  Min = 163, Max = 4095, Mean = 369.28323
+           Photosensor reading: 475118.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 94.
+           Time:       Tue Jul 23 07:04:26 2013
+           Time Point: 27893.025 secs
+           Intensity:  Min = 167, Max = 2836, Mean = 368.21216
+           Photosensor reading: 474810.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 95.
+           Time:       Tue Jul 23 07:09:26 2013
+           Time Point: 28193.119 secs
+           Intensity:  Min = 166, Max = 2606, Mean = 367.44037
+           Photosensor reading: 474666.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 96.
+           Time:       Tue Jul 23 07:14:26 2013
+           Time Point: 28492.967 secs
+           Intensity:  Min = 159, Max = 4095, Mean = 366.69977
+           Photosensor reading: 474674.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 97.
+           Time:       Tue Jul 23 07:19:26 2013
+           Time Point: 28793.040 secs
+           Intensity:  Min = 164, Max = 4095, Mean = 365.50580
+           Photosensor reading: 474280.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 98.
+           Time:       Tue Jul 23 07:24:26 2013
+           Time Point: 29093.001 secs
+           Intensity:  Min = 166, Max = 4095, Mean = 364.42444
+           Photosensor reading: 474064.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 99.
+           Time:       Tue Jul 23 07:29:26 2013
+           Time Point: 29393.187 secs
+           Intensity:  Min = 171, Max = 2697, Mean = 363.55847
+           Photosensor reading: 473867.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 100.
+           Time:       Tue Jul 23 07:34:26 2013
+           Time Point: 29693.029 secs
+           Intensity:  Min = 165, Max = 4095, Mean = 362.41122
+           Photosensor reading: 473751.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 101.
+           Time:       Tue Jul 23 07:39:26 2013
+           Time Point: 29992.961 secs
+           Intensity:  Min = 163, Max = 2490, Mean = 361.76920
+           Photosensor reading: 473675.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 102.
+           Time:       Tue Jul 23 07:44:26 2013
+           Time Point: 30293.036 secs
+           Intensity:  Min = 166, Max = 3238, Mean = 361.56570
+           Photosensor reading: 473712.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 103.
+           Time:       Tue Jul 23 07:49:26 2013
+           Time Point: 30593.209 secs
+           Intensity:  Min = 166, Max = 2876, Mean = 361.55060
+           Photosensor reading: 474651.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 104.
+           Time:       Tue Jul 23 07:54:26 2013
+           Time Point: 30893.103 secs
+           Intensity:  Min = 164, Max = 2596, Mean = 361.01999
+           Photosensor reading: 476144.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 105.
+           Time:       Tue Jul 23 07:59:26 2013
+           Time Point: 31193.589 secs
+           Intensity:  Min = 159, Max = 2583, Mean = 361.26132
+           Photosensor reading: 477156.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 106.
+           Time:       Tue Jul 23 08:04:26 2013
+           Time Point: 31493.119 secs
+           Intensity:  Min = 165, Max = 3053, Mean = 361.09839
+           Photosensor reading: 478036.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 107.
+           Time:       Tue Jul 23 08:09:26 2013
+           Time Point: 31793.088 secs
+           Intensity:  Min = 161, Max = 3846, Mean = 361.33588
+           Photosensor reading: 478941.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 108.
+           Time:       Tue Jul 23 08:14:26 2013
+           Time Point: 32093.171 secs
+           Intensity:  Min = 158, Max = 2914, Mean = 361.23630
+           Photosensor reading: 479675.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 109.
+           Time:       Tue Jul 23 08:19:26 2013
+           Time Point: 32393.249 secs
+           Intensity:  Min = 162, Max = 2482, Mean = 360.35220
+           Photosensor reading: 479402.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 110.
+           Time:       Tue Jul 23 08:24:26 2013
+           Time Point: 32693.040 secs
+           Intensity:  Min = 166, Max = 2563, Mean = 359.46460
+           Photosensor reading: 478302.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 111.
+           Time:       Tue Jul 23 08:29:26 2013
+           Time Point: 32993.270 secs
+           Intensity:  Min = 160, Max = 3108, Mean = 358.37247
+           Photosensor reading: 476841.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 112.
+           Time:       Tue Jul 23 08:34:26 2013
+           Time Point: 33293.021 secs
+           Intensity:  Min = 164, Max = 3741, Mean = 357.63181
+           Photosensor reading: 476823.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 113.
+           Time:       Tue Jul 23 08:39:26 2013
+           Time Point: 33593.060 secs
+           Intensity:  Min = 163, Max = 3671, Mean = 357.35037
+           Photosensor reading: 477967.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 114.
+           Time:       Tue Jul 23 08:44:26 2013
+           Time Point: 33893.098 secs
+           Intensity:  Min = 158, Max = 3872, Mean = 357.26227
+           Photosensor reading: 479431.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 115.
+           Time:       Tue Jul 23 08:49:26 2013
+           Time Point: 34193.663 secs
+           Intensity:  Min = 163, Max = 2392, Mean = 357.15771
+           Photosensor reading: 480130.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 116.
+           Time:       Tue Jul 23 08:54:26 2013
+           Time Point: 34493.129 secs
+           Intensity:  Min = 161, Max = 4095, Mean = 356.84225
+           Photosensor reading: 479636.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 117.
+           Time:       Tue Jul 23 08:59:26 2013
+           Time Point: 34793.178 secs
+           Intensity:  Min = 161, Max = 2616, Mean = 355.74426
+           Photosensor reading: 478089.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 118.
+           Time:       Tue Jul 23 09:04:26 2013
+           Time Point: 35093.172 secs
+           Intensity:  Min = 160, Max = 2120, Mean = 354.19925
+           Photosensor reading: 477033.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 119.
+           Time:       Tue Jul 23 09:09:26 2013
+           Time Point: 35393.313 secs
+           Intensity:  Min = 161, Max = 3022, Mean = 353.20099
+           Photosensor reading: 476392.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 120.
+           Time:       Tue Jul 23 09:14:26 2013
+           Time Point: 35693.106 secs
+           Intensity:  Min = 157, Max = 2246, Mean = 352.50943
+           Photosensor reading: 477695.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 121.
+           Time:       Tue Jul 23 09:19:26 2013
+           Time Point: 35993.230 secs
+           Intensity:  Min = 162, Max = 1661, Mean = 352.44067
+           Photosensor reading: 479029.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 122.
+           Time:       Tue Jul 23 09:24:26 2013
+           Time Point: 36293.147 secs
+           Intensity:  Min = 156, Max = 1872, Mean = 352.55170
+           Photosensor reading: 479702.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 123.
+           Time:       Tue Jul 23 09:29:26 2013
+           Time Point: 36593.192 secs
+           Intensity:  Min = 163, Max = 1859, Mean = 351.78259
+           Photosensor reading: 479095.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 124.
+           Time:       Tue Jul 23 09:34:26 2013
+           Time Point: 36893.161 secs
+           Intensity:  Min = 159, Max = 2201, Mean = 350.85901
+           Photosensor reading: 477893.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 125.
+           Time:       Tue Jul 23 09:39:26 2013
+           Time Point: 37193.199 secs
+           Intensity:  Min = 160, Max = 1904, Mean = 349.47375
+           Photosensor reading: 476815.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 126.
+           Time:       Tue Jul 23 09:44:26 2013
+           Time Point: 37493.186 secs
+           Intensity:  Min = 159, Max = 1667, Mean = 348.40613
+           Photosensor reading: 476948.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 127.
+           Time:       Tue Jul 23 09:49:26 2013
+           Time Point: 37793.386 secs
+           Intensity:  Min = 160, Max = 1753, Mean = 348.16858
+           Photosensor reading: 478032.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 128.
+           Time:       Tue Jul 23 09:54:26 2013
+           Time Point: 38093.283 secs
+           Intensity:  Min = 156, Max = 2074, Mean = 348.29535
+           Photosensor reading: 478915.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 129.
+           Time:       Tue Jul 23 09:59:26 2013
+           Time Point: 38393.279 secs
+           Intensity:  Min = 153, Max = 1610, Mean = 347.60782
+           Photosensor reading: 479229.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 130.
+           Time:       Tue Jul 23 10:04:26 2013
+           Time Point: 38693.237 secs
+           Intensity:  Min = 159, Max = 1576, Mean = 346.96622
+           Photosensor reading: 478716.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 131.
+           Time:       Tue Jul 23 10:09:26 2013
+           Time Point: 38993.843 secs
+           Intensity:  Min = 158, Max = 4055, Mean = 346.09219
+           Photosensor reading: 477363.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 132.
+           Time:       Tue Jul 23 10:14:26 2013
+           Time Point: 39293.225 secs
+           Intensity:  Min = 157, Max = 1677, Mean = 345.16330
+           Photosensor reading: 476970.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 133.
+           Time:       Tue Jul 23 10:19:26 2013
+           Time Point: 39593.277 secs
+           Intensity:  Min = 155, Max = 1548, Mean = 344.75098
+           Photosensor reading: 477754.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 134.
+           Time:       Tue Jul 23 10:24:26 2013
+           Time Point: 39893.346 secs
+           Intensity:  Min = 159, Max = 1665, Mean = 344.57684
+           Photosensor reading: 478731.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 135.
+           Time:       Tue Jul 23 10:29:26 2013
+           Time Point: 40193.734 secs
+           Intensity:  Min = 154, Max = 4038, Mean = 344.51788
+           Photosensor reading: 479435.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 136.
+           Time:       Tue Jul 23 10:34:26 2013
+           Time Point: 40493.191 secs
+           Intensity:  Min = 158, Max = 3164, Mean = 344.24161
+           Photosensor reading: 479576.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 137.
+           Time:       Tue Jul 23 10:39:26 2013
+           Time Point: 40793.286 secs
+           Intensity:  Min = 157, Max = 1721, Mean = 343.27069
+           Photosensor reading: 478683.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 138.
+           Time:       Tue Jul 23 10:44:26 2013
+           Time Point: 41093.294 secs
+           Intensity:  Min = 158, Max = 1818, Mean = 341.91431
+           Photosensor reading: 477132.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 139.
+           Time:       Tue Jul 23 10:49:26 2013
+           Time Point: 41393.462 secs
+           Intensity:  Min = 158, Max = 2842, Mean = 341.01410
+           Photosensor reading: 476611.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 140.
+           Time:       Tue Jul 23 10:54:26 2013
+           Time Point: 41693.330 secs
+           Intensity:  Min = 160, Max = 2459, Mean = 340.50034
+           Photosensor reading: 477555.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 141.
+           Time:       Tue Jul 23 10:59:26 2013
+           Time Point: 41993.301 secs
+           Intensity:  Min = 156, Max = 1934, Mean = 340.58353
+           Photosensor reading: 478509.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 142.
+           Time:       Tue Jul 23 11:04:26 2013
+           Time Point: 42293.293 secs
+           Intensity:  Min = 154, Max = 1703, Mean = 340.39667
+           Photosensor reading: 479141.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 143.
+           Time:       Tue Jul 23 11:09:26 2013
+           Time Point: 42593.792 secs
+           Intensity:  Min = 159, Max = 4095, Mean = 340.00006
+           Photosensor reading: 479277.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 144.
+           Time:       Tue Jul 23 11:14:26 2013
+           Time Point: 42893.743 secs
+           Intensity:  Min = 152, Max = 4095, Mean = 339.32437
+           Photosensor reading: 478891.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 145.
+           Time:       Tue Jul 23 11:19:26 2013
+           Time Point: 43193.634 secs
+           Intensity:  Min = 157, Max = 3101, Mean = 338.26114
+           Photosensor reading: 477677.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 146.
+           Time:       Tue Jul 23 11:24:26 2013
+           Time Point: 43493.311 secs
+           Intensity:  Min = 159, Max = 2940, Mean = 337.32068
+           Photosensor reading: 477121.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 147.
+           Time:       Tue Jul 23 11:29:26 2013
+           Time Point: 43793.311 secs
+           Intensity:  Min = 155, Max = 2764, Mean = 336.45450
+           Photosensor reading: 477456.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 148.
+           Time:       Tue Jul 23 11:34:26 2013
+           Time Point: 44093.309 secs
+           Intensity:  Min = 157, Max = 2287, Mean = 336.29672
+           Photosensor reading: 478168.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 149.
+           Time:       Tue Jul 23 11:39:26 2013
+           Time Point: 44393.593 secs
+           Intensity:  Min = 155, Max = 4095, Mean = 335.89490
+           Photosensor reading: 478700.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 150.
+           Time:       Tue Jul 23 11:44:26 2013
+           Time Point: 44693.337 secs
+           Intensity:  Min = 153, Max = 2666, Mean = 335.64627
+           Photosensor reading: 478906.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 151.
+           Time:       Tue Jul 23 11:49:26 2013
+           Time Point: 44993.329 secs
+           Intensity:  Min = 159, Max = 2014, Mean = 335.11160
+           Photosensor reading: 478772.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 152.
+           Time:       Tue Jul 23 11:54:26 2013
+           Time Point: 45293.446 secs
+           Intensity:  Min = 156, Max = 4095, Mean = 334.52325
+           Photosensor reading: 478675.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 153.
+           Time:       Tue Jul 23 11:59:26 2013
+           Time Point: 45593.601 secs
+           Intensity:  Min = 156, Max = 3475, Mean = 334.17834
+           Photosensor reading: 478249.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 154.
+           Time:       Tue Jul 23 12:04:26 2013
+           Time Point: 45893.385 secs
+           Intensity:  Min = 153, Max = 3425, Mean = 333.21207
+           Photosensor reading: 478046.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 155.
+           Time:       Tue Jul 23 12:09:26 2013
+           Time Point: 46193.615 secs
+           Intensity:  Min = 155, Max = 3304, Mean = 332.41446
+           Photosensor reading: 477561.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 156.
+           Time:       Tue Jul 23 12:14:26 2013
+           Time Point: 46493.392 secs
+           Intensity:  Min = 154, Max = 2960, Mean = 331.81992
+           Photosensor reading: 477177.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 157.
+           Time:       Tue Jul 23 12:19:26 2013
+           Time Point: 46793.365 secs
+           Intensity:  Min = 151, Max = 4095, Mean = 331.03278
+           Photosensor reading: 477397.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 158.
+           Time:       Tue Jul 23 12:24:26 2013
+           Time Point: 47093.318 secs
+           Intensity:  Min = 154, Max = 2930, Mean = 330.46082
+           Photosensor reading: 477384.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 159.
+           Time:       Tue Jul 23 12:29:26 2013
+           Time Point: 47393.487 secs
+           Intensity:  Min = 159, Max = 3247, Mean = 330.12057
+           Photosensor reading: 477499.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 160.
+           Time:       Tue Jul 23 12:34:26 2013
+           Time Point: 47693.363 secs
+           Intensity:  Min = 157, Max = 4095, Mean = 329.40994
+           Photosensor reading: 477459.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 161.
+           Time:       Tue Jul 23 12:39:26 2013
+           Time Point: 47993.435 secs
+           Intensity:  Min = 156, Max = 4095, Mean = 328.98718
+           Photosensor reading: 477345.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 162.
+           Time:       Tue Jul 23 12:44:26 2013
+           Time Point: 48293.570 secs
+           Intensity:  Min = 146, Max = 2960, Mean = 328.29291
+           Photosensor reading: 477123.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 163.
+           Time:       Tue Jul 23 12:49:26 2013
+           Time Point: 48593.747 secs
+           Intensity:  Min = 154, Max = 3087, Mean = 327.78046
+           Photosensor reading: 476970.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 164.
+           Time:       Tue Jul 23 12:54:26 2013
+           Time Point: 48893.407 secs
+           Intensity:  Min = 156, Max = 4087, Mean = 326.97214
+           Photosensor reading: 476813.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 165.
+           Time:       Tue Jul 23 12:59:26 2013
+           Time Point: 49193.610 secs
+           Intensity:  Min = 156, Max = 2906, Mean = 326.63611
+           Photosensor reading: 476546.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 166.
+           Time:       Tue Jul 23 13:04:26 2013
+           Time Point: 49493.449 secs
+           Intensity:  Min = 154, Max = 3430, Mean = 326.18411
+           Photosensor reading: 476320.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 167.
+           Time:       Tue Jul 23 13:09:26 2013
+           Time Point: 49793.584 secs
+           Intensity:  Min = 148, Max = 4095, Mean = 325.56201
+           Photosensor reading: 475840.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 168.
+           Time:       Tue Jul 23 13:14:26 2013
+           Time Point: 50093.450 secs
+           Intensity:  Min = 154, Max = 3414, Mean = 325.14127
+           Photosensor reading: 475675.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 169.
+           Time:       Tue Jul 23 13:19:26 2013
+           Time Point: 50393.926 secs
+           Intensity:  Min = 158, Max = 3178, Mean = 324.14075
+           Photosensor reading: 475283.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 170.
+           Time:       Tue Jul 23 13:24:26 2013
+           Time Point: 50693.398 secs
+           Intensity:  Min = 155, Max = 3222, Mean = 323.54373
+           Photosensor reading: 474787.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 171.
+           Time:       Tue Jul 23 13:29:26 2013
+           Time Point: 50993.454 secs
+           Intensity:  Min = 152, Max = 3151, Mean = 323.08539
+           Photosensor reading: 474584.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 172.
+           Time:       Tue Jul 23 13:34:26 2013
+           Time Point: 51293.406 secs
+           Intensity:  Min = 153, Max = 3046, Mean = 322.44601
+           Photosensor reading: 474194.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 173.
+           Time:       Tue Jul 23 13:39:27 2013
+           Time Point: 51594.427 secs
+           Intensity:  Min = 151, Max = 3338, Mean = 321.82370
+           Photosensor reading: 473782.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 174.
+           Time:       Tue Jul 23 13:44:26 2013
+           Time Point: 51893.562 secs
+           Intensity:  Min = 153, Max = 3234, Mean = 321.05231
+           Photosensor reading: 473402.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 175.
+           Time:       Tue Jul 23 13:49:26 2013
+           Time Point: 52193.524 secs
+           Intensity:  Min = 154, Max = 3254, Mean = 320.81006
+           Photosensor reading: 473395.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 176.
+           Time:       Tue Jul 23 13:54:26 2013
+           Time Point: 52493.528 secs
+           Intensity:  Min = 153, Max = 3301, Mean = 320.09659
+           Photosensor reading: 473126.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 177.
+           Time:       Tue Jul 23 13:59:26 2013
+           Time Point: 52793.919 secs
+           Intensity:  Min = 152, Max = 4080, Mean = 319.15500
+           Photosensor reading: 472929.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 178.
+           Time:       Tue Jul 23 14:04:26 2013
+           Time Point: 53093.567 secs
+           Intensity:  Min = 154, Max = 3446, Mean = 318.81226
+           Photosensor reading: 473112.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 179.
+           Time:       Tue Jul 23 14:09:26 2013
+           Time Point: 53393.544 secs
+           Intensity:  Min = 151, Max = 4021, Mean = 318.31982
+           Photosensor reading: 473236.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 180.
+           Time:       Tue Jul 23 14:14:26 2013
+           Time Point: 53693.520 secs
+           Intensity:  Min = 150, Max = 3747, Mean = 317.74100
+           Photosensor reading: 473203.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Image 181.
+           Time:       Tue Jul 23 14:19:26 2013
+           Time Point: 53993.946 secs
+           Intensity:  Min = 148, Max = 4095, Mean = 317.38760
+           Photosensor reading: 473276.0
+           Exposure time: 0.800000 secs
+           EX filter:  GFP
+           EM filter:  GFP
+           ND filter:  10%
+           Polychroic: Quad-mCh
+           Stage coordinates:   (-1400.000,-2100.000,-0.000)
+
+Total number of images saved: 181
