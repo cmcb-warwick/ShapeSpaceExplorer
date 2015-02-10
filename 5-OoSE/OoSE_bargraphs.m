@@ -3,12 +3,15 @@ function [ output_args ] = OoSE_bargraphs( number,trainingCellShapeData,APe_outp
 %   Detailed explanation goes here
 
 
-load([OoSE_experiment_folder '/OoSE_embedding.mat'])
-load([OoSE_experiment_folder '/Dist_mat.mat'])
-load([APe_output_foldername '/wish_list.mat'])
+load(fullfile(OoSE_experiment_folder, '/OoSE_embedding.mat'));
+load(fullfile(OoSE_experiment_folder, '/Dist_mat.mat'))
+load(fullfile(APe_output_foldername, '/wish_list.mat'))
 
 
 [T2,colour]=ordered_list_edit(number,trainingCellShapeData,APe_output_foldername);
+if number==0
+    return
+end
 hold on
 exem_D=D(wish_list,:);
 [~,wish_idx]=min(exem_D);
@@ -89,9 +92,10 @@ n_exems=length(wish_list);
 exem_list=sort(wish_list);
 figure
 dendrogram(linkagemat,0);
-close
 if number==0
     return
+else
+    close
 end
 
 figure

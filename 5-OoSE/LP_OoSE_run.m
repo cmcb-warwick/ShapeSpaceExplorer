@@ -80,7 +80,6 @@ for i=1:train_nobs
     
 end
 waitbar(1,h,'OoSE Step 3. Embedding, please wait.');
-
 load(path_to_LPtrained)
 
 ndims=length(d);
