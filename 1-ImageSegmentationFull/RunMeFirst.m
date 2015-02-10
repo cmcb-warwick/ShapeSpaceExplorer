@@ -38,7 +38,7 @@ for i=index_of_dv_files
    savefilename=[savefolderpath varname];
    save(savefilename,varname);
    clear(varname);
-   i
+   
 end
 
 
@@ -47,7 +47,7 @@ for i=index_of_dv_files;
    load(sprintf([savefolderpath 'ImageStack%03d'],i))
    eval(['StackCellSeg(' varname sprintf(', %d, savefolderpath,sbw,rbw);',i) ]);
    clear(varname);
-   i
+   
 end
 
 end
@@ -124,7 +124,7 @@ function [ Image_Cell_Regions,Binary_images ] = CellSeg( GRAYimage,sbw,rbw)
 pretendRGBimage=cat(3,GRAYimage,GRAYimage,GRAYimage);
 pretendRGBimage=pretendRGBimage/(max(pretendRGBimage(:)));
 
-currentfoldername=cd;
+currentfoldername=cd; 
 addpath([currentfoldername '/New_Download/edison_matlab_interface'])
 [~, labels,modes] = edison_wrapper(pretendRGBimage,@RGB2Luv, 'SpatialBandWidth',sbw,'RangeBandWidth',rbw);
 % tic
