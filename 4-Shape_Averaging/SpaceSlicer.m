@@ -1,6 +1,7 @@
 function [ idx, bounds ] = SpaceSlicer(CellShapeData)
 %SPACESLICER Summary of this function goes here
 %   Detailed explanation goes here
+%
 
 N=length(CellShapeData.point);
 if isfield(CellShapeData.set,'SCORE')
@@ -12,7 +13,7 @@ else
 end
 
 x_slices=2;
-y_slices=5;
+y_slices=4;
 
 figure
 b1=slicey_magoo( CellShapeData,SCORE, [1 0], x_slices, true);
