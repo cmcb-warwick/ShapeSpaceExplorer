@@ -15,35 +15,31 @@ end
 x_slices=4;
 y_slices=6;
 
-figure
+figure % x figure
 b1=slicey_magoo( CellShapeData,SCORE, [1 0], x_slices, true);
 
-figure
+figure % y figure
 b2=slicey_magoo( CellShapeData,SCORE, [0 1], y_slices, true);
 
 figure
 plot(SCORE(:,1),SCORE(:,2),'.')
 hold on
-M1=max(SCORE(:,2));
-m1=min(SCORE(:,2));
-M2=max(SCORE(:,1));
-m2=min(SCORE(:,1));
-for i=1:(x_slices-1)
-   plot(b1(i+1)*ones(1,2),[m1 M1],'color',[1 0.5 0])
+xm =xlim;
+ym =ylim;
+for i=2:x_slices
+   plot([b1(i) b1(i)],ym,'color',[1 0.5 0]);
 end
-for i=1:(y_slices-1)
-   plot([m2 M2],b2(i+1)*ones(1,2),'color',[1 0 1]) 
+for i=2:y_slices
+   plot(xm,[b2(i) b2(i)],'color',[1 0 1]); 
 end
-axis equal; grid on;axis tight
+plot(SCORE(:,1),SCORE(:,2),'.')
+%axis equal; axis tight
 
 end
 
 function [bounds]=slicey_magoo( CSD,SCORE, vect, num, plotshapes )
 N=length(CSD.point);
 d=length(vect);
-% for i=1:N
-%     Score(i,:)=CSD.point(i).SCORE(1:d);
-% end
 Score=SCORE(:,1:d);
 vect=vect(:)/norm(vect(:));
 proj=Score*vect;
