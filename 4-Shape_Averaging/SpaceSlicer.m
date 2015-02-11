@@ -1,7 +1,10 @@
-function [ idx, bounds ] = SpaceSlicer(CellShapeData)
+function [ idx ] = SpaceSlicer(CellShapeData)
 %SPACESLICER Summary of this function goes here
 %   Detailed explanation goes here
 %
+orangeCol=[237/255 94/255 48/255];
+greenCol=[167/255 188/255 68/255];
+blueCol= [138/255 164/255 208/255];
 close all
 N=length(CellShapeData.point);
 if isfield(CellShapeData.set,'SCORE')
@@ -19,20 +22,47 @@ idx=find(mod(p,x_slices+1)==0);
 p(idx)=[];
 
 
-figure % x figure
+figure % x figure---------------------
+set(gcf,'color','w');
+[b1, xShapes]=slicey_magoo( CellShapeData,SCORE, [1 0], x_slices, true, blueCol);
 
-[b1, xShapes]=slicey_magoo( CellShapeData,SCORE, [1 0], x_slices, true);
 
-figure % y figure
-[b2, yShapes]=slicey_magoo( CellShapeData,SCORE, [0 1], y_slices, true);
+figure % y figure---------------------
+set(gcf,'color','w');
+[b2, yShapes]=slicey_magoo( CellShapeData,SCORE, [0 1], y_slices, true, greenCol);
 
-figure
+figure % content figure---------------------
+set(gcf,'color','w');
+plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+hold on
+xlim([b1(1) b1(end)]);
+ylim([b2(1) b2(end)]);
+xm =xlim;
+ym =ylim;
+
+for i=2:x_slices
+   plot([b1(i) b1(i)],ym,'color',[0.5,.5,.5]);
+end
+
+
+for i=2:y_slices
+   plot(xm,[b2(i) b2(i)],'color',[.5,.5,.5]);
+end
+plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+%----------------------------------------------------
+
+
+
+
+
+
+figure % combined figure
 set(gcf,'color','w');
 for i=1:x_slices
     subplot(y_slices+1, x_slices+1,i)
     s=xShapes{i};
     if ~isempty(s)
-        plot(s);
+        plot(s, 'color',blueCol);
     end
     set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
 end
@@ -43,7 +73,7 @@ for i=1:y_slices
     idx = y_slices-i+1;
     s=yShapes{idx};
     if ~isempty(s)
-        plot(s);
+        plot(s, 'color', greenCol);
     end
     set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
 end
@@ -51,7 +81,7 @@ end
 
 
 subplot(y_slices+1, x_slices+1,p);
-plot(SCORE(:,1),SCORE(:,2),'.')
+plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
 hold on
 xlim([b1(1) b1(end)]);
 ylim([b2(1) b2(end)]);
@@ -59,20 +89,18 @@ xm =xlim;
 ym =ylim;
 
 for i=2:x_slices
-   plot([b1(i) b1(i)],ym,'color',[1 0.5 0]);
+   plot([b1(i) b1(i)],ym,'color',blueCol);
 end
 
 
 for i=2:y_slices
-   plot(xm,[b2(i) b2(i)],'color',[1 0 1]);
+   plot(xm,[b2(i) b2(i)],'color',greenCol);
+end
+plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+
 end
 
-plot(SCORE(:,1),SCORE(:,2),'.')
-%axis equal; axis tight
-
-end
-
-function [bounds, avshapes]=slicey_magoo( CSD,SCORE, vect, num, plotshapes )
+function [bounds, avshapes]=slicey_magoo( CSD,SCORE, vect, num, plotshapes, color )
 avshapes={};
 N=length(CSD.point);
 d=length(vect);
@@ -113,7 +141,7 @@ if plotshapes
         avshape=avshape*exp(1i*(pi/4));
         avshape=0.5*step*avshape/(1.1*max(abs(avshape)));
         avshapes{i}=avshape;
-        plot(avshape+centres(i))
+        plot(avshape+centres(i), 'color', color);
         hold on
     end
     axis equal 
