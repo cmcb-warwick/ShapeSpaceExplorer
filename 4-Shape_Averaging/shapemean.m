@@ -1,6 +1,10 @@
 function [ shapemean_out ] = shapemean( CSD, cellset_idx, middle_idx, ploton )
 %SHAPEMEAN Summary of this function goes here
 %   Detailed explanation goes here
+if isempty(cellset_idx)
+    shapemean_out=[];
+    return
+end
 
 N=length(CSD.point);
 n=length(cellset_idx);
@@ -21,14 +25,6 @@ end
 shapemean_out=mean(newcellarray,1);
 
 if ploton
-%     plot(shapemean_out,'r.','MarkerSize',10)
-%    hold on
-%    for i=1:n
-%        plot(newcellarray(i,:),'.','MarkerSize',8)
-%        for j=1:512
-%            plot([newcellarray(i,j) shapemean_out(j)])
-%        end
-%    end
    plot(CSD.point(middle_idx).coords_comp,'g')
    hold on
    plot(shapemean_out,'r','LineWidth',3)

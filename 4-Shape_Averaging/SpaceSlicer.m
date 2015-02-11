@@ -12,8 +12,8 @@ else
     end
 end
 
-x_slices=2;
-y_slices=4;
+x_slices=4;
+y_slices=6;
 
 figure
 b1=slicey_magoo( CellShapeData,SCORE, [1 0], x_slices, true);
@@ -69,6 +69,7 @@ end
 if plotshapes
     for i=1:num
         cellset_idx=find(idx==i);
+        if isempty(cellset_idx), continue; end
         [~,mid]=min(abs(normproj_d(cellset_idx)));
         avshape=shapemean(CSD,cellset_idx,cellset_idx(mid),0)';
         c=princomp([real(avshape) imag(avshape)]);
