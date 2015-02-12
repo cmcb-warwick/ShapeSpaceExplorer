@@ -1,11 +1,11 @@
-function [ idx ] = SpaceSlicer(CellShapeData)
+function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices)
 %SPACESLICER Summary of this function goes here
 %   Detailed explanation goes here
 %
 orangeCol=[237/255 94/255 48/255];
 greenCol=[167/255 188/255 68/255];
 blueCol= [138/255 164/255 208/255];
-close all
+
 N=length(CellShapeData.point);
 if isfield(CellShapeData.set,'SCORE')
     SCORE=CellShapeData.set.SCORE;
@@ -15,8 +15,8 @@ else
     end
 end
 
-x_slices=6;
-y_slices=5;
+% x_slices=6;
+% y_slices=5;
 p=x_slices+1:(x_slices+1)*(y_slices+1);
 idx=find(mod(p,x_slices+1)==0);
 p(idx)=[];
