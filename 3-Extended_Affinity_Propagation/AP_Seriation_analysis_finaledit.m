@@ -23,13 +23,17 @@ nobs=0.5*(1+sqrt(1+8*N));
 W=ones(nobs,nobs);
 sig_sq=(mean(D))^2;
 k=1;
+p = ProgressBar(nobs);
 for j=2:nobs
+    p.progress;
     for i=1:(j-1)
         W(i,j)=exp(-(D(k).^2)./(2*sig_sq));
         W(j,i)=W(i,j);
         k=k+1;
+        
     end
 end
+p.stop;
 D=[];
 p=median(W(:));
 if RAMeff
@@ -237,21 +241,20 @@ if symmetric, ST=S; else
     ST=S';
     S=[];
 end; % saves memory if it's symmetric
+NN = 10000; % this is an arbitrary number
+p = ProgressBar(NN);
 while ~dn
-    tic
     i=i+1; 
-
     % Compute responsibilities
 	A=A';
     R=R';
+    p.progress; 
 	for ii=1:N,
 		old = R(:,ii);
 		AS = A(:,ii) + ST(:,ii);
         [Y,I]=max(AS);
         AS(I)=-Inf;
 		Y2=max(AS);
-% 		R(:,ii)=ST(:,ii)-Y;
-% 		R(I,ii)=ST(I,ii)-Y2;
         RS=ST(:,ii)-Y;
         STS=ST(:,ii);
         RS(I)=STS(I)-Y2;
@@ -278,17 +281,7 @@ while ~dn
         if (~unconverged&&(K>0))||(i==maxits) dn=1; end;
     end;
 
-    % Handle plotting and storage of details, if requested
-%     if plt||details
-%         if K==0
-%             tmpnetsim=nan; tmpdpsim=nan; tmpexpref=nan; tmpidx=nan;
-%         else
-%             I=find(E); notI=find(~E); [tmp c]=max(S(:,I),[],2); c(I)=1:K; tmpidx=I(c);
-%             tmpdpsim=sum(S(sub2ind([N N],notI,tmpidx(notI))));
-%             tmpexpref=sum(dS(I));
-%             tmpnetsim=tmpdpsim+tmpexpref;
-%         end;
-%     end;
+    
     if details
         netsim(i)=tmpnetsim; dpsim(i)=tmpdpsim; expref(i)=tmpexpref;
         idx(:,i)=tmpidx;
@@ -301,9 +294,10 @@ while ~dn
         ylabel('Fitness (net similarity) of quantized intermediate solution');
 %         drawnow; 
     end;
-    toc
-    i
+    
+    
 end; % iterations
+p.stop;
 save([savedestination '/avail_mat.mat'],'A','-v7.3')
 save([savedestination '/resp_mat.mat'],'R','-v7.3')
 save([savedestination '/unconv'],'unconverged','-v7.3')
@@ -392,10 +386,6 @@ improved=true;
 while improved
     improved=false;
     for i=1:(L-1)
-%        i
-%        if i==29
-%                 i
-%             end
         T=linkagemat(i,[1 2]);
         a=T(1);
         b=T(2);
@@ -412,9 +402,7 @@ while improved
             end
             a=a2;
         end
-%                 if i==70
-%                 i
-%             end
+
         while sum(b>L)>0
            ind=b>L;
             ind_plus=cumsum(ind);
@@ -428,19 +416,13 @@ while improved
             end
             b=b2;
         end
-        %p_a=ismember(p,a);
-        %p_b=ismember(p,b);
+
         p_ab=ismember(p,union(a,b));
         p_star=p;
         if max(bwlabel(p_ab))>1
            what 
         end
-       % if sum(find(p_a))<sum(find(p_b))
-        %    p_star(p_a|p_b)=p([find(p_b) find(p_a)]);
-        %else
-            
-        %    p_star(p_a|p_b)=p([find(p_a) find(p_b)]);
-        %end
+
         p_star(p_ab)=fliplr(p(p_ab));
         
         A_star=zeros(L,L);
@@ -460,5 +442,6 @@ while improved
     count=count+1;
 end
 CM=dCorrMat(p,p);
+
 
 end
