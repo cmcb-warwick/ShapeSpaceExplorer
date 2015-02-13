@@ -1,4 +1,4 @@
-function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices)
+function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, axes_equal)
 %SPACESLICER Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -15,8 +15,7 @@ else
     end
 end
 
-% x_slices=6;
-% y_slices=5;
+
 p=x_slices+1:(x_slices+1)*(y_slices+1);
 idx=find(mod(p,x_slices+1)==0);
 p(idx)=[];
@@ -34,6 +33,7 @@ set(gcf,'color','w');
 figure % content figure---------------------
 set(gcf,'color','w');
 plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+if axes_equal, axis equal; axis tight; end
 hold on
 xlim([b1(1) b1(end)]);
 ylim([b2(1) b2(end)]);
@@ -49,6 +49,7 @@ for i=2:y_slices
    plot(xm,[b2(i) b2(i)],'color',[.5,.5,.5]);
 end
 plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+
 %----------------------------------------------------
 
 
@@ -82,6 +83,7 @@ end
 
 subplot(y_slices+1, x_slices+1,p);
 plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+if axes_equal, axis equal; end
 hold on
 xlim([b1(1) b1(end)]);
 ylim([b2(1) b2(end)]);
@@ -144,7 +146,7 @@ if plotshapes
         plot(avshape+centres(i), 'color', color);
         hold on
     end
-    axis equal 
+    axis equal
     axis xy off
 end
 
