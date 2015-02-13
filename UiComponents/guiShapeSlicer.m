@@ -147,9 +147,10 @@ fpath= get(handles.edit1, 'String');
 xslice=get(handles.popupmenu2,'Value')+1;
 yslice=get(handles.popupmenu3,'Value')+1;
 axesEqual=get(handles.checkbox1,'Value') ;
+path='/Users/iasmam/Desktop/SamTest/Figures';
 if checkIfCorrectFilepath(fpath)==1
    data = load(fpath);
-   SpaceSlicer(data.CellShapeData, xslice,yslice, axesEqual);
+   SpaceSlicer(data.CellShapeData, xslice,yslice, path, axesEqual);
 end
    
 

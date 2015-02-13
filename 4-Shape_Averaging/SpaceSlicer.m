@@ -1,4 +1,4 @@
-function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, axes_equal)
+function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, path, axes_equal)
 %SPACESLICER Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -20,15 +20,18 @@ p=x_slices+1:(x_slices+1)*(y_slices+1);
 idx=find(mod(p,x_slices+1)==0);
 p(idx)=[];
 
-
+if ~exist(path,'dir'),mkdir(path);end
 figure % x figure---------------------
 set(gcf,'color','w');
 [b1, xShapes]=slicey_magoo( CellShapeData,SCORE, [1 0], x_slices, true, blueCol);
-
+fPath=fullfile(path, '4_ShapeSlicer_x_axis_shapes.fig');
+savefig(fPath);
 
 figure % y figure---------------------
 set(gcf,'color','w');
 [b2, yShapes]=slicey_magoo( CellShapeData,SCORE, [0 1], y_slices, true, greenCol);
+fPath=fullfile(path, '4_ShapeSlicer_y_axis_shapes.fig');
+savefig(fPath);
 
 figure % content figure---------------------
 set(gcf,'color','w');
@@ -40,6 +43,7 @@ ylim([b2(1) b2(end)]);
 xm =xlim;
 ym =ylim;
 
+
 for i=2:x_slices
    plot([b1(i) b1(i)],ym,'color',[0.5,.5,.5]);
 end
@@ -49,7 +53,8 @@ for i=2:y_slices
    plot(xm,[b2(i) b2(i)],'color',[.5,.5,.5]);
 end
 plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
-
+fPath=fullfile(path, '4_ShapeSlicer_content_only.fig');
+savefig(fPath);
 %----------------------------------------------------
 
 
@@ -99,6 +104,8 @@ for i=2:y_slices
    plot(xm,[b2(i) b2(i)],'color',greenCol);
 end
 plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+fPath=fullfile(path, '4_ShapeSlicer_combined.fig');
+savefig(fPath);
 
 end
 
