@@ -14,6 +14,8 @@ function unordered_list(CellShapeData, APe_output_foldername)
 load([APe_output_foldername '/APclusterOutput.mat'])
 load([APe_output_foldername '/wish_list.mat'])
 load([APe_output_foldername '/linkagemat.mat'])
+figPath=fullfile(APe_output_foldername, 'Figures');
+if ~exist(figPath,'dir'),mkdir(figPath);end
 
 N=length(CellShapeData.point);
 for i=1:N
@@ -32,8 +34,12 @@ else
     clust_num=L;
     EG=1:L;
 end
-colours=[0 255 0; 255 0 0 ; 0 0 255; 255 140 0 ; 187.5 187.5 0; 255 0 255]./255;
-colours=[colours; 0.5*colours];
+% colours=[0 255 0; 255 0 0 ; 0 0 255; 255 140 0 ; 187.5 187.5 0; 255 0 255]./255;
+% colours=[colours; 0.5*colours];
+
+colour=jet(clust_num);
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 %--------------------------------
 figure
 set(gcf,'color','w');
@@ -48,18 +54,20 @@ for i=1:clust_num
         disp=clust;
     end
     subplot(clust_num,disp_num,disp_num*(i-1)+1)
-    plot(real(NewCellArray{ex}),imag(NewCellArray{ex}),'color',colours(i,:),'LineWidth',2)
+    plot(real(NewCellArray{ex}),imag(NewCellArray{ex}),'color',colour(i,:),'LineWidth',2)
          axis equal
         axis([-0.4 0.4 -0.4 0.4])
         axis xy off
     for j=2:(length(disp)+1)
         subplot(clust_num,disp_num,disp_num*(i-1)+j)
-        plot(real(NewCellArray{disp(j-1)}),imag(NewCellArray{disp(j-1)}),'color',colours(i,:),'LineWidth',2)
+        plot(real(NewCellArray{disp(j-1)}),imag(NewCellArray{disp(j-1)}),'color',colour(i,:),'LineWidth',2)
          axis equal
         axis([-0.4 0.4 -0.4 0.4])
         axis xy off
     end
 end
+fPath=fullfile(figPath, '3_AllShapes_10_Examples_foreach_Cluster.fig');
+savefig(fPath);
 
 % --------------------
 % create axes in a grid
@@ -82,7 +90,7 @@ end
 for i=1:(a*b)
     if i<=L
         if ismember(i,EG)
-            plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'color',colours(EG==i,:),'LineWidth',2,'parent',h(i))
+            plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'color',colour(EG==i,:),'LineWidth',2,'parent',h(i))
         else
             plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'k','LineWidth',2,'parent',h(i))
         end
@@ -91,4 +99,7 @@ for i=1:(a*b)
     end
     axis(h(i), 'xy','off')
 end
+fPath=fullfile(figPath, '3_AllShapes_Example_foreach_Cluster.fig');
+savefig(fPath);
 end
+
