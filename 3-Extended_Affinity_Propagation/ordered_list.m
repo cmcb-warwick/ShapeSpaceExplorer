@@ -14,9 +14,11 @@ function ordered_list(number,CellShapeData,APe_output_foldername)
 %savedestination should be the same as for AP_Seriation_analysis_finaledit
 
 
-load([APe_output_foldername '/APclusterOutput.mat'])
-load([APe_output_foldername '/wish_list.mat'])
-load([APe_output_foldername '/linkagemat.mat'])
+load([APe_output_foldername '/APclusterOutput.mat']);
+load([APe_output_foldername '/wish_list.mat']);
+load([APe_output_foldername '/linkagemat.mat']);
+figPath=fullfile(APe_output_foldername, 'Figures');
+if ~exist(figPath,'dir'),mkdir(figPath);end
 
 N=length(CellShapeData.point);
 
@@ -53,15 +55,19 @@ else
 end
 n_exems=length(wish_list);
 exem_list=sort(wish_list);
-figure
-dendrogram(linkagemat,0);
+
+
 if number==0
+    figure
+    dendrogram(linkagemat,number);
+    fPath=fullfile(figPath, '3_dendrogram_of_shapes.fig');
+    savefig(fPath);
     return
 end
 
-figure
-[~,T]=dendrogram(linkagemat,number);
-close
+% figure
+% [~,T]=dendrogram(linkagemat,number);
+% close
 
 for i=1:n_exems
 T2(i)=T(exem_list==wish_list(i));
