@@ -131,8 +131,7 @@ try
     bool=1;
 catch 
         mode = struct('WindowStyle','non-modal','Interpreter','tex');
-        msg =['Selected File did not contain  the structure CellShapeData.' char(10) ...
-            'Please select the file "CellShapeData.mat" from previous step.']
+        msg = DialogMessages(1);
         errordlg(msg, 'Error', mode);
 end
 

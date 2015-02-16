@@ -47,12 +47,10 @@ else
     clust_num=L;
     EG=1:L;
 end
-%colours='grbym';
 colours=[0 255 0; 255 0 0 ; 0 0 255; 255 140 0 ; 187.5 187.5 0; 255 0 255]./255;
 colours=[colours; 0.5*colours];
 figure
 disp_num=max(a-1,10);
-%clust_num=12;
 for i=1:clust_num
     ex=exems(EG(i));
     clust=find(idx==ex);
@@ -64,29 +62,18 @@ for i=1:clust_num
     end
     subplot(clust_num,disp_num,disp_num*(i-1)+1)
     plot(real(NewCellArray{ex}),imag(NewCellArray{ex}),'color',colours(i,:),'LineWidth',2)
-        %axis tight
-%         axis square
          axis equal
         axis([-0.4 0.4 -0.4 0.4])
         axis xy off
     for j=2:(length(disp)+1)
         subplot(clust_num,disp_num,disp_num*(i-1)+j)
         plot(real(NewCellArray{disp(j-1)}),imag(NewCellArray{disp(j-1)}),'color',colours(i,:),'LineWidth',2)
-
-        %axis tight
-%         axis square
          axis equal
         axis([-0.4 0.4 -0.4 0.4])
         axis xy off
     end
 end
-%linkaxes
-%xlim([-0.3 0.3])
-% a=10; % Number of row
-% b=20;   %and column of subplot
-% [Y,I]=sort(rand(1,a*b));
-% figure;
-% t0=clock;
+
 
 % create axes in a grid
 figure
@@ -102,26 +89,18 @@ for i=1:b
         t = t+1;
     end
 end
-%set(h,'XtickLabel','','YTickLabel','','nextplot','add');
+
 
 for i=1:(a*b)
-    %subplot(a,b,i)
     if i<=L
         if ismember(i,EG)
             plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'color',colours(EG==i,:),'LineWidth',2,'parent',h(i))
         else
             plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'k','LineWidth',2,'parent',h(i))
         end
-%         if rem(i,10)==0
-%             drawnow % only do this every 10th time to increase speed
-%         end
-%        axis(h(i), 'tight')
-%         axis(h(i), 'square')
          axis(h(i), 'equal')
         axis(h(i),[-0.4 0.4 -0.4 0.4])
     end
     axis(h(i), 'xy','off')
 end
-% linkaxes
-% xlim([-0.3 0.3])
 end

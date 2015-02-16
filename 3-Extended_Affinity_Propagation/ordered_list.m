@@ -36,23 +36,11 @@ for i=1:N
     NewCellArray{i}=CellShapeData.point(i).coords_comp;
 end
 
-% colour_idx(colour_idx==5)=4;
-% colour_idx(colour_idx==6)=4;
-if number==4
-    colour=[1 0 0; 0 0.75 0.75; 0.75 0.75 0; 0 0 1];
-elseif number==6
-    colour=[1 0 0; 0 0.75 0.75; 0.75 0.75 0; 0 0 1; 0 0.5 0; 0.75 0 0.75];
-else
-    %     colour=hsv(number*6/5);
-    %     colour=colour(1:number,:);
-    %     %colour=flipud(colour);
-    %     colour_norm=colour*colour';
-    %     colour_norm2=repmat(sqrt(diag(colour_norm)),1,3);
-    %     colour=0.75*colour./(colour_norm2);
-    colour=jet(number);
-    colour=flipud(colour);
-    colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
-end
+
+colour=jet(number);
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+
 n_exems=length(wish_list);
 exem_list=sort(wish_list);
 
@@ -60,22 +48,27 @@ exem_list=sort(wish_list);
 if number==0
     figure
     dendrogram(linkagemat,number);
-    fPath=fullfile(figPath, '3_dendrogram_of_shapes.fig');
+    fPath=fullfile(figPath, '3_Dendrogram_of_Shapes.fig');
     savefig(fPath);
     return
 end
-
-% figure
-% [~,T]=dendrogram(linkagemat,number);
-% close
-
+figure('visible','off')
+[~,T]=dendrogram(linkagemat,number);
+if max(T(:))<number
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(2);
+    errordlg(msg, 'Error', mode);
+    return
+end
+    
+    
 for i=1:n_exems
 T2(i)=T(exem_list==wish_list(i));
 end
 
 d=diff([0 T2]);
 clust_order=T2(logical(d));
-%subplot(2,number,1:number)
+
 figure
 for i=1:number
     clust_idx=clust_order(i);
@@ -87,14 +80,16 @@ end
 axis tight
 axis equal
 grid on
-
+fPath=fullfile(figPath, '3_Coloured_Shape_in_ShapeSpace.fig');
+savefig(fPath);
 
 L=length(wish_list);
 
 b=floor(sqrt(L));
 a=ceil(L/b);
-
+% figure -----------------
 figure
+set(gcf,'color','w');
 h = [];
 t = 1;
 A = 0.9/a;
@@ -110,7 +105,6 @@ end
 
 c=1;
 for i=1:number
-%    clust_num=clust_order(i);
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     for j=1:length(exems)
@@ -126,6 +120,8 @@ while c<=a*b
     delete(h(c))
     c=c+1;
 end
+fPath=fullfile(figPath, '3_Avg_Shape_for_Clusters.fig');
+savefig(fPath);
 
 end
 
