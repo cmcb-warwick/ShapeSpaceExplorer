@@ -1,4 +1,4 @@
-function unordered_list()
+function unordered_list(CellShapeData, APe_output_foldername)
 %This shows the unordered AP clusters and a few example exemplars and
 %example members of each corresponding cluster
 
@@ -10,21 +10,6 @@ function unordered_list()
 
 %NOTE: This can be very slow if there are many clusters, this code could be
 %sped up a lot by changing subplot, go here: http://uk.mathworks.com/matlabcentral/newsreader/view_thread/16962
-
-APe_output_foldername = uigetdir(matlabroot,'Select Experiment Folder');
-dataFile = fullfile(APe_output_foldername, 'CellShapeData.mat');
-
-if exist(dataFile, 'file')
-    data = load(dataFile);
-    CellShapeData= data.CellShapeData;
-else 
-    display('-------')
-    display('The file "Bigcellarrayandindex.mat" does not exist in your Experiment folder.');
-    display('Please check whether previous steps have been succesfully completed.');
-    display('-------')
-    exit(0);
-end
-
 
 load([APe_output_foldername '/APclusterOutput.mat'])
 load([APe_output_foldername '/wish_list.mat'])
@@ -49,7 +34,9 @@ else
 end
 colours=[0 255 0; 255 0 0 ; 0 0 255; 255 140 0 ; 187.5 187.5 0; 255 0 255]./255;
 colours=[colours; 0.5*colours];
+%--------------------------------
 figure
+set(gcf,'color','w');
 disp_num=max(a-1,10);
 for i=1:clust_num
     ex=exems(EG(i));
@@ -74,9 +61,10 @@ for i=1:clust_num
     end
 end
 
-
+% --------------------
 % create axes in a grid
 figure
+set(gcf,'color','w');
 h = [];
 t = 1;
 A = 0.9/a;
@@ -98,7 +86,7 @@ for i=1:(a*b)
         else
             plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'k','LineWidth',2,'parent',h(i))
         end
-         axis(h(i), 'equal')
+        axis(h(i), 'equal')
         axis(h(i),[-0.4 0.4 -0.4 0.4])
     end
     axis(h(i), 'xy','off')
