@@ -144,8 +144,8 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 fpath= get(handles.edit1, 'String');
-xslice=get(handles.popupmenu2,'Value')+1;
-yslice=get(handles.popupmenu3,'Value')+1;
+xslice=get(handles.popupmenu2,'Value');
+yslice=get(handles.popupmenu3,'Value');
 axesEqual=get(handles.checkbox1,'Value');
 [folder,~,~] = fileparts(fpath);
 path = fullfile(folder, 'Figures');

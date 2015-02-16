@@ -5,7 +5,6 @@ function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, path, axes_equ
 orangeCol=[237/255 94/255 48/255];
 greenCol=[167/255 188/255 68/255];
 blueCol= [138/255 164/255 208/255];
-
 N=length(CellShapeData.point);
 if isfield(CellShapeData.set,'SCORE')
     SCORE=CellShapeData.set.SCORE;
