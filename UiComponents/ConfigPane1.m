@@ -110,6 +110,7 @@ javacomponent(jScrollPane,[16,50,346,150],gcf);
 set(jCBList, 'ValueChangedCallback', @ValueChangedCheckbox);
 jCBModel= jCBList.getCheckModel;
 jCBModel.checkAll;
+set(handles.pushbutton2, 'enable', 'on'); 
 
 
 function edit1_Callback(hObject, eventdata, handles)
@@ -139,7 +140,16 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-figure1_CloseRequestFcn(hObject, eventdata, handles)
+global jCBList;
+files=jCBList.getCheckedValues();
+files =getValuesFromArrayList(files);
+if length(files)<1 % empty lenth is one.
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(3);
+    errordlg(msg, 'Error', mode);
+else
+    figure1_CloseRequestFcn(hObject, eventdata, handles)
+end
 
 
 function ValueChangedCheckbox(hObject, eventdata, handles)
@@ -176,3 +186,15 @@ else
     h= handles.figure1;
     delete(h);
 end
+
+
+function array =getValuesFromArrayList(arrayList)
+array ={};
+i=1;
+iter=arrayList.iterator();
+    while (iter.hasNext())
+        tmp = iter.next();
+        array{i}=tmp;
+        i=i+1;
+    end
+
