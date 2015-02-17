@@ -102,9 +102,8 @@ end
 global jCBList;
 jCBList = com.mathworks.mwswing.checkboxlist.CheckBoxList(jList);
 jScrollPane = com.mathworks.mwswing.MJScrollPane(jCBList);
-javacomponent(jScrollPane,[10,10,300,200],gcf);
-set(jCBList, 'ValueChangedCallback', @myMatlabCallbackFcn);
-
+javacomponent(jScrollPane,[16,50,346,150],gcf);
+set(jCBList, 'ValueChangedCallback', @ValueChangedCheckbox);
 jCBModel= jCBList.getCheckModel;
 jCBModel.checkAll;
 
@@ -137,6 +136,8 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+function ValueChangedCheckbox(hObject, eventdata, handles)
+display('cchek')
 
 % remove hiden files and folders
 function dir_struct =filterFiles(dir_struct, fileSuff)
