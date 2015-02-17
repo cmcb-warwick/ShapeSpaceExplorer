@@ -22,7 +22,7 @@ function varargout = ConfigPane1(varargin)
 
 % Edit the above text to modify the response to help ConfigPane1
 
-% Last Modified by GUIDE v2.5 17-Feb-2015 14:38:36
+% Last Modified by GUIDE v2.5 17-Feb-2015 16:33:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -135,6 +135,7 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 function ValueChangedCheckbox(hObject, eventdata, handles)
 display('cchek')
@@ -154,3 +155,14 @@ for i=1:length(dir_struct)
     end
 end
 dir_struct = dir_struct(idx);
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+h= handles.figure1;
+delete(h);
