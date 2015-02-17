@@ -66,7 +66,7 @@ set(handles.edit1, 'String','...')
 guidata(hObject, handles);
 
 % UIWAIT makes ConfigPane1 wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -77,8 +77,9 @@ function varargout = ConfigPane1_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
-
+varargout{1}='help';
+h= handles.figure1;
+delete(h);
 
 
 % --- Executes on button press in pushbutton1.
@@ -137,6 +138,7 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 figure1_CloseRequestFcn(hObject, eventdata, handles)
 
+
 function ValueChangedCheckbox(hObject, eventdata, handles)
 display('cchek')
 
@@ -165,4 +167,9 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 % Hint: delete(hObject) closes the figure
 h= handles.figure1;
-delete(h);
+if isequal(get(h, 'waitstatus'), 'waiting')
+    uiresume(h)
+else
+    h= handles.figure1;
+    delete(h);
+end
