@@ -77,7 +77,10 @@ function varargout = ConfigPane1_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1}='help';
+struc.folder = get(handles.edit1, 'String');
+global jCBList;
+struc.files=jCBList.getCheckedValues();
+varargout{1}=struc;
 h= handles.figure1;
 delete(h);
 
@@ -140,7 +143,7 @@ figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 
 function ValueChangedCheckbox(hObject, eventdata, handles)
-display('cchek')
+
 
 % remove hiden files and folders
 function dir_struct =filterFiles(dir_struct, fileSuff)
