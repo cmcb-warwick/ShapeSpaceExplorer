@@ -18,8 +18,7 @@ function RunMeFirst(files, framesConfig, msConfig, savefolderpath)
 %   savefolderpath:- this should be the folder path for where you want
 %   everything saved.
 
-sbw=msConfig.spatialBdw;% Spatial Bandwidth
-rbw=msConfig.rangeBdw;% Range Bandwidth
+
 
 
 N=length(files);%number of .dv files
@@ -33,16 +32,14 @@ for i=1:N
        stack=imreadBF(files{i},1,1:framesN,1); %path, z-plane, t-stack, channel
    end
    savefilename=fullfile(savefolderpath, stackName);
-   save(savefilename,converVar2Str(stack));
-   display('------')
+   save(savefilename,converVar2Str(stack),'-v7.3');
 end
 
 
 for i=1:N;
    varname=sprintf('ImageStack%03d.mat',i);
    in=load(fullfile(savefolderpath, varname));
-   %eval(['StackCellSeg(' varname sprintf(', %d, savefolderpath,sbw,rbw);',i) ]);
-   StackCellSeg(in.stack, i, savefolderpath, sbw,rbw);
+   StackCellSeg(in.stack, i, savefolderpath, msConfig.spatialBdw,msConfig.rangeBdw);
 end
 
 end
@@ -71,7 +68,6 @@ close all force
 
 
 
-%save('FrameCurves','Frame_curves')
 
 Cell_numbers{1}=1:length(Frame_curves{1});
 j=length(Frame_curves{1})+1;
@@ -109,7 +105,9 @@ for i=2:numframes
     end
 end
 
-save(sprintf([savefolderpath 'ImageStack%03dCurveData'],Stacknumber),'Frame_curves','Cell_numbers')
+filename=sprintf('ImageStack%03dCurveData.mat', Stacknumber);
+path = fullfile(savefolderpath, filename);
+save(path,'Frame_curves','Cell_numbers','-v7.3')
 
 end
 
@@ -127,18 +125,6 @@ cPath=mfilename('fullpath');
 [currentfoldername,~,~] = fileparts(cPath);
 addpath(fullfile(currentfoldername, '/New_Download/edison_matlab_interface'));
 [~, labels,modes] = edison_wrapper(pretendRGBimage,@RGB2Luv, 'SpatialBandWidth',sbw,'RangeBandWidth',rbw);
-% tic
-% for i=unique(labels(:))'
-%      RegionArea(i+1)=bwarea(labels==i);
-%  end
-%  [~,I]=max(RegionArea);
-%  I=I-1;
-%  toc
-%  tic
-%mode_channels=cat(3,modes(1,:),modes(2,:),modes(3,:));
-%colours=Luv2RGB(mode_channels);
-%colours2=[colours(:,:,1);colours(:,:,2);colours(:,:,3)];
-%[~,I2]=min(mean(colours2));
 M=max(labels(:));
 for i=1:(M+1)
 sizes(i)=sum(sum(labels==(i-1)));

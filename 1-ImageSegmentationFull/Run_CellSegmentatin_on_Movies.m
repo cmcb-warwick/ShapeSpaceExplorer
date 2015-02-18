@@ -1,4 +1,4 @@
-function  Pre_ProcessMovies(  )
+function  Run_CellSegmentatin_on_Movies(  )
 out= ConfigPane1;
 folder = out.folder;
 fls = out.files;
@@ -13,7 +13,6 @@ for i = 1:len
     frames = metadat.nframes;
     maxFrame=min(frames, maxFrame);
     waitbar(i/len, 'loading next graphical interface...');
-    display('------');
 end
 delete(h)
 close all force
