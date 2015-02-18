@@ -27,7 +27,7 @@ for i=1:N
    stackName=sprintf('ImageStack%03d.mat',i);
    if framesConfig.subSet 
         stack =imreadBF(files{i},1,framesConfig.firstFrame:framesConfig.lastFrame,1);
-        allFrameNum=allFrameNum+(framesConfig.lastFrame-framesConfig.firstFrame);
+        allFrameNum=allFrameNum+(framesConfig.lastFrame-framesConfig.firstFrame+1);
    else
        metadat = imreadBFmeta(files{i});
        framesN = metadat.nframes;
@@ -38,23 +38,23 @@ for i=1:N
    save(savefilename,converVar2Str(stack),'-v7.3');
 end
 
-h = waitbar(0,['0 frames of ' num2str(allFrameNum) ' segmented.']);
+h = waitbar(0,['0 frames of ' num2str(allFrameNum) ' frames segmented.']);
+currentFrame=1;
 for i=1:N;
-   currentFrame=1;
    varname=sprintf('ImageStack%03d.mat',i);
    in=load(fullfile(savefolderpath, varname));
-   StackCellSeg(in.stack, i, savefolderpath, msConfig.spatialBdw,msConfig.rangeBdw, currentFrame, allFrameNum);
+   currentFrame=StackCellSeg(in.stack, i, savefolderpath, msConfig.spatialBdw,msConfig.rangeBdw, currentFrame, allFrameNum);
 end
 delete(h)
 close all force
 end
 
-function currentFrame = StackCellSeg( ImageStack,Stacknumber,savefolderpath,sbw,rbw, currentFrame, allFramNum)
+function cFrame = StackCellSeg( ImageStack,Stacknumber,savefolderpath,sbw,rbw, currentFrame, allFramNum)
 %STACKCELLSEG Summary of this function goes here
 %   Detailed explanation goes here
 numframes=size(ImageStack,3);
 mF=mean(ImageStack(:));
-
+cFrame=currentFrame;
 for i=1:numframes
 frame=ImageStack(:,:,i);
 im=frame-mean(frame(:))+mF;
@@ -66,10 +66,10 @@ clear('ImageStack');
 
 for i=1:numframes
    [Frame_curves{i},Bin_images{i}] =CellSeg(anustack(:,:,i),sbw,rbw);
-   msg =[ num2str(currentFrame) ' frames of ' num2str(allFramNum) ' segmented.'];
-   if currentFrame==1, msg =[ num2str(currentFrame) ' frame of ' num2str(allFramNum) ' segmented.'];end   
-   waitbar(currentFrame/allFramNum, msg);
-   currentFrame=currentFrame+1;
+   msg =[ num2str(cFrame) ' frames of ' num2str(allFramNum) ' frames segmented.'];
+   if cFrame==1, msg =[ num2str(currentFrame) ' frame of ' num2str(allFramNum) ' frames segmented.'];end   
+   waitbar(cFrame/allFramNum, msg);
+   cFrame=cFrame+1;
 end
 
 

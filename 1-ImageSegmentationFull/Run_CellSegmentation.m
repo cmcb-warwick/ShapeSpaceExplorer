@@ -1,4 +1,4 @@
-function  Run_CellSegmentatin_on_Movies(  )
+function  Run_CellSegmentation(  )
 out= ConfigPane1;
 folder = out.folder;
 fls = out.files;
@@ -30,4 +30,5 @@ framesConfig=ConfigPane2(maxFrame);
  
  
 RunMeFirst(files, framesConfig, msConfig, saveFoler);
+display('----- Cell Segmentation finished -----');
 
