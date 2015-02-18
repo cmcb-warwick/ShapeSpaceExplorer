@@ -22,7 +22,7 @@ function varargout = ConfigPane1(varargin)
 
 % Edit the above text to modify the response to help ConfigPane1
 
-% Last Modified by GUIDE v2.5 17-Feb-2015 16:33:46
+% Last Modified by GUIDE v2.5 18-Feb-2015 09:11:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,7 +79,7 @@ function varargout = ConfigPane1_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 struc.folder = get(handles.edit1, 'String');
 global jCBList;
-struc.files=jCBList.getCheckedValues();
+struc.files= getValuesFromArrayList(jCBList.getCheckedValues());
 varargout{1}=struc;
 h= handles.figure1;
 delete(h);
@@ -197,4 +197,3 @@ iter=arrayList.iterator();
         array{i}=tmp;
         i=i+1;
     end
-
