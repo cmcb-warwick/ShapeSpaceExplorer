@@ -22,32 +22,36 @@ function RunMeFirst(files, framesConfig, msConfig, savefolderpath)
 
 
 N=length(files);%number of .dv files
+allFrameNum=0;
 for i=1:N
    stackName=sprintf('ImageStack%03d.mat',i);
    if framesConfig.subSet 
         stack =imreadBF(files{i},1,framesConfig.firstFrame:framesConfig.lastFrame,1);
+        allFrameNum=allFrameNum+(framesConfig.lastFrame-framesConfig.firstFrame);
    else
        metadat = imreadBFmeta(files{i});
        framesN = metadat.nframes;
        stack=imreadBF(files{i},1,1:framesN,1); %path, z-plane, t-stack, channel
+       allFrameNum=allFrameNum+framesN;
    end
    savefilename=fullfile(savefolderpath, stackName);
    save(savefilename,converVar2Str(stack),'-v7.3');
 end
 
-
+h = waitbar(0,['0 frames of ' num2str(allFrameNum) ' segmented.']);
 for i=1:N;
+   currentFrame=1;
    varname=sprintf('ImageStack%03d.mat',i);
    in=load(fullfile(savefolderpath, varname));
-   StackCellSeg(in.stack, i, savefolderpath, msConfig.spatialBdw,msConfig.rangeBdw);
+   StackCellSeg(in.stack, i, savefolderpath, msConfig.spatialBdw,msConfig.rangeBdw, currentFrame, allFrameNum);
+end
+delete(h)
+close all force
 end
 
-end
-
-function [ ] = StackCellSeg( ImageStack,Stacknumber,savefolderpath,sbw,rbw)
+function currentFrame = StackCellSeg( ImageStack,Stacknumber,savefolderpath,sbw,rbw, currentFrame, allFramNum)
 %STACKCELLSEG Summary of this function goes here
 %   Detailed explanation goes here
-
 numframes=size(ImageStack,3);
 mF=mean(ImageStack(:));
 
@@ -58,13 +62,16 @@ anustack(:,:,i)=im;
 end
 
 clear('ImageStack');
-h = waitbar(0,'segmenting cells...');
+
+
 for i=1:numframes
    [Frame_curves{i},Bin_images{i}] =CellSeg(anustack(:,:,i),sbw,rbw);
-   waitbar(i/numframes, 'segmenting cells...');
+   msg =[ num2str(currentFrame) ' frames of ' num2str(allFramNum) ' segmented.'];
+   if currentFrame==1, msg =[ num2str(currentFrame) ' frame of ' num2str(allFramNum) ' segmented.'];end   
+   waitbar(currentFrame/allFramNum, msg);
+   currentFrame=currentFrame+1;
 end
-delete(h)
-close all force
+
 
 
 
