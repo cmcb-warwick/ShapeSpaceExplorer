@@ -86,7 +86,13 @@ function varargout = ConfigPane2_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-struc ='new output';
+struc.firstFrame=1;
+struc.lastFrame=Inf;
+struc.subSet =get(handles.radiobutton2, 'Value');
+if struc.subSet
+    struc.firstFrame= get(handles.popupmenu1, 'value');
+    struc.lastFrame= get(handles.popupmenu2, 'value');
+end
 varargout{1}=struc;
 h= handles.figure1;
 delete(h);
@@ -142,7 +148,15 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-figure1_CloseRequestFcn(hObject, eventdata, handles)
+frstFrame= get(handles.popupmenu1, 'value');
+lastFrame= get(handles.popupmenu2, 'value');
+if frstFrame>lastFrame
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(4);
+    errordlg(msg, 'Error', mode);
+else
+    figure1_CloseRequestFcn(hObject, eventdata, handles);
+end
 
 
 % --- Executes when selected object is changed in uipanel1.

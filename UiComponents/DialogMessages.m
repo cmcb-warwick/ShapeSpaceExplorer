@@ -23,4 +23,6 @@ msgs{2} =['Selected Number was greater than maximal clusters found in Dendogram.
             'Please select a more sensible number.'];
 msgs{3}=['You did not select a movie.' char(10) ...
        'Please select at least one movie to continue pre-processing.'];
+msgs{4}=['Your first frame is greater than your selected last frame.' char(10) ...
+       'Please select an appropriate range of frames.'];
 end
