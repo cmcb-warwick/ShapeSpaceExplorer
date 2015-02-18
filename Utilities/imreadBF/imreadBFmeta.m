@@ -46,7 +46,7 @@ bioFormatsVersion = char(loci.formats.FormatTools.VERSION);
 isBioFormatsTrunk = versionCheck(bioFormatsVersion, 5, 0);
 
 % initialize logging
-%loci.common.DebugTools.enableLogging('INFO');
+loci.common.DebugTools.enableLogging('OFF');
 
 
 
