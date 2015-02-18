@@ -64,6 +64,15 @@ img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
 set(handles.popupmenu1, 'enable', 'off');
 set(handles.popupmenu2, 'enable', 'off');
+list = {};
+maxFrame=varargin{1};
+for i=1:maxFrame
+    list{i}=num2str(i);
+end
+set(handles.popupmenu1, 'string', list);
+set(handles.popupmenu2, 'string', list);
+set(handles.popupmenu1, 'value', 1);
+set(handles.popupmenu2, 'value', maxFrame);
 
 % UIWAIT makes ConfigPane2 wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
