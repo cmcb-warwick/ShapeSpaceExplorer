@@ -22,7 +22,7 @@ function varargout = ConfigPane2(varargin)
 
 % Edit the above text to modify the response to help ConfigPane2
 
-% Last Modified by GUIDE v2.5 18-Feb-2015 09:20:41
+% Last Modified by GUIDE v2.5 18-Feb-2015 09:52:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -74,8 +74,8 @@ set(handles.popupmenu2, 'string', list);
 set(handles.popupmenu1, 'value', 1);
 set(handles.popupmenu2, 'value', maxFrame);
 
-% UIWAIT makes ConfigPane2 wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% UIWAIT makes ConfigPane2 wait for user response (see UIRESUME
+uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -86,8 +86,10 @@ function varargout = ConfigPane2_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
-
+struc ='new output';
+varargout{1}=struc;
+h= handles.figure1;
+delete(h);
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)
@@ -140,6 +142,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 
 % --- Executes when selected object is changed in uipanel1.
@@ -155,3 +158,19 @@ status ='off';
 if value, status='on'; end
 set(handles.popupmenu1, 'enable', status);
 set(handles.popupmenu2, 'enable', status);
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+h= handles.figure1;
+if isequal(get(h, 'waitstatus'), 'waiting')
+    uiresume(h)
+else
+    h= handles.figure1;
+    delete(h);
+end
