@@ -61,6 +61,13 @@ imFile = fullfile(folder, 'img/', 'header.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
 set(handles.edit1, 'String','...') 
+for i=1:1000
+    list{i}=num2str(i);
+end
+set(handles.popupmenu1, 'string', list);
+set(handles.popupmenu2, 'string', list);
+set(handles.popupmenu1, 'value', 5); % spatial bandwith
+set(handles.popupmenu2, 'value', 3); % range bandwith.
 
 % Update handles structure
 guidata(hObject, handles);
@@ -78,6 +85,8 @@ function varargout = ConfigPane3_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 struc.folder = get(handles.edit1, 'String');
+struc.spatialBdw=get(handles.popupmenu1, 'value');
+struc.rangeBdw=get(handles.popupmenu2, 'value');
 varargout{1}=struc;
 h= handles.figure1;
 delete(h);
@@ -88,7 +97,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-folder =uigetdir(matlabroot,'Select Video Directory');
+folder =uigetdir(matlabroot,'Select Analysis Directory');
 set(handles.edit1, 'String',folder)  
 set(handles.pushbutton2, 'enable', 'on'); 
 

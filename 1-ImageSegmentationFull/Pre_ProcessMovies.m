@@ -1,21 +1,34 @@
 function  Pre_ProcessMovies(  )
 out= ConfigPane1;
-display(out);
 folder = out.folder;
-files = out.files;
+fls = out.files;
 maxFrame=inf;
-len = length(files);
+len = length(fls);
+files={};
 h = waitbar(0,'loading next graphical interface...');
 for i = 1:len
-    path = fullfile(folder, files{i});
+    path = fullfile(folder, fls{i});
+    files{i}=path;
     metadat = imreadBFmeta(path);
     frames = metadat.nframes;
     maxFrame=min(frames, maxFrame);
     waitbar(i/len, 'loading next graphical interface...');
+    display('------');
 end
 delete(h)
 close all force
- display('after first gui ')
-outConfig2=ConfigPane2(maxFrame);
- display(outConfig2);
+framesConfig=ConfigPane2(maxFrame);
+% processAllFrames=out.subSet;
+% startFrame =out.firstFrame;
+% lastFrame = out.lastFrame;
+
+
+ 
+ out=ConfigPane3();
+ saveFoler=out.folder;
+ msConfig.spatialBdw=out.spatialBdw;
+ msConfig.rangeBdw=out.rangeBdw;
+ 
+ 
+RunMeFirst(files, framesConfig, msConfig, saveFoler);
 

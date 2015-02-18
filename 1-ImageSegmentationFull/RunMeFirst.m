@@ -1,53 +1,48 @@
-function [ output_args ] = RunMeFirst( index_of_dv_files, firstframe_in_stack, lastframe_in_stack, dv_filepath_reg_exp, savefolderpath  )
+%function   RunMeFirst( index_of_dv_files, firstframe_in_stack, lastframe_in_stack, dv_filepath_reg_exp, savefolderpath  )
+function RunMeFirst(files, framesConfig, msConfig, savefolderpath)
 %RUNMEFIRST Summary of this function goes here
 %
-%   index_of_dv_files:- should be a vector containing the of image files 
-%   indices that you wish to load
+%   files:- a cell array with the path of movies you wish to load
 %
-%   firstframe_in_stack:- the first frame in the dv file stack that you want
-%   to look at, typically this is 1.
+%   framesConfig if of the following fomrat.
+%   framesConfig.subSet: if this is 1, then only a subset of all movies
+%   will be processed, otherwise, complete movies will be processed.
+%   frame.Config.startFrame, frame.Config.lastFrame indicate from where
+%   wo where the subset has to processed.
 %
-%   lastframe_in_stack:- the last frame in the dv file stack that you want 
-%   to look at, typically this is the last frame in the stack, but you can 
-%   optionally import less.
-%
-%   dv_filepath_reg_exp:- this is a regular expression for the path to find
-%   each image file. Typically, this will be: containing folder, most of
-%   the file name followed by the regular expression for the index
-%   (usually %02d or %03d, depending on the number of files output by the
-%   microscope(%02d if numbers don't go past 99, %03d if they go to 100, 
-%   %04d if they go to 1000)) and finally the file suffix. For example:
-%   '/Desktop/imagefolder/GLA6_010114_exp1_%02d_R3D.dv'
+%   msConfig is a structure with two elements
+%   msConfig.spatialBdw: is the spatial bandwith of the mean shift algo
+%   msConfig.rangeBdw:   is the range bandwith of the mean shift algo
+%   
 %
 %   savefolderpath:- this should be the folder path for where you want
 %   everything saved.
 
-sbw=5;% Spatial Bandwidth
-rbw=3;% Range Bandwidth
+sbw=msConfig.spatialBdw;% Spatial Bandwidth
+rbw=msConfig.rangeBdw;% Range Bandwidth
 
-if ~strcmp(savefolderpath(end),'/')
-    savefolderpath=[savefolderpath '/'];
+
+N=length(files);%number of .dv files
+for i=1:N
+   stackName=sprintf('ImageStack%03d.mat',i);
+   if framesConfig.subSet 
+        stack =imreadBF(files{i},1,framesConfig.firstFrame:framesConfig.lastFrame,1);
+   else
+       metadat = imreadBFmeta(files{i});
+       framesN = metadat.nframes;
+       stack=imreadBF(files{i},1,1:framesN,1); %path, z-plane, t-stack, channel
+   end
+   savefilename=fullfile(savefolderpath, stackName);
+   save(savefilename,converVar2Str(stack));
+   display('------')
 end
-N=length(index_of_dv_files);%number of .dv files
-frame1=firstframe_in_stack;%first frame to take
-frameend=lastframe_in_stack; %last frame to take
-for i=index_of_dv_files
-    varname=sprintf('ImageStack%03d',i);
-   filepath=sprintf(dv_filepath_reg_exp,i);
-   eval([varname '=imreadBF(filepath,1,frame1:frameend,1);']);
-   savefilename=[savefolderpath varname];
-   save(savefilename,varname);
-   clear(varname);
-   
-end
 
 
-for i=index_of_dv_files;
-   varname=sprintf('ImageStack%03d',i);
-   load(sprintf([savefolderpath 'ImageStack%03d'],i))
-   eval(['StackCellSeg(' varname sprintf(', %d, savefolderpath,sbw,rbw);',i) ]);
-   clear(varname);
-   
+for i=1:N;
+   varname=sprintf('ImageStack%03d.mat',i);
+   in=load(fullfile(savefolderpath, varname));
+   %eval(['StackCellSeg(' varname sprintf(', %d, savefolderpath,sbw,rbw);',i) ]);
+   StackCellSeg(in.stack, i, savefolderpath, sbw,rbw);
 end
 
 end
@@ -66,10 +61,13 @@ anustack(:,:,i)=im;
 end
 
 clear('ImageStack');
-
+h = waitbar(0,'segmenting cells...');
 for i=1:numframes
    [Frame_curves{i},Bin_images{i}] =CellSeg(anustack(:,:,i),sbw,rbw);
+   waitbar(i/numframes, 'segmenting cells...');
 end
+delete(h)
+close all force
 
 
 
@@ -186,4 +184,9 @@ for i=regionlist(InteriorRegion)'
 end
 
 
+end
+
+
+function out = converVar2Str(var)
+  out = char(inputname(1));
 end
