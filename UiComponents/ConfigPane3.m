@@ -78,8 +78,6 @@ function varargout = ConfigPane3_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 struc.folder = get(handles.edit1, 'String');
-global jCBList;
-struc.files= getValuesFromArrayList(jCBList.getCheckedValues());
 varargout{1}=struc;
 h= handles.figure1;
 delete(h);
@@ -92,24 +90,6 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 folder =uigetdir(matlabroot,'Select Video Directory');
 set(handles.edit1, 'String',folder)  
-dir_struct = dir(folder);
-dir_struct =filterFiles(dir_struct, '.dv');
-[sorted_names,sorted_index] = sortrows({dir_struct.name}');
-handles.file_names = sorted_names;
-handles.is_dir = [dir_struct.isdir];
-handles.sorted_index = sorted_index;
-
-jList = java.util.ArrayList;% any java.util.List will be ok
-for i =1:length(sorted_index)
-    jList.add(sorted_index(i)-1, char(sorted_names(i)));
-end
-global jCBList;
-jCBList = com.mathworks.mwswing.checkboxlist.CheckBoxList(jList);
-jScrollPane = com.mathworks.mwswing.MJScrollPane(jCBList);
-javacomponent(jScrollPane,[16,50,346,150],gcf);
-set(jCBList, 'ValueChangedCallback', @ValueChangedCheckbox);
-jCBModel= jCBList.getCheckModel;
-jCBModel.checkAll;
 set(handles.pushbutton2, 'enable', 'on'); 
 
 
@@ -140,36 +120,20 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global jCBList;
-files=jCBList.getCheckedValues();
-files =getValuesFromArrayList(files);
-if length(files)<1 % empty lenth is one.
+folder =get(handles.edit1, 'String');
+if  ~exist(folder, 'dir')
     mode = struct('WindowStyle','non-modal','Interpreter','tex');
-    msg = DialogMessages(3);
+    msg = DialogMessages(5);
     errordlg(msg, 'Error', mode);
 else
     figure1_CloseRequestFcn(hObject, eventdata, handles)
 end
 
 
-function ValueChangedCheckbox(hObject, eventdata, handles)
 
 
-% remove hiden files and folders
-function dir_struct =filterFiles(dir_struct, fileSuff)
-idx=[];
-suffLen=length(fileSuff);
-for i=1:length(dir_struct)
-    st = dir_struct(i);
-    nameLen = length(st.name);
-    if nameLen<=suffLen, continue; end
-    if st.isdir, continue; end
-    suff = st.name((nameLen-suffLen+1):end);
-    if strcmp(fileSuff, suff)
-        idx(end+1)=i;
-    end
-end
-dir_struct = dir_struct(idx);
+
+
 
 
 % --- Executes when user attempts to close figure1.
@@ -188,15 +152,6 @@ else
 end
 
 
-function array =getValuesFromArrayList(arrayList)
-array ={};
-i=1;
-iter=arrayList.iterator();
-    while (iter.hasNext())
-        tmp = iter.next();
-        array{i}=tmp;
-        i=i+1;
-    end
 
 
 % --- Executes on selection change in popupmenu1.
