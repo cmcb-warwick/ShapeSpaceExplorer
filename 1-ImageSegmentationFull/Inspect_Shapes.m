@@ -58,6 +58,7 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 set(handles.currFileName, 'string', '...');
+clearvars -global % clears all global variables
 
 % UIWAIT makes Inspect_Shapes wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -79,11 +80,30 @@ function uipushtool1_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to uipushtool1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[FileName,PathName] = uigetfile('*.mat','Select an processed Matlab file');
-set(handles.currFileName, 'string', FileName);
+[fileName,pathName] = uigetfile('*.mat','Select an processed Matlab file');
+if fileName==0, return; end
+clearvars -global % clears all global variables
 global stack;
-stack = loadStackFromFile(PathName, FileName);
-handles.currFolder=PathName;
+stack = loadStackFromFile(pathName, fileName);
+if isempty(stack)
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(6);
+    errordlg(msg, 'Error', mode);
+    clearvars -global
+    return
+end
+global frameCurves;
+global cellNumbers;
+[frameCurves,cellNumbers]=loadCurveDataFrom(pathName, fileName);
+if isempty(frameCurves) || isempty(cellNumbers)
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(7);
+    errordlg(msg, 'Error', mode);
+    clearvars -global
+    return
+end
+set(handles.currFileName, 'string', fileName );
+handles.currPathName=pathName;
 
 
 
@@ -109,22 +129,41 @@ end
 
 
 % this code can deal with legacy code from first 
-% implementation. 
+% implementation. I store each stack in var.stack
+% while the first version has given it the variable
+% name with this structure: var.fileName%ID
+% which can be lilke var.ImageStack001
+% if file is not quite correct, then 
+% it returns gracefully an empty variable.
 function stack = loadStackFromFile(pathName, fileName)
 path = fullfile(pathName, fileName);
 tmp = load(path);
+stack=[];
 try 
     stack=tmp.stack;
 catch % means we have some old data from first implementation.
+    try 
     [~,fName,~] = fileparts(fileName);
     str =['tmp.' fName];
     stack = eval(['tmp.' fName]);
+    end
 end
 
 
+% try to load the structure of cell curves in the data
+% which hopefully have the expected structure 
+% if expected structure is not found, the variables
+% are returned empty.
+function [frameCurves,cellNumbers] =loadCurveDataFrom(pathName, fileName)
+frameCurves=[];cellNumbers=[];
+[~,fName,ext] = fileparts(fileName);
+name = [fName 'CurveData' ext];
+path =fullfile(pathName, name);
+if ~exist(path, 'file'), return; end
+tmp =load(path);
+try 
+    frameCurves=tmp.Cell_numbers;
+    cellNumbers=tmp.Frame_curves;
+end
 
-
-% converts variable name into a string
-function out = converVar2Str(var)
-  out = char(inputname(1));
 
