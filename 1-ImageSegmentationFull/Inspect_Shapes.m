@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 19-Feb-2015 10:17:14
+% Last Modified by GUIDE v2.5 19-Feb-2015 22:09:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,15 +54,21 @@ function Inspect_Shapes_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for Inspect_Shapes
 handles.output = hObject;
-
 % Update handles structure
 guidata(hObject, handles);
 set(handles.currFileName, 'string', '...');
 clearvars -global % clears all global variables
-
+numSteps = 10;
+ set(handles.slider1, 'Min', 1);
+ set(handles.slider1, 'Max', numSteps);
+ set(handles.slider1, 'Value', 1);
+ set(handles.slider1, 'SliderStep', [1/(numSteps-1) , 1/(numSteps-1) ]);
+ %addlistener(handles.slider1, 'Value','PostSet', @SliderValueChanged);
+addlistener(handles.slider1,'ActionEvent',@(hObject, event) SliderValueChanged(handles, eventdata));
 % UIWAIT makes Inspect_Shapes wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-
+h=figure; % so we don't have figure popping up..
+set(h,'visible','off');
 
 % --- Outputs from this function are returned to the command line.
 function varargout = Inspect_Shapes_OutputFcn(hObject, eventdata, handles) 
@@ -104,9 +110,7 @@ if isempty(frameCurves) || isempty(cellNumbers)
 end
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
-img=stack(:,:,1);
-imagesc(img, 'Parent', handles.axes1);
-axis off; colormap(gray);
+loadCurrFrame(1, handles);
 % fCurves=frameCurves{1};
 % cNumber=cellNumbers{1};
 %imshow(img,'Parent',handles.axes1);
@@ -174,3 +178,20 @@ try
 end
 
 
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over slider1.
+function SliderValueChanged(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+num = floor(get(hObject.slider1,'Value'));
+loadCurrFrame(num, hObject);
+
+
+function loadCurrFrame(number, handles)
+global stack
+if isempty(stack), return; end
+img=stack(:,:,number);
+
+imagesc(img, 'Parent', handles.axes1);
+axis off; colormap(gray);
