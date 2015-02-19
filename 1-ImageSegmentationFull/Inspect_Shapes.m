@@ -104,7 +104,14 @@ if isempty(frameCurves) || isempty(cellNumbers)
 end
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
-
+img=stack(:,:,1);
+imagesc(img, 'Parent', handles.axes1);
+axis off; colormap(gray);
+% fCurves=frameCurves{1};
+% cNumber=cellNumbers{1};
+%imshow(img,'Parent',handles.axes1);
+%plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),handles.Frame_curves{handles.Frame_no}{j}(:,1),'Color',handles.cmap(handles.Cell_numbers{handles.Frame_no}(j),:));
+                
 
 
 % --- Executes on slider movement.
