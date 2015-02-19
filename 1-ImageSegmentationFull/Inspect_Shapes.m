@@ -57,6 +57,7 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+set(handles.currFileName, 'string', '...');
 
 % UIWAIT makes Inspect_Shapes wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -80,6 +81,10 @@ function uipushtool1_ClickedCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 [FileName,PathName] = uigetfile('*.mat','Select an processed Matlab file');
 set(handles.currFileName, 'string', FileName);
+global stack;
+stack = loadStackFromFile(PathName, FileName);
+handles.currFolder=PathName;
+
 
 
 % --- Executes on slider movement.
@@ -91,7 +96,6 @@ function slider1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
-
 % --- Executes during object creation, after setting all properties.
 function slider1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to slider1 (see GCBO)
@@ -102,3 +106,25 @@ function slider1_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% this code can deal with legacy code from first 
+% implementation. 
+function stack = loadStackFromFile(pathName, fileName)
+path = fullfile(pathName, fileName);
+tmp = load(path);
+try 
+    stack=tmp.stack;
+catch % means we have some old data from first implementation.
+    [~,fName,~] = fileparts(fileName);
+    str =['tmp.' fName];
+    stack = eval(['tmp.' fName]);
+end
+
+
+
+
+% converts variable name into a string
+function out = converVar2Str(var)
+  out = char(inputname(1));
+
