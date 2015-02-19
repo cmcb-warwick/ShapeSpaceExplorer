@@ -111,10 +111,9 @@ end
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
 loadCurrFrame(1, handles);
-% fCurves=frameCurves{1};
-% cNumber=cellNumbers{1};
-%imshow(img,'Parent',handles.axes1);
-%plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),handles.Frame_curves{handles.Frame_no}{j}(:,1),'Color',handles.cmap(handles.Cell_numbers{handles.Frame_no}(j),:));
+
+%plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),
+% handles.Frame_curves{handles.Frame_no}{j}(:,1),'Color',handles.cmap(handles.Cell_numbers{handles.Frame_no}(j),:));
                 
 
 
@@ -173,8 +172,8 @@ path =fullfile(pathName, name);
 if ~exist(path, 'file'), return; end
 tmp =load(path);
 try 
-    frameCurves=tmp.Cell_numbers;
-    cellNumbers=tmp.Frame_curves;
+    frameCurves=tmp.Frame_curves;
+    cellNumbers=tmp.Cell_numbers;
 end
 
 
@@ -189,9 +188,19 @@ loadCurrFrame(num, hObject);
 
 
 function loadCurrFrame(number, handles)
-global stack
+global stack;
 if isempty(stack), return; end
 img=stack(:,:,number);
 
 imagesc(img, 'Parent', handles.axes1);
 axis off; colormap(gray);
+hold on
+global frameCurves; global cellNumbers;
+if isempty(frameCurves) || isempty(cellNumbers), return; end
+fCurves=frameCurves{number};
+cNumber=cellNumbers{number};
+for i=1:length(cNumber)
+    curve =fCurves{i};
+    plot(handles.axes1, curve(:,2), curve(:,1), 'm'); 
+end
+
