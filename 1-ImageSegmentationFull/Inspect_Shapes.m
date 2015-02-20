@@ -64,7 +64,7 @@ numSteps = 10;
  set(handles.slider1, 'Value', 1);
  set(handles.slider1, 'SliderStep', [1/(numSteps-1) , 1/(numSteps-1) ]);
  %addlistener(handles.slider1, 'Value','PostSet', @SliderValueChanged);
-addlistener(handles.slider1,'ActionEvent',@(hObject, event) SliderValueChanged(handles, eventdata));
+addlistener(handles.slider1,'ContinuousValueChange',@(hObject, event) SliderValueChanged(handles, eventdata));
 % UIWAIT makes Inspect_Shapes wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 h=figure; % so we don't have figure popping up..
@@ -137,6 +137,20 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over slider1.
+function SliderValueChanged(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+num = floor(get(hObject.slider1,'Value'));
+loadCurrFrame(num, hObject);
+
+
+
+
+
+
 
 % this code can deal with legacy code from first 
 % implementation. I store each stack in var.stack
@@ -177,14 +191,7 @@ try
 end
 
 
-% --- If Enable == 'on', executes on mouse press in 5 pixel border.
-% --- Otherwise, executes on mouse press in 5 pixel border or over slider1.
-function SliderValueChanged(hObject, eventdata, handles)
-% hObject    handle to slider1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-num = floor(get(hObject.slider1,'Value'));
-loadCurrFrame(num, hObject);
+
 
 
 function loadCurrFrame(number, handles)
@@ -199,8 +206,10 @@ global frameCurves; global cellNumbers;
 if isempty(frameCurves) || isempty(cellNumbers), return; end
 fCurves=frameCurves{number};
 cNumber=cellNumbers{number};
-for i=1:length(cNumber)
+nCells=length(cNumber);
+colour=cool(nCells);
+for i=1:nCells
     curve =fCurves{i};
-    plot(handles.axes1, curve(:,2), curve(:,1), 'm'); 
+    plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(i,:), 'LineWidth', 1.5); 
 end
 
