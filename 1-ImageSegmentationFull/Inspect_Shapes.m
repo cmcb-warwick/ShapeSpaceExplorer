@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 19-Feb-2015 22:09:38
+% Last Modified by GUIDE v2.5 20-Feb-2015 13:47:29
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,6 +57,8 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 set(handles.currFileName, 'string', '...');
+cla(handles.axes1);
+set(handles.axes1, 'color', 'w');
 clearvars -global % clears all global variables
 numSteps = 10;
  set(handles.slider1, 'Min', 1);
@@ -196,6 +198,9 @@ end
 
 function loadCurrFrame(number, handles)
 global stack;
+global currFrame;
+if currFrame==number, return;end % so we don't paint unless we change
+currFrame=number;
 if isempty(stack), return; end
 img=stack(:,:,number);
 
@@ -211,5 +216,6 @@ colour=cool(nCells);
 for i=1:nCells
     curve =fCurves{i};
     plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(i,:), 'LineWidth', 1.5); 
+    %fill(curve(:,2), curve(:,1), colour(i,:), 'EdgeColor',  colour(i,:));
+    
 end
-
