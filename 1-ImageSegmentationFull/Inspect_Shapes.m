@@ -69,8 +69,8 @@ numSteps = 10;
 addlistener(handles.slider1,'ContinuousValueChange',@(hObject, event) SliderValueChanged(handles, eventdata));
 % UIWAIT makes Inspect_Shapes wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-h=figure; % so we don't have figure popping up..
-set(h,'visible','off');
+% h=figure; % so we don't have figure popping up.
+% set(h,'visible','off');
 
 % --- Outputs from this function are returned to the command line.
 function varargout = Inspect_Shapes_OutputFcn(hObject, eventdata, handles) 
@@ -202,20 +202,28 @@ global currFrame;
 if currFrame==number, return;end % so we don't paint unless we change
 currFrame=number;
 if isempty(stack), return; end
+cla(handles.axes1);
 img=stack(:,:,number);
-
 imagesc(img, 'Parent', handles.axes1);
 axis off; colormap(gray);
-hold on
+
 global frameCurves; global cellNumbers;
 if isempty(frameCurves) || isempty(cellNumbers), return; end
 fCurves=frameCurves{number};
 cNumber=cellNumbers{number};
 nCells=length(cNumber);
 colour=cool(nCells);
+[n, m, ~]=size(img);
 for i=1:nCells
     curve =fCurves{i};
-    plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(i,:), 'LineWidth', 1.5); 
-    %fill(curve(:,2), curve(:,1), colour(i,:), 'EdgeColor',  colour(i,:));
+    plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(i,:), 'LineWidth', 1.0);
+    %mask = poly2mask(curve(:,2), curve(:,1),m,n);
+    %[y,x] = find(mask==1);
+    %alpha(handles.axes1,0.3);
+    %plot(handles.axes1, x, y, colour(i,:));
     
+    %set(handles.figure1, 'facealpha', 0.3);
 end
+
+
+hold on
