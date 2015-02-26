@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 20-Feb-2015 13:47:29
+% Last Modified by GUIDE v2.5 26-Feb-2015 07:35:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -88,9 +88,11 @@ function uipushtool1_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to uipushtool1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+clearvars -global % clears all global variables
+global pathName;
 [fileName,pathName] = uigetfile('*.mat','Select an processed Matlab file');
 if fileName==0, return; end
-clearvars -global % clears all global variables
+
 global stack;
 stack = loadStackFromFile(pathName, fileName);
 if isempty(stack)
@@ -102,7 +104,8 @@ if isempty(stack)
 end
 global frameCurves;
 global cellNumbers;
-[frameCurves,cellNumbers]=loadCurveDataFrom(pathName, fileName);
+global stackNumber;
+[frameCurves,cellNumbers,stackNumber]=loadCurveDataFrom(pathName, fileName);
 if isempty(frameCurves) || isempty(cellNumbers)
     mode = struct('WindowStyle','non-modal','Interpreter','tex');
     msg = DialogMessages(7);
@@ -180,16 +183,27 @@ end
 % which hopefully have the expected structure 
 % if expected structure is not found, the variables
 % are returned empty.
-function [frameCurves,cellNumbers] =loadCurveDataFrom(pathName, fileName)
-frameCurves=[];cellNumbers=[];
+function [frameCurves,cellNumbers, stackNum] =loadCurveDataFrom(pathName, fileName)
+frameCurves=[];cellNumbers={}; stackNum=-1;
 [~,fName,ext] = fileparts(fileName);
+if length(fName)>3
+   num = fName(end-2:end);
+   try stackNum= str2num(num); end
+end
 name = [fName 'CurveData' ext];
 path =fullfile(pathName, name);
 if ~exist(path, 'file'), return; end
 tmp =load(path);
 try 
     frameCurves=tmp.Frame_curves;
-    cellNumbers=tmp.Cell_numbers;
+    cellNum=tmp.Cell_numbers;
+end
+frameNum=length(cellNum);
+for i=1:frameNum
+    cellInfo = cellNum{i};
+    cellActive =ones(length(cellInfo),1);
+    cellNumbers{i,1}=cellInfo;
+    cellNumbers{i,2}=cellActive;
 end
 
 
@@ -227,3 +241,43 @@ end
 
 
 hold on
+
+
+% --------------------------------------------------------------------
+function uipushsaveBtn_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to uipushsaveBtn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global pathName;
+global stackNumber;
+if isempty(pathName)
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(8);
+    errordlg(msg, 'Error', mode);
+    return
+end
+   
+fileName=sprintf('CellArray%03d.mat',stackNumber);
+fPath =fullfile(pathName, fileName);
+CellArray = getCellArray();
+save(fPath,'CellArray', '-v7.3');
+
+
+% this method looks which curves have been marked as ative
+% and saves only the actives curves to the file
+function cellArray = getCellArray()
+global cellNumbers;
+global frameCurves;
+cellArray={};
+for i = 1:length(cellNumbers)
+    cellId=cellNumbers{i,1};
+    cellAc=cellNumbers{i,2};
+    curves=frameCurves{i};
+    for j=1:length(cellId);
+        if cellAc(j) % if it is active cell, add it
+            cellArray{end+1}=curves{j};
+        end
+    end
+end
+
+

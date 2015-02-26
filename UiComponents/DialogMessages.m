@@ -35,4 +35,8 @@ msgs{6}=['The file you choose does not contained the expected content.' char(10)
      
 msgs{7}=['In your analysis folder there is a "ImageStack0XX.mat but not a "ImageStack0XXCurveData.mat.' char(10) ...
          'Please repeat Cell segmentation step, to produces missing files.'];
+     
+msgs{8}=['You have not loaded any image stacks.' char(10) ...
+         'Nothing can be  saved.'];
+
 end
