@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 26-Feb-2015 07:35:41
+% Last Modified by GUIDE v2.5 26-Feb-2015 15:18:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -92,7 +92,7 @@ clearvars -global % clears all global variables
 global pathName;
 [fileName,pathName] = uigetfile('*.mat','Select an processed Matlab file');
 if fileName==0, return; end
-
+set(handles.figure1, 'Pointer', 'arrow');
 global stack;
 stack = loadStackFromFile(pathName, fileName);
 if isempty(stack)
@@ -337,3 +337,19 @@ for i = 1:length(cellNumbers)
 end
 
 
+% --------------------------------------------------------------------
+function select_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to select (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%setptr(handles.figure1, 'hand');
+set(gcf, 'Pointer', 'arrow');
+display('new')
+
+
+% --------------------------------------------------------------------
+function selectPush_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to selectPush (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+display('hello')
