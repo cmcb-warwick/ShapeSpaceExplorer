@@ -261,6 +261,62 @@ fileName=sprintf('CellArray%03d.mat',stackNumber);
 fPath =fullfile(pathName, fileName);
 CellArray = getCellArray();
 save(fPath,'CellArray', '-v7.3');
+fileName=sprintf('CellFrameData%03d.mat',stackNumber); 
+fPath =fullfile(pathName, fileName);
+CellFrameData=getCellFrameData(stackNumber);
+save(fPath,'CellFrameData', '-v7.3');
+
+
+% this function creates the structure as it was defined
+% in Sam's thesis for the next steps in processing.
+function cellFrameData = getCellFrameData(stackNumber)
+global cellNumbers;
+global frameCurves;
+cellFrameData={};
+cellIds=getAllCellIds(cellNumbers);
+for i=1:length(cellIds)
+    id = cellIds(i);
+    [contours, badFrmes]=getContourInfo(cellNumbers, frameCurves, id);
+    cellFrameData(i).Stack_number=stackNumber;
+    cellFrameData(i).Cell_number=id;
+    cellFrameData(i).Contours=contours;
+    cellFrameData(i).BadFrames=badFrmes;
+end
+
+
+
+function[contours, badFrmes]=getContourInfo(cellNumbers, frameCurves, id)
+contours={};
+badFrmes={};
+faultyFrmes=[];
+for i=1:length(cellNumbers)
+    num=cellNumbers{i,1};
+    cellAc=cellNumbers{i,2};
+    curves=frameCurves{i};
+    idx=find(num==id,1);
+    if cellAc(idx) % it is a good frame
+        contours{end+1}=curves{idx};
+    else
+        faultyFrmes(end+1)=i;
+    end  
+end
+badFrmes{3}=faultyFrmes; % this was the original structure.
+
+
+
+
+
+% looks at all cell ids and returns those
+% as a number array back.
+function cellIds=getAllCellIds(cellNumbers)
+cellIds=[];
+for i=1:length(cellNumbers)
+    ids = cellNumbers{i};
+    cellIds=[cellIds, ids];
+    cellIds=unique(cellIds);
+end
+
+
 
 
 % this method looks which curves have been marked as ative
