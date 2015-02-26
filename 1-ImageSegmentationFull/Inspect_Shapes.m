@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 26-Feb-2015 15:18:53
+% Last Modified by GUIDE v2.5 26-Feb-2015 16:32:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -337,19 +337,42 @@ for i = 1:length(cellNumbers)
 end
 
 
+
+
+
+
+
+
+
+
+
 % --------------------------------------------------------------------
-function select_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to select (see GCBO)
+function uitoggletool6_OnCallback(hObject, eventdata, handles)
+% hObject    handle to uitoggletool6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-%setptr(handles.figure1, 'hand');
-set(gcf, 'Pointer', 'arrow');
-display('new')
+set(handles.uitoggletool6, 'State', 'on');
+zoom off
+pan off
+
+% --------------------------------------------------------------------
+function uitoggletool5_OnCallback(hObject, eventdata, handles)
+% hObject    handle to uitoggletool5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.uitoggletool6, 'State', 'off');
+
+% --------------------------------------------------------------------
+function uitoggletool2_OnCallback(hObject, eventdata, handles)
+% hObject    handle to uitoggletool2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.uitoggletool6, 'State', 'off');
 
 
 % --------------------------------------------------------------------
-function selectPush_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to selectPush (see GCBO)
+function uitoggletool1_OnCallback(hObject, eventdata, handles)
+% hObject    handle to uitoggletool1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-display('hello')
+set(handles.uitoggletool6, 'State', 'off');
