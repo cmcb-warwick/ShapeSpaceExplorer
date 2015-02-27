@@ -199,12 +199,35 @@ try
     cellNum=tmp.Cell_numbers;
 end
 frameNum=length(cellNum);
-for i=1:frameNum
+for i=1:frameNum % for initial state;
     cellInfo = cellNum{i};
     cellActive =ones(length(cellInfo),1);
     cellNumbers{i,1}=cellInfo;
     cellNumbers{i,2}=cellActive;
 end
+name=sprintf('CellFrameData%03d.mat',stackNum); % if we have saved something before;
+try
+    path =fullfile(pathName, name); 
+    if ~exist(path, 'file'), return; end
+    tmp =load(path);
+    CellFrameData=tmp.CellFrameData;
+    noCellId=length(CellFrameData);
+    for i=1:noCellId
+        cellInfo=CellFrameData(i);
+        badFrames =cellInfo.BadFrames{3};
+        if isempty(badFrames), continue; end;
+        for j =1:frameNum
+            if any(badFrames(:)==j)
+               cllActive=cellNumbers{j,2};
+               cllActive(i)=0;
+               cellNumbers{j,2}=cllActive; 
+            end
+        end
+     end
+        
+end
+
+
 
 
 
@@ -386,15 +409,13 @@ function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-ptrState=set(handles.uitoggletool6, 'State');
+ptrState=get(handles.uitoggletool6, 'State');
 if strcmp('on' , ptrState)==0, return; end; % if it is not pointer forget it. 
 pos=get(handles.axes1,'CurrentPoint');
 global frameCurves;
 global currFrame;
 global cellNumbers;
 if isempty(frameCurves) || isempty(currFrame), return; end;
-
-
 cellAc=cellNumbers{currFrame,2};
 curves =frameCurves{currFrame};
 for i=1:length(curves)
