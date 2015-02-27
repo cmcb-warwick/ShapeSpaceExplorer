@@ -116,6 +116,8 @@ end
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
 loadCurrFrame(1, 1, handles);
+try zoom(handles.figure1, 'out'); end
+
 
 %plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),
 % handles.Frame_curves{handles.Frame_no}{j}(:,1),'Color',handles.cmap(handles.Cell_numbers{handles.Frame_no}(j),:));
@@ -247,7 +249,7 @@ cla(handles.axes1);
 img=stack(:,:,number);
 imagesc(img, 'Parent', handles.axes1);
 axis off; colormap(gray);
-
+hold on
 global frameCurves; global cellNumbers;
 if isempty(frameCurves) || isempty(cellNumbers), return; end
 fCurves=frameCurves{number};
@@ -265,8 +267,6 @@ for i=1:nCells
     end
 end
 
-
-hold on
 
 
 % --------------------------------------------------------------------
