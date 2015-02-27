@@ -89,6 +89,7 @@ function uipushtool1_ClickedCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 clearvars -global % clears all global variables
+set(handles.uipushsaveBtn, 'Enable', 'on');
 global pathName;
 [fileName,pathName] = uigetfile('*.mat','Select an processed Matlab file');
 if fileName==0, return; end
@@ -270,27 +271,39 @@ end
 
 
 % --------------------------------------------------------------------
+% this is the saveBTN function
 function uipushsaveBtn_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to uipushsaveBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.uipushsaveBtn, 'Enable', 'off');
 global pathName;
 global stackNumber;
 if isempty(pathName)
     mode = struct('WindowStyle','non-modal','Interpreter','tex');
     msg = DialogMessages(8);
     errordlg(msg, 'Error', mode);
+    set(handles.uipushsaveBtn, 'Enable', 'on');
     return
 end
    
 fileName=sprintf('CellArray%03d.mat',stackNumber);
-fPath =fullfile(pathName, fileName);
+cPath =fullfile(pathName, fileName);
 CellArray = getCellArray();
-save(fPath,'CellArray', '-v7.3');
+
+
 fileName=sprintf('CellFrameData%03d.mat',stackNumber); 
 fPath =fullfile(pathName, fileName);
 CellFrameData=getCellFrameData(stackNumber);
+
+if isempty(CellFrameData) || isempty(CellArray), return; end
+save(cPath,'CellArray', '-v7.3');
 save(fPath,'CellFrameData', '-v7.3');
+
+set(handles.uipushsaveBtn, 'Enable', 'on');
+mode = struct('WindowStyle','non-modal','Interpreter','tex');
+msg = DialogMessages(9);
+helpdlg(msg, 'Info');
 
 
 % this function creates the structure as it was defined

@@ -38,5 +38,7 @@ msgs{7}=['In your analysis folder there is a "ImageStack0XX.mat but not a "Image
      
 msgs{8}=['You have not loaded any image stacks.' char(10) ...
          'Nothing can be  saved.'];
+  
+msgs{9}=['Your modifications have been sucesfully saved.' char(10)];
 
 end
