@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 26-Feb-2015 16:48:42
+% Last Modified by GUIDE v2.5 27-Feb-2015 15:01:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -411,7 +411,6 @@ function uitoggletool1_OnCallback(hObject, eventdata, handles)
 set(handles.uitoggletool6, 'State', 'off');
 
 
-
 % --- Executes on mouse press over figure background, over a disabled or
 % --- inactive control, or over an axes background.
 function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
@@ -419,21 +418,74 @@ function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 ptrState=get(handles.uitoggletool6, 'State');
+%modifiers = get(handles.figure1,'CurrentCharacter');
+
 if strcmp('on' , ptrState)==0, return; end; % if it is not pointer forget it. 
+key = get (handles.figure1, 'CurrentKey');
+modifier=0;
+if strcmp(key, 'control')==1, modifier=1;end
 pos=get(handles.axes1,'CurrentPoint');
 global frameCurves;
 global currFrame;
 global cellNumbers;
+global stack;
+[~,~, N]=size(stack);
 if isempty(frameCurves) || isempty(currFrame), return; end;
 cellAc=cellNumbers{currFrame,2};
 curves =frameCurves{currFrame};
+cellId=-1;
+state=0;
 for i=1:length(curves)
     curve=curves{i};
     [in,on]=inpolygon(pos(1,1), pos(1,2), curve(:,2), curve(:,1));
     if (in+on)>0
         cellAc(i)=mod(cellAc(i)+1,2);
         cellNumbers{currFrame,2}=cellAc;
-        loadCurrFrame(currFrame, 1, handles);
-        return;
+        cellId=i;
+        state=cellAc(i);
+        break;
     end
 end
+if modifier  % if shift is pressed.
+    eIdx=N; 
+    cellNumbers =removesCellsFromStack(currFrame, eIdx, cellId, cellNumbers, state);
+end
+loadCurrFrame(currFrame, 1, handles);% repaint figure;
+
+
+
+% remove the cell with cellId from all future frames.
+% frame str = sIdx
+% frame end = eIdx
+function cellNumbers=removesCellsFromStack(sIdx, eIdx, cellId, cellNumbers, state)
+if sIdx<1 || eIdx<1 || cellId<1, return; end
+if isempty(cellNumbers), return; end
+for i=sIdx:eIdx
+    cellAc=cellNumbers{i,2};
+    cellAc(cellId)=state;
+    cellNumbers{i,2}=cellAc;
+end
+
+
+
+% --- Executes on key press with focus on figure1 or any of its controls.
+function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  structure with the following fields (see FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on key press with focus on figure1 and none of its controls.
+function figure1_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  structure with the following fields (see FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+function figure1_WindowKeyReleaseFcn(hObject, eventdata, handles)
+function slider1_ButtonDownFcn(hObject, eventdata, handles)
