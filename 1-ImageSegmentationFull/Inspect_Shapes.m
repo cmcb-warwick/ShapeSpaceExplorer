@@ -91,9 +91,8 @@ function uipushtool1_ClickedCallback(hObject, eventdata, handles)
 clearvars -global % clears all global variables
 set(handles.uipushsaveBtn, 'Enable', 'on');
 global pathName;
-[fileName,pathName] = uigetfile('*.mat','Select an processed Matlab file');
+[fileName,pathName] = uigetfile('*.mat','Select a processed Matlab file');
 if fileName==0, return; end
-set(handles.figure1, 'Pointer', 'arrow');
 global stack;
 stack = loadStackFromFile(pathName, fileName);
 if isempty(stack)
@@ -208,6 +207,11 @@ for i=1:frameNum % for initial state;
     cellNumbers{i,1}=cellInfo;
     cellNumbers{i,2}=cellActive;
 end
+cellNumbers =loadSavedCorrections(stackNum, pathName, frameNum, cellNumbers);
+
+
+% here we read out the information saved from a previous analysis
+function cellNumbers =loadSavedCorrections(stackNum, pathName, frameNum, cellNumbers)
 name=sprintf('CellFrameData%03d.mat',stackNum); % if we have saved something before;
 try
     path =fullfile(pathName, name); 
@@ -226,10 +230,8 @@ try
                cellNumbers{j,2}=cllActive; 
             end
         end
-     end
-        
+    end     
 end
-
 
 
 
@@ -241,7 +243,7 @@ global stack;
 global currFrame;
 
 if (~isempty(currFrame) && currFrame==number) 
-    if ~activeChange return; end
+    if ~activeChange, return; end
 end
         
 currFrame=number;
@@ -301,7 +303,6 @@ save(cPath,'CellArray', '-v7.3');
 save(fPath,'CellFrameData', '-v7.3');
 
 set(handles.uipushsaveBtn, 'Enable', 'on');
-mode = struct('WindowStyle','non-modal','Interpreter','tex');
 msg = DialogMessages(9);
 helpdlg(msg, 'Info');
 
@@ -408,11 +409,6 @@ function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
-
-
-
-
-
 
 
 
