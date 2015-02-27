@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 26-Feb-2015 16:32:58
+% Last Modified by GUIDE v2.5 26-Feb-2015 16:48:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -115,7 +115,7 @@ if isempty(frameCurves) || isempty(cellNumbers)
 end
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
-loadCurrFrame(1, handles);
+loadCurrFrame(1, 1, handles);
 
 %plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),
 % handles.Frame_curves{handles.Frame_no}{j}(:,1),'Color',handles.cmap(handles.Cell_numbers{handles.Frame_no}(j),:));
@@ -149,7 +149,7 @@ function SliderValueChanged(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 num = floor(get(hObject.slider1,'Value'));
-loadCurrFrame(num, hObject);
+loadCurrFrame(num,0, hObject);
 
 
 
@@ -210,10 +210,14 @@ end
 
 
 
-function loadCurrFrame(number, handles)
+function loadCurrFrame(number, activeChange, handles)
 global stack;
 global currFrame;
-if currFrame==number, return;end % so we don't paint unless we change
+
+if (~isempty(currFrame) && currFrame==number) 
+    if ~activeChange return; end
+end
+        
 currFrame=number;
 if isempty(stack), return; end
 cla(handles.axes1);
@@ -224,19 +228,18 @@ axis off; colormap(gray);
 global frameCurves; global cellNumbers;
 if isempty(frameCurves) || isempty(cellNumbers), return; end
 fCurves=frameCurves{number};
-cNumber=cellNumbers{number};
+cNumber=cellNumbers{number,1};
+cellActive=cellNumbers{number,2};
 nCells=length(cNumber);
 colour=cool(nCells);
-[n, m, ~]=size(img);
 for i=1:nCells
     curve =fCurves{i};
-    plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(i,:), 'LineWidth', 1.0);
-    %mask = poly2mask(curve(:,2), curve(:,1),m,n);
-    %[y,x] = find(mask==1);
-    %alpha(handles.axes1,0.3);
-    %plot(handles.axes1, x, y, colour(i,:));
-    
-    %set(handles.figure1, 'facealpha', 0.3);
+    active=cellActive(i);
+    if active==0
+        plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'r', 'LineWidth', 2.0);
+    else
+        plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(i,:), 'LineWidth', 2.0);
+    end
 end
 
 
@@ -339,13 +342,6 @@ end
 
 
 
-
-
-
-
-
-
-
 % --------------------------------------------------------------------
 function uitoggletool6_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool6 (see GCBO)
@@ -376,3 +372,38 @@ function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
+
+
+
+
+
+
+
+
+% --- Executes on mouse press over figure background, over a disabled or
+% --- inactive control, or over an axes background.
+function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ptrState=set(handles.uitoggletool6, 'State');
+if strcmp('on' , ptrState)==0, return; end; % if it is not pointer forget it. 
+pos=get(handles.axes1,'CurrentPoint');
+global frameCurves;
+global currFrame;
+global cellNumbers;
+if isempty(frameCurves) || isempty(currFrame), return; end;
+
+
+cellAc=cellNumbers{currFrame,2};
+curves =frameCurves{currFrame};
+for i=1:length(curves)
+    curve=curves{i};
+    [in,on]=inpolygon(pos(1,1), pos(1,2), curve(:,2), curve(:,1));
+    if (in+on)>0
+        cellAc(i)=mod(cellAc(i)+1,2);
+        cellNumbers{currFrame,2}=cellAc;
+        loadCurrFrame(currFrame, 1, handles);
+        return;
+    end
+end
