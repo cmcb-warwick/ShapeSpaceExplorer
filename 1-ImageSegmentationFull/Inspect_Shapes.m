@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 27-Feb-2015 15:01:25
+% Last Modified by GUIDE v2.5 28-Feb-2015 07:55:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -489,3 +489,10 @@ function figure1_KeyPressFcn(hObject, eventdata, handles)
 
 function figure1_WindowKeyReleaseFcn(hObject, eventdata, handles)
 function slider1_ButtonDownFcn(hObject, eventdata, handles)
+
+
+% --------------------------------------------------------------------
+function filterSize_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to filterSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
