@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 28-Feb-2015 07:55:38
+% Last Modified by GUIDE v2.5 02-Mar-2015 16:52:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -90,6 +90,7 @@ function uipushtool1_ClickedCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 clearvars -global % clears all global variables
 set(handles.uipushsaveBtn, 'Enable', 'on');
+
 global pathName;
 [fileName,pathName] = uigetfile('*.mat','Select a processed Matlab file');
 if fileName==0, return; end
@@ -117,6 +118,7 @@ set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
 loadCurrFrame(1, 1, handles);
 try zoom(handles.figure1, 'out'); end
+set(handles.filterSize, 'Enable', 'on');
 
 
 %plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),
@@ -143,6 +145,7 @@ function slider1_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
 
 % --- If Enable == 'on', executes on mouse press in 5 pixel border.
 % --- Otherwise, executes on mouse press in 5 pixel border or over slider1.
@@ -496,3 +499,28 @@ function filterSize_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to filterSize (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+warning('off','all')
+num=FilterDialog('Remove shapes with small area', 'Area [px]', 100);
+filterForArea(num);
+global currFrame;
+loadCurrFrame(currFrame, 1, handles);% repaint figure;
+
+
+function filterForArea(area)
+global frameCurves;
+global cellNumbers;
+global stack;
+[~, ~, frames]=size(stack);
+for i =1:frames
+    curves=frameCurves{i};
+    cellAc=cellNumbers{i,2};
+    cellId=cellNumbers{i,1};
+    for j=1:length(cellId)
+        curve=curves{j};
+        polyArea=polyarea( curve(:,2), curve(:,1));
+        if polyArea<=area
+            cellAc(j)=0; % all smaller areas filterd out.
+        end
+    end
+    cellNumbers{i,2}=cellAc;
+end

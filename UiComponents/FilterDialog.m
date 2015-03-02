@@ -54,10 +54,11 @@ function FilterDialog_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for FilterDialog
 handles.output = hObject;
-if length(varargin)==2 % we have two inputs.
+if length(varargin)==3 % we have two inputs.
    try
    set(handles.text1, 'String', varargin{1});
    set(handles.text2, 'String', varargin{2});
+   set(handles.numInput, 'String', varargin{3});
    end
 end
 
@@ -84,7 +85,7 @@ function varargout = FilterDialog_OutputFcn(hObject, eventdata, handles)
 number=-1;
 num = get(handles.numInput,'String');
 try % we read again the number.
-    num=str2num(num);
+    num=str2double(num);
     number =abs(round(num)); end
 varargout{1} = number;
 delete(handles.figure1);
