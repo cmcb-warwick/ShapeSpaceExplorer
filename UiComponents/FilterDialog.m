@@ -79,8 +79,9 @@ number=-1;
 num = get(handles.numInput,'String');
 try % we read again the number.
     num=str2num(num);
-    number =round(num); end
+    number =abs(round(num)); end
 varargout{1} = number;
+delete(handles.figure1);
 
 
 % --- Executes on button press in pushbutton1.
@@ -97,6 +98,23 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+num = get(handles.numInput,'String');
+try % we read again the number.
+    num=str2num(num);
+    if isempty(num) || num<1
+        mode = struct('WindowStyle','non-modal','Interpreter','tex');
+        msg = DialogMessages(10);
+        errordlg(msg, 'Error', mode);
+        return
+    end   
+catch
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(10);
+    errordlg(msg, 'Error', mode);
+    return
+end
+% if we arrive till here, things were fine.
+figure1_CloseRequestFcn(hObject, eventdata, handles);
 
 
 function numInput_Callback(hObject, eventdata, handles)

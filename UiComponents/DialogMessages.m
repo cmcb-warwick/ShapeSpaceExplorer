@@ -41,4 +41,8 @@ msgs{8}=['You have not loaded any image stacks.' char(10) ...
   
 msgs{9}=['Your modifications have been sucesfully saved.' char(10)];
 
+
+msgs{10}=['You did not enter corretly a number.' char(10) ...
+         'Please enter a positive integer number.'];
+
 end
