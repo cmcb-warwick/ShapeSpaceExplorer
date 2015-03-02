@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 02-Mar-2015 18:12:29
+% Last Modified by GUIDE v2.5 02-Mar-2015 18:25:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -120,7 +120,7 @@ loadCurrFrame(1, 1, handles);
 try zoom(handles.figure1, 'out'); end
 set(handles.filterSize, 'Enable', 'on');
 set(handles.reset, 'Enable', 'on');
-
+set(handles.liveSpan, 'Enable', 'on');
 
 %plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),
 % handles.Frame_curves{handles.Frame_no}{j}(:,1),'Color',handles.cmap(handles.Cell_numbers{handles.Frame_no}(j),:));
@@ -501,7 +501,7 @@ function filterSize_ClickedCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 warning('off','all')
-num=FilterDialog('Remove shapes with small area', 'Area [px]', 100);
+num=FilterDialog('Filter removes shapes with area smaler than minimal area.', 'Min Area [px]', 100);
 filterForArea(num);
 global currFrame;
 loadCurrFrame(currFrame, 1, handles);% repaint figure;
@@ -551,3 +551,46 @@ for i =1:frames
     end
     cellNumbers{i,2}=cellAc;
 end
+
+
+function filterOutLifeSpanShorterThan(framNum)
+global cellNumbers;
+global stack;
+if isempty(stack), return; end
+[~,~, frames]=size(stack);
+cellIds=getAllCellIds(cellNumbers);
+cellLife=zeros(length(cellIds),1);
+for i=1:frames
+    cellAc=cellNumbers{i,2};
+    cellId=cellNumbers{i,1};
+    for j=1:length(cellId)
+        if cellAc(j)==1, % we only count active frames
+            cellLife(cellId(j))=cellLife(cellId(j))+1;
+        end
+    end
+end
+cellsToRemove=cellLife<framNum;
+if sum(cellsToRemove)<1, return; end % no cell lives shorter.
+
+for i=1:frames
+    cellAc=cellNumbers{i,2};
+    cellId=cellNumbers{i,1};
+    for j=1:length(cellId)
+        if cellsToRemove(j)==1
+            cellAc(j)=0;
+        end
+    end
+    cellNumbers{i,2}=cellAc;
+end
+%is any shorter than life span?
+
+
+% --------------------------------------------------------------------
+function liveSpan_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to liveSpan (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+num=FilterDialog('Filter removes shapes present less than in in Min Frames Number', 'Min Frame No:', 5);
+filterOutLifeSpanShorterThan(num);
+global currFrame;
+loadCurrFrame(currFrame, 1, handles);% repaint figure;
