@@ -54,6 +54,12 @@ function FilterDialog_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for FilterDialog
 handles.output = hObject;
+if length(varargin)==2 % we have two inputs.
+   try
+   set(handles.text1, 'String', varargin{1});
+   set(handles.text2, 'String', varargin{2});
+   end
+end
 
 % Update handles structure
 guidata(hObject, handles);
