@@ -94,8 +94,7 @@ if struc.subSet
     struc.lastFrame= get(handles.popupmenu2, 'value');
 end
 varargout{1}=struc;
-h= handles.figure1;
-delete(h);
+delete(handles.figure1);
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)

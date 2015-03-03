@@ -24,6 +24,7 @@ framesConfig=ConfigPane2(maxFrame);
 
  
  out=ConfigPane3();
+ display('--> start cell segmentation');
  saveFoler=out.folder;
  msConfig.spatialBdw=out.spatialBdw;
  msConfig.rangeBdw=out.rangeBdw;

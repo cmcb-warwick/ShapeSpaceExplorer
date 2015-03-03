@@ -22,9 +22,13 @@ function RunMeFirst(files, framesConfig, msConfig, savefolderpath)
 
 
 N=length(files);%number of .dv files
+h = waitbar(0,['0 movies of ' num2str(N) ' movies converted.']);
+
 allFrameNum=0;
 for i=1:N
    stackName=sprintf('ImageStack%03d.mat',i);
+   msg =[ num2str(i) ' movies of ' num2str(N) ' movies converted.'];
+   if i==1, msg =[ num2str(i) ' movie of ' num2str(N) ' movies converted.'];end 
    if framesConfig.subSet 
         stack =imreadBF(files{i},1,framesConfig.firstFrame:framesConfig.lastFrame,1);
         allFrameNum=allFrameNum+(framesConfig.lastFrame-framesConfig.firstFrame+1);
@@ -34,9 +38,13 @@ for i=1:N
        stack=imreadBF(files{i},1,1:framesN,1); %path, z-plane, t-stack, channel
        allFrameNum=allFrameNum+framesN;
    end
+   waitbar(i/N, msg);
    savefilename=fullfile(savefolderpath, stackName);
    save(savefilename,converVar2Str(stack),'-v7.3');
 end
+delete(h)
+close all force
+% now start a new waitbar
 
 h = waitbar(0,['0 frames of ' num2str(allFrameNum) ' frames segmented.']);
 currentFrame=1;

@@ -88,8 +88,7 @@ struc.folder = get(handles.edit1, 'String');
 struc.spatialBdw=get(handles.popupmenu1, 'value');
 struc.rangeBdw=get(handles.popupmenu2, 'value');
 varargout{1}=struc;
-h= handles.figure1;
-delete(h);
+delete(handles.figure1);
 
 
 % --- Executes on button press in pushbutton1.
