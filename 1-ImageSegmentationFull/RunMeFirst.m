@@ -23,7 +23,6 @@ function RunMeFirst(files, framesConfig, msConfig, savefolderpath)
 
 N=length(files);%number of .dv files
 h = waitbar(0,['0 movies of ' num2str(N) ' movies converted.']);
-
 allFrameNum=0;
 for i=1:N
    stackName=sprintf('ImageStack%03d.mat',i);
@@ -38,7 +37,8 @@ for i=1:N
        stack=imreadBF(files{i},1,1:framesN,1); %path, z-plane, t-stack, channel
        allFrameNum=allFrameNum+framesN;
    end
-   waitbar(i/N, msg);
+   set(0, 'CurrentFigure', h);
+   waitbar(i/N, h, msg);
    savefilename=fullfile(savefolderpath, stackName);
    save(savefilename,converVar2Str(stack),'-v7.3');
 end
@@ -51,13 +51,13 @@ currentFrame=1;
 for i=1:N;
    varname=sprintf('ImageStack%03d.mat',i);
    in=load(fullfile(savefolderpath, varname));
-   currentFrame=StackCellSeg(in.stack, i, savefolderpath, msConfig.spatialBdw,msConfig.rangeBdw, currentFrame, allFrameNum);
+   currentFrame=StackCellSeg(in.stack, i, savefolderpath, msConfig.spatialBdw,msConfig.rangeBdw, currentFrame, allFrameNum, h);
 end
 delete(h)
 close all force
 end
 
-function cFrame = StackCellSeg( ImageStack,Stacknumber,savefolderpath,sbw,rbw, currentFrame, allFramNum)
+function cFrame = StackCellSeg( ImageStack,Stacknumber,savefolderpath,sbw,rbw, currentFrame, allFramNum, h)
 %STACKCELLSEG Summary of this function goes here
 %   Detailed explanation goes here
 numframes=size(ImageStack,3);
@@ -76,7 +76,7 @@ for i=1:numframes
    [Frame_curves{i},Bin_images{i}] =CellSeg(anustack(:,:,i),sbw,rbw);
    msg =[ num2str(cFrame) ' frames of ' num2str(allFramNum) ' frames segmented.'];
    if cFrame==1, msg =[ num2str(currentFrame) ' frame of ' num2str(allFramNum) ' frames segmented.'];end   
-   waitbar(cFrame/allFramNum, msg);
+   waitbar(cFrame/allFramNum, h, msg);
    cFrame=cFrame+1;
 end
 
