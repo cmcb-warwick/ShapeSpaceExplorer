@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 02-Mar-2015 18:25:58
+% Last Modified by GUIDE v2.5 03-Mar-2015 08:06:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -269,7 +269,7 @@ for i=1:nCells
     active=cellActive(i);
     if active==0
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'r', 'LineWidth', 2.0);
-    else
+    elseif active==1
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(i,:), 'LineWidth', 2.0);
     end
 end
@@ -443,6 +443,7 @@ for i=1:length(curves)
     curve=curves{i};
     [in,on]=inpolygon(pos(1,1), pos(1,2), curve(:,2), curve(:,1));
     if (in+on)>0
+        if cellAc(i)>1, continue; end % a merged cell.
         cellAc(i)=mod(cellAc(i)+1,2);
         cellNumbers{currFrame,2}=cellAc;
         cellId=i;
@@ -520,7 +521,7 @@ for i =1:frames
     for j=1:length(cellId)
         curve=curves{j};
         polyArea=polyarea( curve(:,2), curve(:,1));
-        if polyArea<=area
+        if cellAc(j)==1&&polyArea<=area 
             cellAc(j)=0; % all smaller areas filterd out.
         end
     end
@@ -564,7 +565,7 @@ for i=1:frames
     cellAc=cellNumbers{i,2};
     cellId=cellNumbers{i,1};
     for j=1:length(cellId)
-        if cellAc(j)==1, % we only count active frames
+        if cellAc(j)>0, % we only count active frames
             cellLife(cellId(j))=cellLife(cellId(j))+1;
         end
     end
