@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 03-Mar-2015 08:06:57
+% Last Modified by GUIDE v2.5 03-Mar-2015 08:51:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -121,6 +121,7 @@ try zoom(handles.figure1, 'out'); end
 set(handles.filterSize, 'Enable', 'on');
 set(handles.reset, 'Enable', 'on');
 set(handles.liveSpan, 'Enable', 'on');
+set(handles.merge, 'Enable', 'on');
 
 %plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),
 % handles.Frame_curves{handles.Frame_no}{j}(:,1),'Color',handles.cmap(handles.Cell_numbers{handles.Frame_no}(j),:));
@@ -338,13 +339,13 @@ for i=1:length(cellNumbers)
     cellAc=cellNumbers{i,2};
     curves=frameCurves{i};
     idx=find(num==id,1);
-    if cellAc(idx) % it is a good frame
+    if cellAc(idx)==1 % it is a good frame
         contours{end+1}=curves{idx};
     else
         faultyFrmes(end+1)=i;
     end  
 end
-badFrmes{3}=faultyFrmes; % this was the original structure.
+badFrmes{1}=faultyFrmes; % this was the original structure.
 
 
 
@@ -389,6 +390,7 @@ function uitoggletool6_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'on');
+set(handles.merge, 'State', 'off');
 zoom off
 pan off
 
@@ -398,14 +400,14 @@ function uitoggletool5_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
-
+set(handles.merge, 'State', 'off');
 % --------------------------------------------------------------------
 function uitoggletool2_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
-
+set(handles.merge, 'State', 'off');
 
 % --------------------------------------------------------------------
 function uitoggletool1_OnCallback(hObject, eventdata, handles)
@@ -413,7 +415,19 @@ function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
+set(handles.merge, 'State', 'off');
 
+
+% --------------------------------------------------------------------
+function merge_OnCallback(hObject, eventdata, handles)
+% hObject    handle to merge (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.uitoggletool6, 'State', 'off');
+set(handles.merge, 'State', 'on');
+setptr(handles.figure1, 'add');
+zoom off
+pan off
 
 % --- Executes on mouse press over figure background, over a disabled or
 % --- inactive control, or over an axes background.

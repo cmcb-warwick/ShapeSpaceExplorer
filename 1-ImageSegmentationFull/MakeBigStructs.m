@@ -1,6 +1,6 @@
 %Put me in your contour output folder from CSG
-
-folder = uigetdir(matlabroot,'Select Experiment Folder');
+clear all
+folder = uigetdir(matlabroot,'Select Analysis Folder');
 dirData=dir( fullfile(folder,'CellFrameData*.mat') );
 dirIndex = [dirData.isdir];  %# Find the index for directories
 fileList = {dirData(~dirIndex).name}';  %'# Get a list of the files
@@ -9,7 +9,7 @@ if ~isempty(fileList)
     fileList,'UniformOutput',false);
 end
 N = length(fileList);
-if N<1, error('No Files found in Experiment folder, stopped without processing');
+if N<1, error('No Files found in Analysis folder, stopped without processing');
     exit(0); end
 
 BigCellDataStruct=[];
