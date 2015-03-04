@@ -60,17 +60,19 @@ set(handles.currFileName, 'string', '...');
 cla(handles.axes1);
 set(handles.axes1, 'color', 'w');
 clearvars -global % clears all global variables
-numSteps = 10;
- set(handles.slider1, 'Min', 1);
- set(handles.slider1, 'Max', numSteps);
- set(handles.slider1, 'Value', 1);
- set(handles.slider1, 'SliderStep', [1/(numSteps-1) , 1/(numSteps-1) ]);
+updateSliderSteps(10, handles);
  %addlistener(handles.slider1, 'Value','PostSet', @SliderValueChanged);
 addlistener(handles.slider1,'ContinuousValueChange',@(hObject, event) SliderValueChanged(handles, eventdata));
 % UIWAIT makes Inspect_Shapes wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 % h=figure; % so we don't have figure popping up.
 % set(h,'visible','off');
+
+function updateSliderSteps(numSteps, handles)
+set(handles.slider1, 'Min', 1);
+set(handles.slider1, 'Max', numSteps);
+set(handles.slider1, 'Value', 1);
+set(handles.slider1, 'SliderStep', [1/(numSteps-1) , 1/(numSteps-1) ]);
 
 % --- Outputs from this function are returned to the command line.
 function varargout = Inspect_Shapes_OutputFcn(hObject, eventdata, handles) 
@@ -116,12 +118,16 @@ if isempty(frameCurves) || isempty(cellNumbers)
 end
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
+[~,~,frames]=size(stack);
+updateSliderSteps(frames, handles);
 loadCurrFrame(1, 1, handles);
 try zoom(handles.figure1, 'out'); end
 set(handles.filterSize, 'Enable', 'on');
 set(handles.reset, 'Enable', 'on');
 set(handles.liveSpan, 'Enable', 'on');
 set(handles.merge, 'Enable', 'on');
+msg =['1/' num2str(frames)];
+set(handles.frames, 'String',msg);
 
 %plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),
 % handles.Frame_curves{handles.Frame_no}{j}(:,1),'Color',handles.cmap(handles.Cell_numbers{handles.Frame_no}(j),:));
@@ -156,8 +162,13 @@ function SliderValueChanged(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 num = floor(get(hObject.slider1,'Value'));
+global currFrame;
+if num==currFrame, return; end
 loadCurrFrame(num,0, hObject);
-
+global stack;
+[~,~, frames]=size(stack);
+msg =[num2str(num) '/' num2str(frames)];
+set(hObject.frames, 'String',msg);
 
 
 
