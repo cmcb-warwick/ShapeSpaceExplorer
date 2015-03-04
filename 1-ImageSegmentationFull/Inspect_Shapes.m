@@ -97,7 +97,8 @@ global pathName;
 [fileName,pathName] = uigetfile('*.mat','Select a processed Matlab file');
 if fileName==0, return; end
 global stack;
-stack = loadStackFromFile(pathName, fileName);
+global stackNumber;
+[stack, stackNumber] = loadStackFromFile(pathName, fileName);
 if isempty(stack)
     mode = struct('WindowStyle','non-modal','Interpreter','tex');
     msg = DialogMessages(6);
@@ -107,15 +108,15 @@ if isempty(stack)
 end
 global frameCurves;
 global cellNumbers;
-global stackNumber;
-[frameCurves,cellNumbers,stackNumber]=loadCurveDataFrom(pathName, fileName);
-if isempty(frameCurves) || isempty(cellNumbers)
-    mode = struct('WindowStyle','non-modal','Interpreter','tex');
-    msg = DialogMessages(7);
-    errordlg(msg, 'Error', mode);
-    clearvars -global
-    return
-end
+
+[frameCurves,cellNumbers]=loadCurveDataFrom(pathName, fileName, stackNumber);
+% if isempty(frameCurves) || isempty(cellNumbers)
+%     mode = struct('WindowStyle','non-modal','Interpreter','tex');
+%     msg = DialogMessages(7);
+%     errordlg(msg, 'Error', mode);
+%     clearvars -global
+%     return
+% end
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
 [~,~,frames]=size(stack);
@@ -182,7 +183,7 @@ set(hObject.frames, 'String',msg);
 % which can be lilke var.ImageStack001
 % if file is not quite correct, then 
 % it returns gracefully an empty variable.
-function stack = loadStackFromFile(pathName, fileName)
+function [stack, stackNum] = loadStackFromFile(pathName, fileName)
 path = fullfile(pathName, fileName);
 tmp = load(path);
 stack=[];
@@ -195,19 +196,21 @@ catch % means we have some old data from first implementation.
     stack = eval(['tmp.' fName]);
     end
 end
+[~,fName,~] = fileparts(fileName) 
+if length(fName)>3
+   num = fName(end-2:end);
+   try stackNum= str2num(num); end
+end
 
 
 % try to load the structure of cell curves in the data
 % which hopefully have the expected structure 
 % if expected structure is not found, the variables
 % are returned empty.
-function [frameCurves,cellNumbers, stackNum] =loadCurveDataFrom(pathName, fileName)
-frameCurves=[];cellNumbers={}; stackNum=-1;
+function [frameCurves,cellNumbers] =loadCurveDataFrom(pathName, fileName, stackNum)
+frameCurves=[];cellNumbers={};
 [~,fName,ext] = fileparts(fileName);
-if length(fName)>3
-   num = fName(end-2:end);
-   try stackNum= str2num(num); end
-end
+
 name = [fName 'CurveData' ext];
 path =fullfile(pathName, name);
 if ~exist(path, 'file'), return; end
@@ -305,6 +308,15 @@ if isempty(pathName)
     return
 end
    
+global cellNumbers; 
+global frameCurves;
+if isempty(cellNumbers) || isempty(frameCurves)
+    msg = DialogMessages(11);
+    helpdlg(msg, 'Info');
+    set(handles.uipushsaveBtn, 'Enable', 'on');
+    return
+end
+
 fileName=sprintf('CellArray%03d.mat',stackNumber);
 cPath =fullfile(pathName, fileName);
 CellArray = getCellArray();
