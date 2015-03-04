@@ -290,7 +290,7 @@ for i=1:nCells
     end
 end
 legend(handles.axes1,lgd)
-
+% load merge info if state is pressed.
 
 %uitoggletool9
 %SelectionHighlight
@@ -482,7 +482,7 @@ modifier=0;
 pos=get(handles.axes1,'CurrentPoint');
 if strcmp(key, 'control')==1, modifier=1;end
 if strcmp('on' , ptrState)==1, selectTogglePressed(pos, modifier, handles); end
-if strcmp('on' , mergeState)==1, selectMergePressed(pos); end
+if strcmp('on' , mergeState)==1, selectMergePressed(pos, handles); end
 
 
 function selectTogglePressed(pos, modifier, handles)
@@ -490,18 +490,27 @@ global currFrame;
 global stack;
 [~,~,N]=size(stack);
 [cellId, state] =isClickInShape(pos);
-if modifier  % if shift is pressed.
-    eIdx=N; 
-    removesCellsFromStack(currFrame, eIdx, cellId, state);
-end
+eIdx=currFrame; 
+if modifier, eIdx=N; end
+removesCellsFromStack(currFrame, eIdx, cellId, state);
 
 loadCurrFrame(currFrame, 1, handles);% repaint figure;
 [cellId, ~] =isClickInShape(pos);
 if cellId<1, return; end
 
 
-function selectMergePressed(pos)
-display(pos);
+function selectMergePressed(pos, handles)
+[cellId, ~] =isClickInShape(pos);
+if cellId<1, return; end % it is not inside a cell;
+global mergeData;
+global currFrame;
+merge.startPos=[pos(1,1), pos(1,2)];
+merge.id1=cellId;
+infos=mergeData{currFrame};
+infos(merge.id1)=infos;
+mergeData{currFrame}=infos;
+loadCurrFrame(currFrame, 1, handles)
+plot(pos(1,1), pos(1,2), '*k');
 
 
 
@@ -509,21 +518,19 @@ function [cellId, state] =isClickInShape(pos)
 global frameCurves;
 global currFrame;
 global cellNumbers;
-global stack;
-[~,~, N]=size(stack);
 if isempty(frameCurves) || isempty(currFrame), return; end;
 cellAc=cellNumbers{currFrame,2};
+cellIds=cellNumbers{currFrame,1};
 curves =frameCurves{currFrame};
 cellId=-1;
 state=0;
 for i=1:length(curves)
     curve=curves{i};
+    id = cellIds(i);
     [in,on]=inpolygon(pos(1,1), pos(1,2), curve(:,2), curve(:,1));
     if (in+on)>0
-        if cellAc(i)>1, continue; end % a merged cell.
         cellAc(i)=mod(cellAc(i)+1,2);
-        cellNumbers{currFrame,2}=cellAc;
-        cellId=i;
+        cellId=id;
         state=cellAc(i);
         break;
     end
@@ -537,7 +544,7 @@ function figure1_WindowButtonMotionFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-try pos=get(handles.axes1,'CurrentPoint');catch return; end
+%try pos=get(handles.axes1,'CurrentPoint');catch return; end
 
 
 
