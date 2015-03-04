@@ -123,6 +123,7 @@ set(handles.filterSize, 'Enable', 'on');
 set(handles.reset, 'Enable', 'on');
 set(handles.liveSpan, 'Enable', 'on');
 set(handles.merge, 'Enable', 'on');
+set(handles.slider1, 'Enable', 'on');
 msg =['1/' num2str(frames)];
 set(handles.frames, 'String',msg);
 
