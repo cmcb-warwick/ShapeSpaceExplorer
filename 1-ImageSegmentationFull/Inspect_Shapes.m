@@ -275,19 +275,24 @@ cNumber=cellNumbers{number,1};
 cellActive=cellNumbers{number,2};
 nCells=length(cNumber);
 colour=cool(length(allCellIds));
+lgd={};
 for i=1:nCells
     curve =fCurves{i};
     active=cellActive(i);
+    idx = find(allCellIds==cNumber(i), 1);
+    str =[ 'cell id: ' num2str(idx)];
+    lgd{end+1}=str;
     if active==0
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'r', 'LineWidth', 2.0);
     elseif active==1
-        idx = find(allCellIds==cNumber(i), 1);
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(idx,:), 'LineWidth', 2.0);
     end
 end
+legend(handles.axes1,lgd)
 
 
-
+%uitoggletool9
+%SelectionHighlight
 % --------------------------------------------------------------------
 % this is the saveBTN function
 function uipushsaveBtn_ClickedCallback(hObject, eventdata, handles)
@@ -609,9 +614,11 @@ if sum(cellsToRemove)<1, return; end % no cell lives shorter.
 
 for i=1:frames
     cellAc=cellNumbers{i,2};
-    cellId=cellNumbers{i,1};
-    for j=1:length(cellId)
-        if cellsToRemove(j)==1
+    cIds=cellNumbers{i,1};
+    for j=1:length(cIds)
+        cellId=cIds(j);
+        idx=find(cellIds==cellId,1);
+        if cellsToRemove(idx)==1
             cellAc(j)=0;
         end
     end
