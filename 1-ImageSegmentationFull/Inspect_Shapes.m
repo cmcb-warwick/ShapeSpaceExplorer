@@ -473,13 +473,39 @@ function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 ptrState=get(handles.uitoggletool6, 'State');
+mergeState=get(handles.merge, 'State');
 %modifiers = get(handles.figure1,'CurrentCharacter');
 
-if strcmp('on' , ptrState)==0, return; end; % if it is not pointer forget it. 
+if strcmp('on' , ptrState)==0 && strcmp('on', mergeState)==0, return; end; % if it is not pointer forget it. 
 key = get (handles.figure1, 'CurrentKey');
 modifier=0;
-if strcmp(key, 'control')==1, modifier=1;end
 pos=get(handles.axes1,'CurrentPoint');
+if strcmp(key, 'control')==1, modifier=1;end
+if strcmp('on' , ptrState)==1, selectTogglePressed(pos, modifier, handles); end
+if strcmp('on' , mergeState)==1, selectMergePressed(pos); end
+
+
+function selectTogglePressed(pos, modifier, handles)
+global currFrame;
+global stack;
+[~,~,N]=size(stack);
+[cellId, state] =isClickInShape(pos);
+if modifier  % if shift is pressed.
+    eIdx=N; 
+    removesCellsFromStack(currFrame, eIdx, cellId, state);
+end
+
+loadCurrFrame(currFrame, 1, handles);% repaint figure;
+[cellId, ~] =isClickInShape(pos);
+if cellId<1, return; end
+
+
+function selectMergePressed(pos)
+display(pos);
+
+
+
+function [cellId, state] =isClickInShape(pos)
 global frameCurves;
 global currFrame;
 global cellNumbers;
@@ -502,18 +528,33 @@ for i=1:length(curves)
         break;
     end
 end
-if modifier  % if shift is pressed.
-    eIdx=N; 
-    cellNumbers =removesCellsFromStack(currFrame, eIdx, cellId, cellNumbers, state);
-end
-loadCurrFrame(currFrame, 1, handles);% repaint figure;
+
+
+
+% --- Executes on mouse motion over figure - except title and menu.
+function figure1_WindowButtonMotionFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+try pos=get(handles.axes1,'CurrentPoint');catch return; end
+
+
+
+% --- Executes on mouse press over figure background, over a disabled or
+% --- inactive control, or over an axes background.
+function figure1_WindowButtonUpFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
 
 
 % remove the cell with cellId from all future frames.
 % frame str = sIdx
 % frame end = eIdx
-function cellNumbers=removesCellsFromStack(sIdx, eIdx, cellId, cellNumbers, state)
+function removesCellsFromStack(sIdx, eIdx, cellId, state)
+global cellNumbers;
 if sIdx<1 || eIdx<1 || cellId<1, return; end
 if isempty(cellNumbers), return; end
 for i=sIdx:eIdx
@@ -652,21 +693,3 @@ loadCurrFrame(currFrame, 1, handles);% repaint figure;
 
 
 
-% --- Executes on mouse motion over figure - except title and menu.
-function figure1_WindowButtonMotionFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-try pos=get(handles.axes1,'CurrentPoint');catch return; end
-if isempty(handles), return; end
-try clickedMerge=handles.Merge; catch return; end
-if clickedMerge==1
-    plot(handles.axes1, pos(1,1), pos(1,2)); end
-
-
-% --- Executes on mouse press over figure background, over a disabled or
-% --- inactive control, or over an axes background.
-function figure1_WindowButtonUpFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
