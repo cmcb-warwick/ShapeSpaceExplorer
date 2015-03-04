@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 03-Mar-2015 08:51:59
+% Last Modified by GUIDE v2.5 04-Mar-2015 13:30:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -417,6 +417,7 @@ function uitoggletool6_OnCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'on');
 set(handles.merge, 'State', 'off');
+setptr(handles.figure1, 'arrow');
 zoom off
 pan off
 
@@ -454,7 +455,17 @@ set(handles.merge, 'State', 'on');
 setptr(handles.figure1, 'add');
 zoom off
 pan off
+% guiHandle.Merge=1;
+% guidata(handles.figure1,guiHandle);
 
+% --------------------------------------------------------------------
+function merge_OffCallback(hObject, eventdata, handles)
+% hObject    handle to merge (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% guiHandle.Merge=0;
+% guidata(handles.figure1,guiHandle);
+setptr(handles.figure1, 'arrow');
 % --- Executes on mouse press over figure background, over a disabled or
 % --- inactive control, or over an axes background.
 function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
@@ -637,3 +648,25 @@ num=FilterDialog('Filter removes shapes present less than in in Min Frames Numbe
 filterOutLifeSpanShorterThan(num);
 global currFrame;
 loadCurrFrame(currFrame, 1, handles);% repaint figure;
+
+
+
+
+% --- Executes on mouse motion over figure - except title and menu.
+function figure1_WindowButtonMotionFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+try pos=get(handles.axes1,'CurrentPoint');catch return; end
+if isempty(handles), return; end
+try clickedMerge=handles.Merge; catch return; end
+if clickedMerge==1
+    plot(handles.axes1, pos(1,1), pos(1,2)); end
+
+
+% --- Executes on mouse press over figure background, over a disabled or
+% --- inactive control, or over an axes background.
+function figure1_WindowButtonUpFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
