@@ -110,17 +110,13 @@ global frameCurves;
 global cellNumbers;
 
 [frameCurves,cellNumbers]=loadCurveDataFrom(pathName, fileName, stackNumber);
-% if isempty(frameCurves) || isempty(cellNumbers)
-%     mode = struct('WindowStyle','non-modal','Interpreter','tex');
-%     msg = DialogMessages(7);
-%     errordlg(msg, 'Error', mode);
-%     clearvars -global
-%     return
-% end
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
 [~,~,frames]=size(stack);
 updateSliderSteps(frames, handles);
+%set up color
+global allCellIds;
+allCellIds=getAllCellIds(cellNumbers);
 loadCurrFrame(1, 1, handles);
 try zoom(handles.figure1, 'out'); end
 set(handles.filterSize, 'Enable', 'on');
@@ -196,7 +192,7 @@ catch % means we have some old data from first implementation.
     stack = eval(['tmp.' fName]);
     end
 end
-[~,fName,~] = fileparts(fileName) 
+[~,fName,~] = fileparts(fileName); 
 if length(fName)>3
    num = fName(end-2:end);
    try stackNum= str2num(num); end
@@ -260,7 +256,7 @@ end
 function loadCurrFrame(number, activeChange, handles)
 global stack;
 global currFrame;
-
+global allCellIds
 if (~isempty(currFrame) && currFrame==number) 
     if ~activeChange, return; end
 end
@@ -278,14 +274,15 @@ fCurves=frameCurves{number};
 cNumber=cellNumbers{number,1};
 cellActive=cellNumbers{number,2};
 nCells=length(cNumber);
-colour=cool(nCells);
+colour=cool(length(allCellIds));
 for i=1:nCells
     curve =fCurves{i};
     active=cellActive(i);
     if active==0
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'r', 'LineWidth', 2.0);
     elseif active==1
-        plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(i,:), 'LineWidth', 2.0);
+        idx = find(allCellIds==cNumber(i), 1);
+        plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(idx,:), 'LineWidth', 2.0);
     end
 end
 
