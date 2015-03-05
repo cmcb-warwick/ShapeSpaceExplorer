@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 05-Mar-2015 10:20:52
+% Last Modified by GUIDE v2.5 05-Mar-2015 20:50:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,6 +63,8 @@ clearvars -global % clears all global variables
 updateSliderSteps(10, handles);
  %addlistener(handles.slider1, 'Value','PostSet', @SliderValueChanged);
 addlistener(handles.slider1,'ContinuousValueChange',@(hObject, event) SliderValueChanged(handles, eventdata));
+
+
 % UIWAIT makes Inspect_Shapes wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 % h=figure; % so we don't have figure popping up.
@@ -469,9 +471,10 @@ ptrState=get(handles.uitoggletool6, 'State');
 %modifiers = get(handles.figure1,'CurrentCharacter');
 
 if strcmp('on' , ptrState)==0 return; end; % if it is not pointer forget it. 
-key = get (handles.figure1, 'CurrentKey');
+
 modifier=0;
 pos=get(handles.axes1,'CurrentPoint');
+key = get (handles.figure1, 'CurrentKey');
 if strcmp(key, 'control')==1, modifier=1;end
 if strcmp('on' , ptrState)==1, selectTogglePressed(pos, modifier, handles); end
 
@@ -610,32 +613,50 @@ for i =1:frames
 end
 
 
+
+
+
 % --------------------------------------------------------------------
 function reset_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to reset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 global currFrame;
-resetSegementation(currFrame);
+resetSegementation(currFrame, 0);
 loadCurrFrame(currFrame, 1, handles);% repaint figure;
 
+% --------------------------------------------------------------------
+function resetAll_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to resetAll (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+choice = questdlg('Are you sure you want to reset the complete movie?', ...
+	'Reset Movie','No','Yes', 'Yes');
+if strcmp(choice, 'No')==1, return; end
+resetSegementation(1,1);
+global currFrame;
+loadCurrFrame(currFrame, 1, handles);
 
-function resetSegementation(currFrame)
+function resetSegementation(currFrame, allFutFrames)
 global cellNumbers;
 global frameCurves;
 global orgFrameCurves;
 global orgCellNumbers;
-
+eIdx=currFrame;
+if allFutFrames 
+   global stack;
+   [~, ~, eIdx]=size(stack);
+end
 if (isempty(cellNumbers) || isempty(frameCurves) ||...
    isempty(orgFrameCurves) || isempty(orgCellNumbers)), return; end
-
-    curves=orgFrameCurves{currFrame};
-    cellAc=orgCellNumbers{currFrame,2};
-    cellIds=orgCellNumbers{currFrame,1};
-    cellNumbers{currFrame,2}=cellAc;
-    cellNumbers{currFrame,1}=cellIds;
-    frameCurves{currFrame}=curves;
+for i=currFrame:eIdx
+    curves=orgFrameCurves{i};
+    cellAc=orgCellNumbers{i,2};
+    cellIds=orgCellNumbers{i,1};
+    cellNumbers{i,2}=cellAc;
+    cellNumbers{i,1}=cellIds;
+    frameCurves{i}=curves;
+end
 global allCellIds;
 allCellIds=getAllCellIds(cellNumbers);
 
@@ -731,3 +752,11 @@ allCellIds(end+1)=cellIds(end);
 cellNumbers{currFrame,1}=cellIds;
 cellAc(end+1)=1;
 cellNumbers{currFrame,2}=cellAc;
+
+
+% function myCallback(hObj,event)
+% display('t');
+
+%myCallback = @(hObj,event) disp(get(hObj,'SelectionType'));
+
+
