@@ -122,7 +122,6 @@ try zoom(handles.figure1, 'out'); end
 set(handles.filterSize, 'Enable', 'on');
 set(handles.reset, 'Enable', 'on');
 set(handles.liveSpan, 'Enable', 'on');
-set(handles.merge, 'Enable', 'on');
 set(handles.slider1, 'Enable', 'on');
 msg =['1/' num2str(frames)];
 set(handles.frames, 'String',msg);
@@ -288,6 +287,8 @@ for i=1:nCells
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'r', 'LineWidth', 2.0);
     elseif active==1
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(idx,:), 'LineWidth', 2.0);
+    elseif active==3
+        plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'g', 'LineWidth', 2.0);
     end
 end
 legend(handles.axes1,lgd)
@@ -417,7 +418,6 @@ function uitoggletool6_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'on');
-set(handles.merge, 'State', 'off');
 setptr(handles.figure1, 'arrow');
 zoom off
 pan off
@@ -428,14 +428,12 @@ function uitoggletool5_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
-set(handles.merge, 'State', 'off');
 % --------------------------------------------------------------------
 function uitoggletool2_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
-set(handles.merge, 'State', 'off');
 
 % --------------------------------------------------------------------
 function uitoggletool1_OnCallback(hObject, eventdata, handles)
@@ -443,30 +441,13 @@ function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
-set(handles.merge, 'State', 'off');
 
 
-% --------------------------------------------------------------------
-function merge_OnCallback(hObject, eventdata, handles)
-% hObject    handle to merge (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-set(handles.uitoggletool6, 'State', 'off');
-set(handles.merge, 'State', 'on');
-setptr(handles.figure1, 'add');
-zoom off
-pan off
 
- global currFrame;
- global stack;
- im = stack(:,:,currFrame);
- im = mat2gray(im);
- 
-[~, xi, yi] =roipoly(handles.axes1);
 
-% check if there is other curve inside = make it 3
-% add the new curve to the merge room. 
-display('got it');
+
+
+
 
 % --------------------------------------------------------------------
 function merge_OffCallback(hObject, eventdata, handles)
@@ -483,16 +464,15 @@ function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 ptrState=get(handles.uitoggletool6, 'State');
-mergeState=get(handles.merge, 'State');
 %modifiers = get(handles.figure1,'CurrentCharacter');
 
-if strcmp('on' , ptrState)==0 && strcmp('on', mergeState)==0, return; end; % if it is not pointer forget it. 
+if strcmp('on' , ptrState)==0 return; end; % if it is not pointer forget it. 
 key = get (handles.figure1, 'CurrentKey');
 modifier=0;
 pos=get(handles.axes1,'CurrentPoint');
 if strcmp(key, 'control')==1, modifier=1;end
 if strcmp('on' , ptrState)==1, selectTogglePressed(pos, modifier, handles); end
-if strcmp('on' , mergeState)==1, selectMergePressed(pos, handles); end
+
 
 
 function selectTogglePressed(pos, modifier, handles)
@@ -507,20 +487,6 @@ removesCellsFromStack(currFrame, eIdx, cellId, state);
 loadCurrFrame(currFrame, 1, handles);% repaint figure;
 [cellId, ~] =isClickInShape(pos);
 if cellId<1, return; end
-
-
-function selectMergePressed(pos, handles)
-% [cellId, ~] =isClickInShape(pos);
-% if cellId<1, return; end % it is not inside a cell;
-% global mergeData;
-
-% merge.startPos=[pos(1,1), pos(1,2)];
-% merge.id1=cellId;
-% infos=mergeData{currFrame};
-% infos(merge.id1)=infos;
-% mergeData{currFrame}=infos;
-% loadCurrFrame(currFrame, 1, handles)
-% plot(pos(1,1), pos(1,2), '*k');
  
 
 
@@ -577,7 +543,10 @@ if sIdx<1 || eIdx<1 || cellId<1, return; end
 if isempty(cellNumbers), return; end
 for i=sIdx:eIdx
     cellAc=cellNumbers{i,2};
-    cellAc(cellId)=state;
+    cellIds=cellNumbers{i,1};
+    idx =find(cellIds==cellId,1);
+    if isempty(idx), continue; end
+    cellAc(idx)=state;
     cellNumbers{i,2}=cellAc;
 end
 
@@ -714,3 +683,47 @@ function pMerge_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to pMerge (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+uitoggletool2_OnCallback(hObject, eventdata, handles) %set other commands of
+global currFrame; 
+
+[~, xi, yi] =roipoly(handles.axes1);
+markeMergedShapes(xi,yi, currFrame);
+addManualShapeToFrame(xi, yi, currFrame);
+loadCurrFrame(currFrame, 1,handles);
+
+
+
+function markeMergedShapes(xi,yi, currFrame)
+global frameCurves;
+global cellNumbers;
+curves=frameCurves{currFrame};
+cellAc=cellNumbers{currFrame,2};
+for i =1:length(curves)
+    curve = curves{i};
+    [in,on] = inpolygon(curve(:,2), curve(:,1),xi,yi);
+    if sum(in(:))+sum(on(:))>0
+        cellAc(i)=3; %merge
+    end
+end
+cellNumbers{currFrame,2}=cellAc;
+
+function addManualShapeToFrame(xi, yi, currFrame)
+if isempty(xi)|| isempty (yi), return; end;
+global frameCurves;
+global cellNumbers;
+global allCellIds;
+curves=frameCurves{currFrame};
+cellAc=cellNumbers{currFrame,2};
+cellIds=cellNumbers{currFrame,1};
+
+
+curves{end+1}=[yi,xi];
+frameCurves{currFrame}=curves;
+maxId=max(allCellIds);
+cellIds(end+1)=maxId+1;
+allCellIds(end+1)=cellIds(end);
+cellNumbers{currFrame,1}=cellIds;
+cellAc(end+1)=1;
+cellNumbers{currFrame,2}=cellAc;
+
+
