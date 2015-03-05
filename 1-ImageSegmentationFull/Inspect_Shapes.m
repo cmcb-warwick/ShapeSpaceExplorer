@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 04-Mar-2015 13:30:34
+% Last Modified by GUIDE v2.5 05-Mar-2015 08:26:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -266,6 +266,7 @@ currFrame=number;
 if isempty(stack), return; end
 cla(handles.axes1);
 img=stack(:,:,number);
+img = mat2gray(img);
 imagesc(img, 'Parent', handles.axes1);
 axis off; colormap(gray);
 hold on
@@ -455,8 +456,17 @@ set(handles.merge, 'State', 'on');
 setptr(handles.figure1, 'add');
 zoom off
 pan off
-% guiHandle.Merge=1;
-% guidata(handles.figure1,guiHandle);
+
+ global currFrame;
+ global stack;
+ im = stack(:,:,currFrame);
+ im = mat2gray(im);
+ 
+[~, xi, yi] =roipoly(handles.axes1);
+
+% check if there is other curve inside = make it 3
+% add the new curve to the merge room. 
+display('got it');
 
 % --------------------------------------------------------------------
 function merge_OffCallback(hObject, eventdata, handles)
@@ -500,17 +510,18 @@ if cellId<1, return; end
 
 
 function selectMergePressed(pos, handles)
-[cellId, ~] =isClickInShape(pos);
-if cellId<1, return; end % it is not inside a cell;
-global mergeData;
-global currFrame;
-merge.startPos=[pos(1,1), pos(1,2)];
-merge.id1=cellId;
-infos=mergeData{currFrame};
-infos(merge.id1)=infos;
-mergeData{currFrame}=infos;
-loadCurrFrame(currFrame, 1, handles)
-plot(pos(1,1), pos(1,2), '*k');
+% [cellId, ~] =isClickInShape(pos);
+% if cellId<1, return; end % it is not inside a cell;
+% global mergeData;
+
+% merge.startPos=[pos(1,1), pos(1,2)];
+% merge.id1=cellId;
+% infos=mergeData{currFrame};
+% infos(merge.id1)=infos;
+% mergeData{currFrame}=infos;
+% loadCurrFrame(currFrame, 1, handles)
+% plot(pos(1,1), pos(1,2), '*k');
+ 
 
 
 
@@ -698,5 +709,8 @@ global currFrame;
 loadCurrFrame(currFrame, 1, handles);% repaint figure;
 
 
-
-
+% --------------------------------------------------------------------
+function pMerge_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to pMerge (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
