@@ -129,7 +129,6 @@ set(handles.filterSize, 'Enable', 'on');
 set(handles.reset, 'Enable', 'on');
 set(handles.liveSpan, 'Enable', 'on');
 set(handles.slider1, 'Enable', 'on');
-legend(handles.axes1,'State', 'off');
 msg =['1/' num2str(frames)];
 set(handles.frames, 'String',msg);
 
@@ -237,34 +236,7 @@ if ~exist(path, 'file'),
     return; end
 tmp =load(path);
 frameCurves=tmp.frameCurves;
-cellNumbers=tmp.cellNumbers;
-
-% % here we read out the information saved from a previous analysis
-% function cellNumbers =loadSavedCorrections(stackNum, pathName, frameNum, cellNumbers)
-% name=sprintf('CellFrameData%03d.mat',stackNum); % if we have saved something before;
-% try
-%     path =fullfile(pathName, name); 
-%     if ~exist(path, 'file'), return; end
-%     tmp =load(path);
-%     CellFrameData=tmp.CellFrameData;
-%     noCellId=length(CellFrameData);
-%     for i=1:noCellId
-%         cellInfo=CellFrameData(i);
-%         badFrames =cellInfo.BadFrames{3};
-%         if isempty(badFrames), continue; end;
-%         for j =1:frameNum
-%             if any(badFrames(:)==j)
-%                cllActive=cellNumbers{j,2};
-%                cllActive(i)=0;
-%                cellNumbers{j,2}=cllActive; 
-%             end
-%         end
-%     end     
-% end
-
-
-
-
+cellNumbers=tmp.cellNumbers; 
 
 
 function loadCurrFrame(number, activeChange, handles)
@@ -308,6 +280,7 @@ for i=1:nCells
 end
 state=get(handles.uitoggletool9, 'State');
 legend(handles.axes1,lgd);
+if strcmp('off', state),legend(handles.axes1,'off'); end
 % legend(handles.axes1,state);
 % load merge info if state is pressed.
 
