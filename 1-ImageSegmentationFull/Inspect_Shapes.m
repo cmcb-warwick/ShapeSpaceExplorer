@@ -93,7 +93,7 @@ function uipushtool1_ClickedCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 clearvars -global % clears all global variables
-set(handles.uipushsaveBtn, 'Enable', 'on');
+
 
 global pathName;
 [fileName,pathName] = uigetfile('*.mat','Select a processed Matlab file');
@@ -112,8 +112,8 @@ global frameCurves;
 global cellNumbers;
 global orgFrameCurves;
 global orgCellNumbers;
-[frameCurves,cellNumbers]=loadCurveDataFrom(pathName, fileName, stackNumber);
-[orgFrameCurves,orgCellNumbers]=loadCurveDataFrom(pathName, fileName, stackNumber);
+[frameCurves,cellNumbers]=loadSavedCurveDataFrom(pathName, fileName, stackNumber);
+[orgFrameCurves,orgCellNumbers]=loadCurveDataFrom(pathName, fileName);
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
 [~,~,frames]=size(stack);
@@ -122,17 +122,18 @@ updateSliderSteps(frames, handles);
 global allCellIds;
 allCellIds=getAllCellIds(cellNumbers);
 loadCurrFrame(1, 1, handles);
+%set up gui
+set(handles.uipushsaveBtn, 'Enable', 'on');
 try zoom(handles.figure1, 'out'); end
 set(handles.filterSize, 'Enable', 'on');
 set(handles.reset, 'Enable', 'on');
 set(handles.liveSpan, 'Enable', 'on');
 set(handles.slider1, 'Enable', 'on');
+legend(handles.axes1,'State', 'off');
 msg =['1/' num2str(frames)];
 set(handles.frames, 'String',msg);
 
-%plot(handles.axes1, handles.Frame_curves{handles.Frame_no}{j}(:,2),
-% handles.Frame_curves{handles.Frame_no}{j}(:,1),'Color',handles.cmap(handles.Cell_numbers{handles.Frame_no}(j),:));
-                
+               
 
 
 % --- Executes on slider movement.
@@ -207,7 +208,7 @@ end
 % which hopefully have the expected structure 
 % if expected structure is not found, the variables
 % are returned empty.
-function [frameCurves,cellNumbers] =loadCurveDataFrom(pathName, fileName, stackNum)
+function [frameCurves,cellNumbers] =loadCurveDataFrom(pathName, fileName)
 frameCurves=[];cellNumbers={};
 [~,fName,ext] = fileparts(fileName);
 
@@ -226,31 +227,40 @@ for i=1:frameNum % for initial state;
     cellNumbers{i,1}=cellInfo;
     cellNumbers{i,2}=cellActive;
 end
-%cellNumbers =loadSavedCorrections(stackNum, pathName, frameNum, cellNumbers);
 
 
-% here we read out the information saved from a previous analysis
-function cellNumbers =loadSavedCorrections(stackNum, pathName, frameNum, cellNumbers)
-name=sprintf('CellFrameData%03d.mat',stackNum); % if we have saved something before;
-try
-    path =fullfile(pathName, name); 
-    if ~exist(path, 'file'), return; end
-    tmp =load(path);
-    CellFrameData=tmp.CellFrameData;
-    noCellId=length(CellFrameData);
-    for i=1:noCellId
-        cellInfo=CellFrameData(i);
-        badFrames =cellInfo.BadFrames{3};
-        if isempty(badFrames), continue; end;
-        for j =1:frameNum
-            if any(badFrames(:)==j)
-               cllActive=cellNumbers{j,2};
-               cllActive(i)=0;
-               cellNumbers{j,2}=cllActive; 
-            end
-        end
-    end     
-end
+function [frameCurves,cellNumbers] = loadSavedCurveDataFrom(pathName, fileName, stackNumber)
+name=sprintf('ManCorrtdCrves%03d.mat',stackNumber); 
+path =fullfile(pathName, name);
+if ~exist(path, 'file'), 
+    [frameCurves,cellNumbers] =loadCurveDataFrom(pathName, fileName);
+    return; end
+tmp =load(path);
+frameCurves=tmp.frameCurves;
+cellNumbers=tmp.cellNumbers;
+
+% % here we read out the information saved from a previous analysis
+% function cellNumbers =loadSavedCorrections(stackNum, pathName, frameNum, cellNumbers)
+% name=sprintf('CellFrameData%03d.mat',stackNum); % if we have saved something before;
+% try
+%     path =fullfile(pathName, name); 
+%     if ~exist(path, 'file'), return; end
+%     tmp =load(path);
+%     CellFrameData=tmp.CellFrameData;
+%     noCellId=length(CellFrameData);
+%     for i=1:noCellId
+%         cellInfo=CellFrameData(i);
+%         badFrames =cellInfo.BadFrames{3};
+%         if isempty(badFrames), continue; end;
+%         for j =1:frameNum
+%             if any(badFrames(:)==j)
+%                cllActive=cellNumbers{j,2};
+%                cllActive(i)=0;
+%                cellNumbers{j,2}=cllActive; 
+%             end
+%         end
+%     end     
+% end
 
 
 
@@ -272,6 +282,7 @@ img=stack(:,:,number);
 img = mat2gray(img);
 imagesc(img, 'Parent', handles.axes1);
 axis off; colormap(gray);
+axis equal;
 hold on
 global frameCurves; global cellNumbers;
 if isempty(frameCurves) || isempty(cellNumbers), return; end
@@ -295,7 +306,9 @@ for i=1:nCells
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'g', 'LineWidth', 2.0);
     end
 end
-legend(handles.axes1,lgd)
+state=get(handles.uitoggletool9, 'State');
+legend(handles.axes1,lgd);
+% legend(handles.axes1,state);
 % load merge info if state is pressed.
 
 %uitoggletool9
@@ -329,8 +342,6 @@ end
 fileName=sprintf('CellArray%03d.mat',stackNumber);
 cPath =fullfile(pathName, fileName);
 CellArray = getCellArray();
-
-
 fileName=sprintf('CellFrameData%03d.mat',stackNumber); 
 fPath =fullfile(pathName, fileName);
 CellFrameData=getCellFrameData(stackNumber);
@@ -342,6 +353,11 @@ save(fPath,'CellFrameData', '-v7.3');
 set(handles.uipushsaveBtn, 'Enable', 'on');
 msg = DialogMessages(9);
 helpdlg(msg, 'Info');
+
+fileName=sprintf('ManCorrtdCrves%03d.mat',stackNumber); 
+mPath =fullfile(pathName, fileName);
+save(mPath,'frameCurves', 'cellNumbers', '-v7.3');
+
 
 
 % this function creates the structure as it was defined
@@ -753,10 +769,5 @@ cellNumbers{currFrame,1}=cellIds;
 cellAc(end+1)=1;
 cellNumbers{currFrame,2}=cellAc;
 
-
-% function myCallback(hObj,event)
-% display('t');
-
-%myCallback = @(hObj,event) disp(get(hObj,'SelectionType'));
 
 
