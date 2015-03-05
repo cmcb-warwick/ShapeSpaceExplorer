@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 05-Mar-2015 08:26:56
+% Last Modified by GUIDE v2.5 05-Mar-2015 10:20:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -108,8 +108,10 @@ if isempty(stack)
 end
 global frameCurves;
 global cellNumbers;
-
+global orgFrameCurves;
+global orgCellNumbers;
 [frameCurves,cellNumbers]=loadCurveDataFrom(pathName, fileName, stackNumber);
+[orgFrameCurves,orgCellNumbers]=loadCurveDataFrom(pathName, fileName, stackNumber);
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
 [~,~,frames]=size(stack);
@@ -222,7 +224,7 @@ for i=1:frameNum % for initial state;
     cellNumbers{i,1}=cellInfo;
     cellNumbers{i,2}=cellActive;
 end
-cellNumbers =loadSavedCorrections(stackNum, pathName, frameNum, cellNumbers);
+%cellNumbers =loadSavedCorrections(stackNum, pathName, frameNum, cellNumbers);
 
 
 % here we read out the information saved from a previous analysis
@@ -613,25 +615,29 @@ function reset_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to reset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-resetSegementation();
+
 global currFrame;
+resetSegementation(currFrame);
 loadCurrFrame(currFrame, 1, handles);% repaint figure;
 
 
-function resetSegementation()
+function resetSegementation(currFrame)
 global cellNumbers;
-global stack;
-if isempty(stack), return; end;
-[~, ~, frames]=size(stack);
-for i =1:frames
-    cellAc=cellNumbers{i,2};
-    cellId=cellNumbers{i,1};
-    for j=1:length(cellId)
-        cellAc(j)=1; % reset information
-    end
-    cellNumbers{i,2}=cellAc;
-end
+global frameCurves;
+global orgFrameCurves;
+global orgCellNumbers;
 
+if (isempty(cellNumbers) || isempty(frameCurves) ||...
+   isempty(orgFrameCurves) || isempty(orgCellNumbers)), return; end
+
+    curves=orgFrameCurves{currFrame};
+    cellAc=orgCellNumbers{currFrame,2};
+    cellIds=orgCellNumbers{currFrame,1};
+    cellNumbers{currFrame,2}=cellAc;
+    cellNumbers{currFrame,1}=cellIds;
+    frameCurves{currFrame}=curves;
+global allCellIds;
+allCellIds=getAllCellIds(cellNumbers);
 
 function filterOutLifeSpanShorterThan(framNum)
 global cellNumbers;
@@ -725,5 +731,3 @@ allCellIds(end+1)=cellIds(end);
 cellNumbers{currFrame,1}=cellIds;
 cellAc(end+1)=1;
 cellNumbers{currFrame,2}=cellAc;
-
-
