@@ -86,19 +86,28 @@ function varargout = Inspect_Shapes_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+function checkForSavingCurrentMovie(hObject, eventdata, handles)
+global stack;
+if ~isempty(stack)
+    choice = questdlg('Would you like to save current modifiation?', ...
+	'Save Segementation','No','Yes', 'Yes');
+    if strcmp('Yes', choice),
+        uipushsaveBtn_ClickedCallback(hObject, eventdata, handles); end   
+end
 
 % --------------------------------------------------------------------
 function uipushtool1_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to uipushtool1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+checkForSavingCurrentMovie(hObject, eventdata, handles);
+
 clearvars -global % clears all global variables
-
-
+cla(handles.axes1);
+global stack;
 global pathName;
 [fileName,pathName] = uigetfile('*.mat','Select a processed Matlab file');
 if fileName==0, return; end
-global stack;
 global stackNumber;
 [stack, stackNumber] = loadStackFromFile(pathName, fileName);
 if isempty(stack)
@@ -131,8 +140,6 @@ set(handles.liveSpan, 'Enable', 'on');
 set(handles.slider1, 'Enable', 'on');
 msg =['1/' num2str(frames)];
 set(handles.frames, 'String',msg);
-zoom off
-pan off
                
 
 
@@ -255,7 +262,6 @@ img=stack(:,:,number);
 img = mat2gray(img);
 imagesc(img, 'Parent', handles.axes1);
 axis off; colormap(gray);
-axis equal;
 hold on
 global frameCurves; global cellNumbers;
 if isempty(frameCurves) || isempty(cellNumbers), return; end
@@ -454,6 +460,7 @@ function setId_OffCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 setptr(handles.figure1, 'arrow');
+set(handles.setId, 'State', 'off');
 
 % % --------------------------------------------------------------------
 % function merge_OffCallback(hObject, eventdata, handles)
