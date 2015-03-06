@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 05-Mar-2015 20:50:24
+% Last Modified by GUIDE v2.5 06-Mar-2015 10:26:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -131,7 +131,8 @@ set(handles.liveSpan, 'Enable', 'on');
 set(handles.slider1, 'Enable', 'on');
 msg =['1/' num2str(frames)];
 set(handles.frames, 'String',msg);
-
+zoom off
+pan off
                
 
 
@@ -411,6 +412,7 @@ function uitoggletool6_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'on');
+set(handles.setId, 'State', 'off');
 setptr(handles.figure1, 'arrow');
 zoom off
 pan off
@@ -421,35 +423,46 @@ function uitoggletool5_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
+set(handles.setId, 'State', 'off');
 % --------------------------------------------------------------------
 function uitoggletool2_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
-
+set(handles.setId, 'State', 'off');
 % --------------------------------------------------------------------
 function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
-
-
-
-
-
-
-
+set(handles.setId, 'State', 'off');
 
 % --------------------------------------------------------------------
-function merge_OffCallback(hObject, eventdata, handles)
-% hObject    handle to merge (see GCBO)
+function setId_OnCallback(hObject, eventdata, handles)
+% hObject    handle to setId (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% guiHandle.Merge=0;
-% guidata(handles.figure1,guiHandle);
+set(handles.uitoggletool6, 'State', 'off');
+set(handles.setId, 'State', 'on');
+setptr(handles.figure1, 'crosshair');
+
+% --------------------------------------------------------------------
+function setId_OffCallback(hObject, eventdata, handles)
+% hObject    handle to setId (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 setptr(handles.figure1, 'arrow');
+
+% % --------------------------------------------------------------------
+% function merge_OffCallback(hObject, eventdata, handles)
+% % hObject    handle to merge (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% % guiHandle.Merge=0;
+% % guidata(handles.figure1,guiHandle);
+% setptr(handles.figure1, 'arrow');
 % --- Executes on mouse press over figure background, over a disabled or
 % --- inactive control, or over an axes background.
 function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
@@ -457,16 +470,47 @@ function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 ptrState=get(handles.uitoggletool6, 'State');
+idState=get(handles.setId, 'State');
 %modifiers = get(handles.figure1,'CurrentCharacter');
-
-if strcmp('on' , ptrState)==0 return; end; % if it is not pointer forget it. 
-
-modifier=0;
 pos=get(handles.axes1,'CurrentPoint');
+if strcmp('on' , ptrState)==1    
+modifier=0;
+
 key = get (handles.figure1, 'CurrentKey');
 if strcmp(key, 'control')==1, modifier=1;end
 if strcmp('on' , ptrState)==1, selectTogglePressed(pos, modifier, handles); end
+return;
+end;
+global currFrame;
+if strcmp('on', idState)==1
+   changeIdOfCell(pos);
+   loadCurrFrame(currFrame,1,handles);
+end
 
+
+function changeIdOfCell(pos)
+[cellId, ~] =isClickInShape(pos);
+if cellId<1, return; end
+msg = ['The current cell id = ' num2str(cellId) ', which will changed into the New Id.'];
+newId=FilterDialog(msg, 'new Id ', cellId);
+if newId==cellId, return; end
+changeIds(cellId, newId);
+
+
+function changeIds(cellId, newId)
+global cellNumbers;
+global stack;
+
+[~,~,N]=size(stack);
+for i=1:N
+    cellIds=cellNumbers{i,1};
+    idx = find(cellIds==cellId);
+    if isempty(idx), continue; end
+    cellIds(idx)=newId;
+    cellNumbers{i,1}=cellIds;
+end
+global allCellIds;
+allCellIds=getAllCellIds(cellNumbers);
 
 
 function selectTogglePressed(pos, modifier, handles)
@@ -474,6 +518,7 @@ global currFrame;
 global stack;
 [~,~,N]=size(stack);
 [cellId, state] =isClickInShape(pos);
+if cellId<1, return; end
 eIdx=currFrame; 
 if modifier, eIdx=N; end
 removesCellsFromStack(currFrame, eIdx, cellId, state);
@@ -703,6 +748,7 @@ uitoggletool2_OnCallback(hObject, eventdata, handles) %set other commands of
 global currFrame; 
 
 [~, xi, yi] =roipoly(handles.axes1);
+if isempty(xi)|| isempty(yi), return; end
 markeMergedShapes(xi,yi, currFrame);
 addManualShapeToFrame(xi, yi, currFrame);
 loadCurrFrame(currFrame, 1,handles);
@@ -741,6 +787,3 @@ allCellIds(end+1)=cellIds(end);
 cellNumbers{currFrame,1}=cellIds;
 cellAc(end+1)=1;
 cellNumbers{currFrame,2}=cellAc;
-
-
-
