@@ -34,7 +34,7 @@ savefig(fPath);
 
 figure % content figure---------------------
 set(gcf,'color','w');
-plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+plot(SCORE(:,1),SCORE(:,2),'*', 'color', orangeCol)
 if axes_equal, axis equal; axis tight; end
 hold on
 xlim([b1(1) b1(end)]);
@@ -51,7 +51,7 @@ end
 for i=2:y_slices
    plot(xm,[b2(i) b2(i)],'color',[.5,.5,.5]);
 end
-plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+plot(SCORE(:,1),SCORE(:,2),'*', 'color', orangeCol)
 fPath=fullfile(path, '4_ShapeSlicer_content_only.fig');
 savefig(fPath);
 %----------------------------------------------------
@@ -86,7 +86,7 @@ end
 
 
 subplot(y_slices+1, x_slices+1,p);
-plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
+plot(SCORE(:,1),SCORE(:,2),'*', 'color', orangeCol)
 if axes_equal, axis equal; end
 hold on
 xlim([b1(1) b1(end)]);

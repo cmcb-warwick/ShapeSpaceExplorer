@@ -74,7 +74,7 @@ for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
-    plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(i,:))
+    plot(SCORE(points,1),SCORE(points,2),'*','Color',colour(i,:))
     hold on
 end
 axis tight
