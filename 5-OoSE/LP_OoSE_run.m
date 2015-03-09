@@ -80,13 +80,13 @@ for i=1:train_nobs
     
 end
 waitbar(1,h,'OoSE Step 3. Embedding, please wait.');
-load(path_to_LPtrained)
+load(path_to_LPtrained);
 
 ndims=length(d);
 K=length(d{1});
 %train_nobs=length(D);
 sum_sk=zeros(N,ndims);
-save([new_unique_savedestination '/Dist_mat.mat'], 'D','-v7.3')
+save([new_unique_savedestination '/Dist_mat.mat'], 'D','-v7.3');
 D=D.^2;
 for n=1:N
     for m=1:ndims
@@ -106,9 +106,9 @@ end
 
 OoSE_emb=sum_sk;
 
-save([new_unique_savedestination '/OoSE_embedding.mat'], 'OoSE_emb','-v7.3')
-waitbar(1,h,'Complete');
-
+save([new_unique_savedestination '/OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
+h=waitbar(1,h,'Complete');
+delete(h);
 
 end
 

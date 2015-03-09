@@ -22,7 +22,7 @@ function varargout = OoseConfig(varargin)
 
 % Edit the above text to modify the response to help OoseConfig
 
-% Last Modified by GUIDE v2.5 06-Mar-2015 15:18:17
+% Last Modified by GUIDE v2.5 09-Mar-2015 11:40:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,8 +78,8 @@ function varargout = OoseConfig_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-struc.folder = get(handles.edit1, 'String');
-struc.folder = get(handles.edti1, 'String');
+struc.anaFolder = get(handles.edit1, 'String');
+struc.OosFolder = get(handles.edit2, 'String');
 varargout{1}=struc;
 delete(handles.figure1);
 
@@ -121,14 +121,37 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-folder =get(handles.edit1, 'String');
-if  ~exist(folder, 'dir')
+folderAna =get(handles.edit1, 'String');
+folderOos =get(handles.edit2, 'String');
+
+if strcmp(folderAna,'...')==1 || strcmp(folderOos,'...')
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(12);
+    errordlg(msg, 'Error', mode);
+    return;
+end
+if  ~exist(folderAna, 'dir')
     mode = struct('WindowStyle','non-modal','Interpreter','tex');
     msg = DialogMessages(5);
     errordlg(msg, 'Error', mode);
-else
-    figure1_CloseRequestFcn(hObject, eventdata, handles)
+    return;
 end
+
+if  ~exist(folderOos, 'dir')
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(5);
+    errordlg(msg, 'Error', mode);
+    return;
+end
+if strcmp(folderAna,folderOos)
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(13);
+    errordlg(msg, 'Error', mode);
+    return;
+end
+
+    
+figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 
 
@@ -181,8 +204,6 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-folder =uigetdir(matlabroot,'Select Analysis Directory');
+folder =uigetdir(matlabroot,'Select OOSE Directory');
 set(handles.edit2, 'String',folder)  
 set(handles.pushbutton2, 'enable', 'on'); 
-
-
