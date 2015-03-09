@@ -19,7 +19,7 @@ exem_D=D(wish_list,:);
 over_clusters=T2(wish_idx);
 
 for i=unique(over_clusters)
-    plot(OoSE_emb(over_clusters==i,1),OoSE_emb(over_clusters==i,2),'.','color',colour(i,:))
+    plot(OoSE_emb(over_clusters==i,1),OoSE_emb(over_clusters==i,2),'*','color',colour(i,:))
     if i==1; hold on; end
 end
 
@@ -71,23 +71,12 @@ for i=1:N
     NewCellArray{i}=CellShapeData.point(i).coords_comp;
 end
 
-% colour_idx(colour_idx==5)=4;
-% colour_idx(colour_idx==6)=4;
-if number==4
-    colour=[1 0 0; 0 0.75 0.75; 0.75 0.75 0; 0 0 1];
-elseif number==6
-    colour=[1 0 0; 0 0.75 0.75; 0.75 0.75 0; 0 0 1; 0 0.5 0; 0.75 0 0.75];
-else
-    %     colour=hsv(number*6/5);
-    %     colour=colour(1:number,:);
-    %     %colour=flipud(colour);
-    %     colour_norm=colour*colour';
-    %     colour_norm2=repmat(sqrt(diag(colour_norm)),1,3);
-    %     colour=0.75*colour./(colour_norm2);
-    colour=jet(number);
-    colour=flipud(colour);
-    colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
-end
+
+% colour
+colour=jet(number);
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+
 n_exems=length(wish_list);
 exem_list=sort(wish_list);
 figure
@@ -122,43 +111,7 @@ axis equal
 grid on
 
 
-% L=length(wish_list);
-% 
-% b=floor(sqrt(L));
-% a=ceil(L/b);
-% 
-% figure
-% h = [];
-% t = 1;
-% A = 0.9/a;
-% B=0.9/b;
-% for i=1:b
-%     y = (b-i)/b;
-%     for j=1:a
-%         x = (j-1)/a;
-%         h(t) = axes('units','norm','pos',[x y A B]);
-%         t = t+1;
-%     end
-% end
-% 
-% c=1;
-% for i=1:number
-% %    clust_num=clust_order(i);
-%     clust_idx=clust_order(i);
-%     exems=wish_list(T2==clust_idx);
-%     for j=1:length(exems)
-%         plot(real(NewCellArray{exems(j)}),imag(NewCellArray{exems(j)}),'color',colour(i,:),'LineWidth',2,'parent',h(c))
-%         axis(h(c), 'equal')
-%         axis(h(c),[-0.4 0.4 -0.4 0.4])
-%         axis(h(c), 'xy','off')
-%         c=c+1;
-%     end
-%     
-% end
-% while c<=a*b
-%     delete(h(c))
-%     c=c+1;
-% end
+
 
 end
 
