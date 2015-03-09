@@ -6,7 +6,8 @@ function [ output_args ] = OoSE_bargraphs( number,trainingCellShapeData,APe_outp
 load(fullfile(OoSE_experiment_folder, '/OoSE_embedding.mat'));
 load(fullfile(OoSE_experiment_folder, '/Dist_mat.mat'))
 load(fullfile(APe_output_foldername, '/wish_list.mat'))
-
+figPath = fullfile( APe_output_foldername, 'Figures');
+if ~exist(figPath,'dir'),mkdir(figPath);end 
 
 [T2,colour]=ordered_list_edit(number,trainingCellShapeData,APe_output_foldername);
 if number==0
@@ -22,6 +23,8 @@ for i=unique(over_clusters)
     plot(OoSE_emb(over_clusters==i,1),OoSE_emb(over_clusters==i,2),'*','color',colour(i,:))
     if i==1; hold on; end
 end
+fPath=fullfile(figPath,'5_OsSE_dots.fig');
+savefig(fPath);
 
 num=size(colour,1);
 figure
@@ -30,6 +33,8 @@ for i=1:num
     set(h,'FaceColor',colour(i,:))
      if i == 1, hold on, end
 end
+fPath=fullfile(figPath, '5_OsSE_bargraph.fig');
+savefig(fPath);
 
 end
 
