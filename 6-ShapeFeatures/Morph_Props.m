@@ -8,8 +8,9 @@ if ~exist('savedestination','var')
     savedestination=pwd; 
 end
 L=length(CellArray);
-
+h=waitbar(0, 'keep waiting');
 for i=1:L
+   waitbar(i/L, h, 'keep waiting');
    coords=CellArray{i};
    binimage=BinIm(coords,i);
    morphframe_temp=regionprops(binimage,'all');
@@ -41,7 +42,7 @@ for i=1:L
    morphframe_temp.Symmetry=symmetry_score( coords, morphframe_temp.Orientation, morphframe_temp.MajorAxisLength );
    morphframe(i)=morphframe_temp;
 end
-
+delete(h)
 save([savedestination '/Morphframe.mat'],'morphframe','-v7.3')
 
 end

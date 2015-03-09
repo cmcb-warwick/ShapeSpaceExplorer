@@ -1,4 +1,4 @@
-function [ output_args ] = Prop_display( CellShapeData,morphframe, propname , cell_numbers)
+function [ output_args ] = Prop_display( CellShapeData,morphframe, propname , folder, cell_numbers)
 %PROP_DISPLAY Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -31,6 +31,8 @@ function [ output_args ] = Prop_display( CellShapeData,morphframe, propname , ce
 if ~exist('cell_numbers','var')
     cell_numbers=1:length(CellShapeData.point);
 end
+figPath = fullfile( folder, 'Figures');
+if ~exist(figPath,'dir'),mkdir(figPath);end 
 
 L=length(cell_numbers);
 col_res=512;
@@ -70,10 +72,11 @@ mat=ones(sb1,1)*(1:(sb2))+(sb2+2)*(0:(sb1-1))'*ones(1,sb2);
 subplot(sb1,sb2+2,mat(:)');
 
 for i=1:L
-    plot(SCORE(i,1),SCORE(i,2),'.','Color',colourmap(norm_prop(i),:));
+    plot(SCORE(i,1),SCORE(i,2),'*','Color',colourmap(norm_prop(i),:));
     hold on
 end
 axis equal
+title( ['Display Shape Feature:' propname]);
 %sb=6;
 set(gca,'FontSize',12);
 subplot(sb1,sb2+2,(sb2+1):(sb2+2):(sb1*(sb2+2)-1));
@@ -97,10 +100,15 @@ y=hist(prop,x);
 barh(x,y);
 set(gca,'YAxisLocation','right');
 ax=get(gca,'Xtick');
-set(gca,'Xtick',ax([1 end]))
+set(gca,'Xtick',ax([1 end]));
 
-%saveas(gcf,['37818_feature_plots/' propname '.fig']);
-%saveas(gcf,['37818_feature_plots/' propname '.eps'],'epsc');
+
+
+
+name = ['6_ShapeFeature_' propname '.fig'];
+path = fullfile(figPath, name);
+savefig(path);
+
 
 end
 
