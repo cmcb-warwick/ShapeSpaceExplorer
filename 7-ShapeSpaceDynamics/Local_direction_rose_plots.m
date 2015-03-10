@@ -24,6 +24,7 @@ N=length(Cell_cell);
 for j=1:N
     
     L=size(Cell_cell{j},1);
+    if L<2, continue; end
     for i=1:L
         vec=Cell_cell{j}(i,:);
         xbox=ceil(Nbins(1)*((vec(1)-xm)/dx));
