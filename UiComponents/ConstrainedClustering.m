@@ -22,7 +22,7 @@ function varargout = ConstrainedClustering(varargin)
 
 % Edit the above text to modify the response to help ConstrainedClustering
 
-% Last Modified by GUIDE v2.5 16-Feb-2015 13:40:36
+% Last Modified by GUIDE v2.5 11-Mar-2015 11:17:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -67,7 +67,7 @@ img=imread(imFile);
 imshow(img,'Parent',handles.axes2)
 
 % UIWAIT makes ConstrainedClustering wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -78,8 +78,11 @@ function varargout = ConstrainedClustering_OutputFcn(hObject, eventdata, handles
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
-
+struc.fpath= get(handles.edit1, 'String');
+struc.classes=get(handles.popupmenu1,'Value');
+varargout{1} = struc;
+h= handles.figure1;
+delete(h);
 
 
 function edit1_Callback(hObject, eventdata, handles)
@@ -109,14 +112,12 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[FileName,PathName] = uigetfile('*.mat','Select the MATLAB CellShapeData.mat file');
-fPath=fullfile(PathName, FileName);
+fPath =uigetdir(matlabroot,'Select Analysis Directory');
 set(handles.edit1, 'String','...')
-if exist(fPath, 'file') % set file name, if it is correct file
-    if checkIfCorrectFilepath(fPath)==1
-      set(handles.edit1, 'String',fPath)  
-    end
+if exist(fPath, 'dir')
+  set(handles.edit1, 'String',fPath);  
 end
+
 
 
 % --- Executes on button press in pushbutton2.
@@ -125,13 +126,13 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 fpath= get(handles.edit1, 'String');
-classes=get(handles.popupmenu1,'Value');
-[folder,~,~] = fileparts(fpath);
-if checkIfCorrectFilepath(fpath)==1
-   data = load(fpath);
-   ordered_list(classes,data.CellShapeData, folder);
+if ~exist(fpath, 'dir'), 
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(5);
+    errordlg(msg, 'Error', mode);
+else
+figure1_CloseRequestFcn(hObject, eventdata, handles)
 end
-
 
 
 
@@ -158,14 +159,20 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-function bool = checkIfCorrectFilepath(path)
-bool =0;
-try
-    data = load(path);
-    a=data.CellShapeData;
-    bool=1;
-catch 
-        mode = struct('WindowStyle','non-modal','Interpreter','tex');
-        msg = DialogMessages(1);
-        errordlg(msg, 'Error', mode);
+
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+h= handles.figure1;
+if isequal(get(h, 'waitstatus'), 'waiting')
+    uiresume(h)
+else
+    h= handles.figure1;
+    delete(h);
 end

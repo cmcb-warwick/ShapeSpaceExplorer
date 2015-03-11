@@ -46,7 +46,7 @@ for j=1:N
     end
 end
 
-
+clf
 for j=1:Nbins(2);
     for i=1:Nbins(1);
         
