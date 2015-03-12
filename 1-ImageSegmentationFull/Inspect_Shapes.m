@@ -269,7 +269,7 @@ fCurves=frameCurves{number};
 cNumber=cellNumbers{number,1};
 cellActive=cellNumbers{number,2};
 nCells=length(cNumber);
-colour=cool(length(allCellIds));
+colour=lines(length(allCellIds));
 lgd={};
 for i=1:nCells
     curve =fCurves{i};
@@ -278,7 +278,7 @@ for i=1:nCells
     str =[ 'cell id: ' num2str(idx)];
     lgd{end+1}=str;
     if active==0
-        plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'r', 'LineWidth', 2.0);
+        plot(handles.axes1, curve(:,2), curve(:,1), 'color', [0.7 0.7 0.7], 'LineWidth', 2.0);
     elseif active==1
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(idx,:), 'LineWidth', 2.0);
     elseif active==3
