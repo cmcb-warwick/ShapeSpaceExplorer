@@ -1,4 +1,4 @@
-function [ output_args ] = Local_direction_rose_plots( DynamicData, varargin )
+function [ output_args ] = Local_direction_rose_plots( DynamicData, folder, varargin )
 %AVERAGE_LOCAL_DIRECTION Summary of this function goes here
 %   Cell_cell should be a cell array where each cell contains the embedded
 %shape space path of one cell through time, this should be a Kx2 matrix, K being the number of time points for the cell.
@@ -7,6 +7,9 @@ if ~isempty(varargin)
 else
     Nbins=[10 6];
 end
+
+figPath = fullfile( folder, 'Figures');
+if ~exist(figPath,'dir'),mkdir(figPath);end 
 Cell_cell={DynamicData(:).track};
 
 Cell_cell=Cell_cell(:);
@@ -73,6 +76,8 @@ for j=1:Nbins(2);
     end
 end
 
-
+name = ['7_SlicedSpacedShape_Dynamics_' num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices.fig'];
+path = fullfile(figPath, name);
+savefig(path);
 
 end
