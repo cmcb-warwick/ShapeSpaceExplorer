@@ -770,7 +770,7 @@ for i =1:length(curves)
     curve = curves{i};
     [in,on] = inpolygon(curve(:,2), curve(:,1),xi,yi);
     if sum(in(:))+sum(on(:))>0
-        cellAc(i)=3; %merge
+        cellAc(i)=0; %merge
     end
 end
 cellNumbers{currFrame,2}=cellAc;
