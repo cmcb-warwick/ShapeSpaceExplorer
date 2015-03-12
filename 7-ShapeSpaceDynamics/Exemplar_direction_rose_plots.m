@@ -10,6 +10,9 @@ function [ output_args ] = Exemplar_direction_rose_plots( DynamicData, CellShape
 
 load([APe_output_foldername '/APclusterOutput.mat'])
 load([APe_output_foldername '/wish_list.mat'])
+
+figPath = fullfile( APe_output_foldername, 'Figures');
+if ~exist(figPath,'dir'),mkdir(figPath);end 
 Cell_cell={DynamicData(:).track};
 
 Cell_cell=Cell_cell(:);
@@ -80,6 +83,10 @@ for i=1:exL
 end
 axis equal
 linkaxes
+
+name = ['7_ClusteredSpacedShape_Dynamics_' num2str(number) '_clusters.fig'];
+path = fullfile(figPath, name);
+savefig(path);
 end
 
 

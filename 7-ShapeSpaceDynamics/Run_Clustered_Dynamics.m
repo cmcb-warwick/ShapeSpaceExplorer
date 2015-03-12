@@ -1,5 +1,8 @@
 function  Run_Clustered_Dynamics()
     out=ConstrainedClustering();
+    if ~isempty(out.handle), 
+        try delete(out.handle); end 
+    end
     folder =out.fpath;
     classes = out.classes;    
 cellShapePath = fullfile(folder, 'CellShapeData.mat');

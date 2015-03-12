@@ -80,10 +80,10 @@ function varargout = ConstrainedClustering_OutputFcn(hObject, eventdata, handles
 % Get default command line output from handles structure
 struc.fpath= get(handles.edit1, 'String');
 struc.classes=get(handles.popupmenu1,'Value');
+struc.handle=handles.figure1;
 varargout{1} = struc;
 h= handles.figure1;
 delete(h);
-figure1_CloseRequestFcn(hObject, eventdata, handles);
 
 function edit1_Callback(hObject, eventdata, handles)
 % hObject    handle to edit1 (see GCBO)
