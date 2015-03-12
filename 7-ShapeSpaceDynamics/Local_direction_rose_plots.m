@@ -51,7 +51,8 @@ for j=1:Nbins(2);
     for i=1:Nbins(1);
         
         if ~isempty(vecs_in_box{j,i})
-            figure(1)
+            gf=figure(1);
+            set(gf, 'Visible', 'off');
             h=rose(vecs_in_box{j,i});
             x = get(h,'Xdata');
             y = get(h,'Ydata');

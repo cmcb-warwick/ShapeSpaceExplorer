@@ -22,7 +22,7 @@ function varargout = guiShapeSlicer(varargin)
 
 % Edit the above text to modify the response to help guiShapeSlicer
 
-% Last Modified by GUIDE v2.5 13-Feb-2015 16:45:32
+% Last Modified by GUIDE v2.5 12-Mar-2015 09:28:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -71,7 +71,7 @@ img=imread(imFile);
 imshow(img,'Parent',handles.axes3)
 
 % UIWAIT makes guiShapeSlicer wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -82,7 +82,12 @@ function varargout = guiShapeSlicer_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+struc.path= get(handles.edit1, 'String');
+struc.xSlice=get(handles.popupmenu2,'Value');
+struc.ySlice=get(handles.popupmenu3,'Value');
+struc.axesEqual=get(handles.checkbox1,'Value');
+struc.handle = handles.figure1;
+varargout{1} = struc;
 
 
 
@@ -113,27 +118,13 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[FileName,PathName] = uigetfile('*.mat','Select the MATLAB CellShapeData.mat file');
-fPath=fullfile(PathName, FileName);
+fPath =uigetdir(matlabroot,'Select Analysis Directory');
 set(handles.edit1, 'String','...')
-if exist(fPath, 'file') % set file name, if it is correct file
-    if checkIfCorrectFilepath(fPath)==1
-      set(handles.edit1, 'String',fPath)  
-    end
+if exist(fPath, 'dir')
+  set(handles.edit1, 'String',fPath);  
 end
 
 
-function bool = checkIfCorrectFilepath(path)
-bool =0;
-try
-    data = load(path);
-    a=data.CellShapeData;
-    bool=1;
-catch 
-        mode = struct('WindowStyle','non-modal','Interpreter','tex');
-        msg = DialogMessages(1);
-        errordlg(msg, 'Error', mode);
-end
 
 
 
@@ -143,15 +134,24 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 fpath= get(handles.edit1, 'String');
-xslice=get(handles.popupmenu2,'Value');
-yslice=get(handles.popupmenu3,'Value');
-axesEqual=get(handles.checkbox1,'Value');
-[folder,~,~] = fileparts(fpath);
-path = fullfile(folder, 'Figures');
-if checkIfCorrectFilepath(fpath)==1
-   data = load(fpath);
-   SpaceSlicer(data.CellShapeData, xslice,yslice, path, axesEqual);
+if ~exist(fpath, 'dir'), 
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(5);
+    errordlg(msg, 'Error', mode);
+else
+figure1_CloseRequestFcn(hObject, eventdata, handles);
 end
+
+% fpath= get(handles.edit1, 'String');
+% xslice=get(handles.popupmenu2,'Value');
+% yslice=get(handles.popupmenu3,'Value');
+% axesEqual=get(handles.checkbox1,'Value');
+% [folder,~,~] = fileparts(fpath);
+% path = fullfile(folder, 'Figures');
+% if checkIfCorrectFilepath(fpath)==1
+%    data = load(fpath);
+%    SpaceSlicer(data.CellShapeData, xslice,yslice, path, axesEqual);
+% end
    
 
 
@@ -214,3 +214,19 @@ function checkbox1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox1
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+h= handles.figure1;
+if isequal(get(h, 'waitstatus'), 'waiting')
+    uiresume(h)
+else
+    h= handles.figure1;
+    delete(h);
+end

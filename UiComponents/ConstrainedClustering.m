@@ -83,7 +83,7 @@ struc.classes=get(handles.popupmenu1,'Value');
 varargout{1} = struc;
 h= handles.figure1;
 delete(h);
-
+figure1_CloseRequestFcn(hObject, eventdata, handles);
 
 function edit1_Callback(hObject, eventdata, handles)
 % hObject    handle to edit1 (see GCBO)
@@ -131,7 +131,7 @@ if ~exist(fpath, 'dir'),
     msg = DialogMessages(5);
     errordlg(msg, 'Error', mode);
 else
-figure1_CloseRequestFcn(hObject, eventdata, handles)
+figure1_CloseRequestFcn(hObject, eventdata, handles);
 end
 
 
