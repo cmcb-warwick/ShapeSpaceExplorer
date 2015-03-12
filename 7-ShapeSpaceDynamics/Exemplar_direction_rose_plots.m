@@ -54,6 +54,7 @@ end
 scale_fac=(max(SCORE(:,1))-min(SCORE(:,1)))/(2*exL);
 
 figure
+
 for i=1:exL
     subplot(2,1,1)
     h=rose(vecs_in_cluster{i});
@@ -84,7 +85,7 @@ end
 axis equal
 linkaxes
 
-name = ['7_ClusteredSpacedShape_Dynamics_' num2str(number) '_clusters.fig'];
+name = ['7_ClusteredSpaceShape_Dynamics_' num2str(number) '_clusters.fig'];
 path = fullfile(figPath, name);
 savefig(path);
 end

@@ -69,13 +69,14 @@ for j=1:Nbins(2);
             figure(2)
             subplot(Nbins(2),Nbins(1),Nbins(1)*(Nbins(2)-j)+i)
             axis xy off
+            whitebg
         end
         
         
         %axis xy off
     end
 end
-
+set(gcf, 'Color', 'w');
 name = ['7_SlicedSpacedShape_Dynamics_' num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices.fig'];
 path = fullfile(figPath, name);
 savefig(path);
