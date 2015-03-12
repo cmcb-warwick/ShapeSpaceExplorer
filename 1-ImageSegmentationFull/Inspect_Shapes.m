@@ -481,13 +481,12 @@ idState=get(handles.setId, 'State');
 %modifiers = get(handles.figure1,'CurrentCharacter');
 pos=get(handles.axes1,'CurrentPoint');
 if strcmp('on' , ptrState)==1    
-modifier=0;
+    key=get(hObject,'SelectionType');
+    modifier= strcmp(key, 'alt');
+    selectTogglePressed(pos, modifier, handles); 
+    return; 
+end
 
-key = get (handles.figure1, 'CurrentKey');
-if strcmp(key, 'control')==1, modifier=1;end
-if strcmp('on' , ptrState)==1, selectTogglePressed(pos, modifier, handles); end
-return;
-end;
 global currFrame;
 if strcmp('on', idState)==1
    changeIdOfCell(pos);
