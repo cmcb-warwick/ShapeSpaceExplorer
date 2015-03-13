@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 13-Mar-2015 10:08:44
+% Last Modified by GUIDE v2.5 13-Mar-2015 11:10:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -419,6 +419,7 @@ function uitoggletool6_OnCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'on');
 set(handles.setId, 'State', 'off');
+set(handles.mergeShape, 'State', 'off');
 setptr(handles.figure1, 'arrow');
 zoom off
 pan off
@@ -429,21 +430,33 @@ function uitoggletool5_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
+set(handles.mergeShape, 'State', 'off');
 set(handles.setId, 'State', 'off');
+zoom off
+pan off
+
 % --------------------------------------------------------------------
 function uitoggletool2_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
+set(handles.mergeShape, 'State', 'off');
 set(handles.setId, 'State', 'off');
+zoom off
+pan off
+
 % --------------------------------------------------------------------
 function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
+set(handles.mergeShape, 'State', 'off');
 set(handles.setId, 'State', 'off');
+zoom off
+pan off
+
 
 % --------------------------------------------------------------------
 function setId_OnCallback(hObject, eventdata, handles)
@@ -451,16 +464,42 @@ function setId_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uitoggletool6, 'State', 'off');
+set(handles.mergeShape, 'State', 'off');
 set(handles.setId, 'State', 'on');
 setptr(handles.figure1, 'crosshair');
+zoom off
+pan off
+
 
 % --------------------------------------------------------------------
 function setId_OffCallback(hObject, eventdata, handles)
 % hObject    handle to setId (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-setptr(handles.figure1, 'arrow');
 set(handles.setId, 'State', 'off');
+setptr(handles.figure1, 'arrow');
+
+
+
+% --------------------------------------------------------------------
+function mergeShape_OnCallback(hObject, eventdata, handles)
+% hObject    handle to mergeShape (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.uitoggletool6, 'State', 'off');
+set(handles.mergeShape, 'State', 'on');
+set(handles.setId, 'State', 'off');
+zoom off
+pan off
+
+
+% --------------------------------------------------------------------
+function mergeShape_OffCallback(hObject, eventdata, handles)
+% hObject    handle to mergeShape (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.mergeShape, 'State', 'off');
+
 
 % % --------------------------------------------------------------------
 % function merge_OffCallback(hObject, eventdata, handles)
@@ -798,10 +837,6 @@ cellAc(end+1)=1;
 cellNumbers{currFrame,2}=cellAc;
 
 
-% --------------------------------------------------------------------
-function mergeLine_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to mergeLine (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-h=imline(handles.axes1);
-display(h)
+
+
+
