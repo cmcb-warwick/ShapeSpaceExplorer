@@ -275,7 +275,7 @@ for i=1:nCells
     curve =fCurves{i};
     active=cellActive(i);
     idx = find(allCellIds==cNumber(i), 1);
-    str =[ 'cell id: ' num2str(idx)];
+    str =[ 'cell id: ' num2str(cNumber(i))];
     lgd{end+1}=str;
     if active==0
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', [0.7 0.7 0.7], 'LineWidth', 2.0);
@@ -498,6 +498,7 @@ function changeIdOfCell(pos)
 [cellId, ~] =isClickInShape(pos);
 if cellId<1, return; end
 msg = ['The current cell id = ' num2str(cellId) ', which will changed into the New Id.'];
+warning('off');
 newId=FilterDialog(msg, 'new Id ', num2str(cellId));
 if newId<1, return; end % user clicked cancel.
 if newId==cellId, return; end
