@@ -121,7 +121,8 @@ global frameCurves;
 global cellNumbers;
 global orgFrameCurves;
 global orgCellNumbers;
-[frameCurves,cellNumbers]=loadSavedCurveDataFrom(pathName, fileName, stackNumber);
+global mergeInfo;
+[frameCurves,cellNumbers, mergeInfo]=loadSavedCurveDataFrom(pathName, fileName, stackNumber);
 [orgFrameCurves,orgCellNumbers]=loadCurveDataFrom(pathName, fileName);
 set(handles.currFileName, 'string', fileName );
 handles.currPathName=pathName;
@@ -236,15 +237,22 @@ for i=1:frameNum % for initial state;
 end
 
 
-function [frameCurves,cellNumbers] = loadSavedCurveDataFrom(pathName, fileName, stackNumber)
-name=sprintf('ManCorrtdCrves%03d.mat',stackNumber); 
+function [frameCurves,cellNumbers,mergeInfo] = loadSavedCurveDataFrom(pathName, fileName, stackNumber)
+name=sprintf('ManCorrtdCrves%03d.mat',stackNumber); mergeInfo={};
 path =fullfile(pathName, name);
 if ~exist(path, 'file'), 
     [frameCurves,cellNumbers] =loadCurveDataFrom(pathName, fileName);
+    for i=1:length(frameCurves)
+        mergeInfo{end+1}=[];
+    end
     return; end
 tmp =load(path);
 frameCurves=tmp.frameCurves;
-cellNumbers=tmp.cellNumbers; 
+cellNumbers=tmp.cellNumbers;
+
+for i=1:length(frameCurves)
+    mergeInfo{end+1}=[];
+end
 
 
 function loadCurrFrame(number, activeChange, handles)
@@ -288,6 +296,16 @@ end
 state=get(handles.uitoggletool9, 'State');
 legend(handles.axes1,lgd);
 if strcmp('off', state),legend(handles.axes1,'off'); end
+
+global mergeInfo;
+l= mergeInfo{currFrame};
+for i=1:length(l)
+    str=l{i};
+    h=imline(handles.axes1, [str.posA(1), str.posB(1)], [str.posA(2), str.posB(2)]);
+    h.setColor('m');
+    h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
+end
+
 % legend(handles.axes1,state);
 % load merge info if state is pressed.
 
@@ -836,22 +854,69 @@ function merge_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to merge (see GCBO)
 % eventdata  reserved - to be defined in a futureposition = wait(h); version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.uitoggletool6, 'State', 'off');
+set(handles.setId, 'State', 'off');
+zoom off
+pan off
 h=imline(handles.axes1);
 position = wait(h);
 if isempty(position), return; end
-if ~bothPosInSideCell(position(1,:), position(2,:)),h.delete(); return; end
+[inside, ids]=bothPosInSideCell(position(1,:), position(2,:));
+if ~inside,h.delete(); return; end
 h.setColor('m');
 h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
+m.posA=position(1,:);
+m.posB=position(2,:);
+m.ids=ids;
+updateMergeInfo(m, h);
 
 
+function updateMergeInfo(merge, h)
+global mergeInfo;
+global currFrame;
+l=mergeInfo{currFrame};
+if isempty(l), l={}; end
+found =0;
+cIds=sort(merge.ids);
+for i=1:length(l)
+    tmp = l{i};
+    ids = sort(tmp.ids);
+    if isequal(ids, cIds);
+       h.delete(); found=1;
+       break;
+    end
+end
+if ~found, l{end+1}=merge; end
+mergeInfo{currFrame}=l;
 
 function updatePosition(posts, handles, h)
-if ~bothPosInSideCell(posts(1,:), posts(2,:)),
-    h.delete(); 
+global mergeInfo;
+global currFrame;
+l=mergeInfo{currFrame};
+[inside, cIds]=bothPosInSideCell(posts(1,:), posts(2,:));
+cIds=sort(cIds);
+if isempty(cIds), h.delete(); loadCurrFrame(currFrame, 1, handles); 
+    return;
 end
+for i=1:length(l)
+    tmp=l{i};
+    ids = sort(tmp.ids); 
+    if isequal(ids, cIds);
+        tmp.posA=posts(1,:);
+        tmp.posB=posts(2,:);
+        l{i}=tmp;
+        if ~inside,l{i}=[];
+            h.delete(); end
+        break;
+    end
+end
+mergeInfo{currFrame}=l;
 
-function b= bothPosInSideCell(pos1, pos2)
-b=1;
+function [b, ids]= bothPosInSideCell(pos1, pos2)
+b=1; ids=[];
 [cellId1, ~]=isClickInShape(pos1);
 [cellId2, ~]=isClickInShape(pos2);
-if cellId1<1 || cellId2<1 || cellId1==cellId2, b=0; end
+if cellId1<1 || cellId2<1 || cellId1==cellId2, 
+    b=0; return; end
+ids=[cellId1, cellId2];
+
