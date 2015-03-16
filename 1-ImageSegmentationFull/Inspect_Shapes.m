@@ -1023,7 +1023,25 @@ function mask = getDotMask(posA, posB, curve, frame)
 if sum(in)+sum(on)>0, pos = round(posA); end
 [in,on] = inpolygon(posB(1), posB(2), curve(:,2),curve(:,1));
 if sum(in)+sum(on)>0, pos = round(posB); end
-if isempty(pos), error('Connection not inside Shape');  end
+bwShape=getBWCountour(item.curve1, frame);
+i=1;
+while isempty(pos) %sometimes for continous frame point might be outside.
+    mask = zeros(size(frame));
+    mask(posA(2), posA(1))=1;
+    dilated=imdilate(mask,strel('disk',i,0));
+    merged = dilated&bwShape;
+    [row, col]=find(merged==1);
+    [in, on] =inpolygon(col, row,curve(:,2),curve(:,1));
+    if sum(in)+sum(on)>0, pos = [col(1), row(1)];  break; end
+    % test second point.
+    mask = zeros(size(frame));
+    mask(posB(2), posB(1))=1;
+    dilated=imdilate(mask,strel('disk',i,0));
+    merged = dilated&bwShape;
+    [row, col]=find(merged==1);
+    [in, on] =inpolygon(col, row,curve(:,2),curve(:,1));
+    if sum(in)+sum(on)>0, pos = [col(1), row(1)];  break; end
+end
 mask = zeros(size(frame));
 mask(pos(2), pos(1))=1;
 
