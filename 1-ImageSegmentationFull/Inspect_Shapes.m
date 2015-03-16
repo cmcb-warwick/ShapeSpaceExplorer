@@ -945,30 +945,51 @@ global frameCurves;
 global cellNumbers;
 global stack;
 frame=stack(:,:,currFrame);
-
+[~,~,tlen]=size(stack);
 mrgInf=mergeInfo{currFrame};
 if isempty(mrgInf), return; end
 
 for i=1:length(mrgInf)
     item = mrgInf{i};
-    curves=frameCurves{currFrame};
-    cellIds=cellNumbers{currFrame,1};
-    cellAct=cellNumbers{currFrame,1};
-    %Get intersection pixel for both shapes.
-    [item.id1, item.curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), frame, item.posA, item.posB);
-    [item.id2, item.curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), frame, item.posA, item.posB);
-    item.MergedCurve =connect2Shapes(item, frame);
-    item.posA=item.iterSec1;
-    item.posB=item.iterSec2;
-    mrgInf{i}=item;
-    idx1=find(cellIds==item.id1, 1); %mark as 3
-    cellAct(idx1)=3;
-    idx2=find(cellIds==item.id2, 1);
-    cellAct(idx2)=3;
-    cellNumbers{currFrame,2}=cellAct;
+    [cellAct, mrgInf]=updateMergeInforForFrame(frameCurves, cellNumbers, mergeInfo, currFrame, item, frame);
 end
-
 mergeInfo{currFrame}=mrgInf;
+cellNumbers{currFrame,2}=cellAct;
+
+
+
+function [cellAct, mrgInf]=updateMergeInforForFrame(frameCurves, cellNumbers, mergeInfo, frmNum, item, frame)
+
+curves=frameCurves{frmNum};
+cellIds=cellNumbers{frmNum,1};
+cellAct=cellNumbers{frmNum,1};
+idx1=find(cellIds==item.ids(1),1);
+idx2=find(cellIds==item.ids(2),1);
+if isempty(idx1) ||isempty(idx2), return; end % do nothing.
+mrgInf=mergeInfo{frmNum};
+
+[item.id1, item.curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), frame, item.posA, item.posB);
+[item.id2, item.curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), frame, item.posA, item.posB);
+item.MergedCurve =connect2Shapes(item, frame);
+item.posA=item.iterSec1;
+item.posB=item.iterSec2;
+
+idx1=find(cellIds==item.id1, 1); %mark as 3
+cellAct(idx1)=3;
+idx2=find(cellIds==item.id2, 1);
+cellAct(idx2)=3;
+mergeInfo{frmNum}=mrgInf;
+found =0;
+for i=1:length(mrgInf) % remove existing Info.
+    tmp=mrgInf{i};
+    if isequal(tmp.ids, item.ids)
+        mrgInf{i}=item;
+        found=1;
+        break;
+    end
+end
+if ~found, mrgInf{end+1}=item; end
+
 
 function curve =connect2Shapes(item, frame)
 if isequal(item.posA,item.iterSec2) && ...
@@ -1023,7 +1044,7 @@ function mask = getDotMask(posA, posB, curve, frame)
 if sum(in)+sum(on)>0, pos = round(posA); end
 [in,on] = inpolygon(posB(1), posB(2), curve(:,2),curve(:,1));
 if sum(in)+sum(on)>0, pos = round(posB); end
-bwShape=getBWCountour(item.curve1, frame);
+bwShape=getBWCountour(curve, frame);
 i=1;
 while isempty(pos) %sometimes for continous frame point might be outside.
     mask = zeros(size(frame));
