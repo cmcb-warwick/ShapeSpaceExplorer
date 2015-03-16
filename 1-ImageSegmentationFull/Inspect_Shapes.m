@@ -290,7 +290,7 @@ for i=1:nCells
     elseif active==1
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(idx,:), 'LineWidth', 2.0);
     elseif active==3
-        plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'g', 'LineWidth', 2.0);
+        plot(handles.axes1, curve(:,2), curve(:,1), 'color', [0.7 0.7 0.7], 'LineWidth', 2.0);
     end
 end
 state=get(handles.uitoggletool9, 'State');
@@ -304,7 +304,13 @@ for i=1:length(l)
     h=imline(handles.axes1, [str.posA(1), str.posB(1)], [str.posA(2), str.posB(2)]);
     h.setColor('m');
     h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
+    try
+        curve=str.MergedCurve;
+        plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'g', 'LineWidth', 2.0);
+    end
 end
+
+
 
 % legend(handles.axes1,state);
 % load merge info if state is pressed.
@@ -947,6 +953,7 @@ for i=1:length(mrgInf)
     item = mrgInf{i};
     curves=frameCurves{currFrame};
     cellIds=cellNumbers{currFrame,1};
+    cellAct=cellNumbers{currFrame,1};
     %Get intersection pixel for both shapes.
     [item.id1, item.curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), frame, item.posA, item.posB);
     [item.id2, item.curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), frame, item.posA, item.posB);
@@ -954,7 +961,13 @@ for i=1:length(mrgInf)
     item.posA=item.iterSec1;
     item.posB=item.iterSec2;
     mrgInf{i}=item;
+    idx1=find(cellIds==item.id1, 1); %mark as 3
+    cellAct(idx1)=3;
+    idx2=find(cellIds==item.id2, 1);
+    cellAct(idx2)=3;
+    cellNumbers{currFrame,2}=cellAct;
 end
+
 mergeInfo{currFrame}=mrgInf;
 
 function curve =connect2Shapes(item, frame)
@@ -971,7 +984,9 @@ piece=bwconvhull(A|B);
 
 BW=piece|bwShape1|bwShape2;
 B=bwboundaries(BW,'noholes');
-curve=B{1}(:,[2 1]);
+c=B{1}(:,[2 1]);
+curve(:,1)=c(:,2); %for consistency with other curves.
+curve(:,2)=c(:,1);
 
 
 
@@ -1008,7 +1023,7 @@ function mask = getDotMask(posA, posB, curve, frame)
 if sum(in)+sum(on)>0, pos = round(posA); end
 [in,on] = inpolygon(posB(1), posB(2), curve(:,2),curve(:,1));
 if sum(in)+sum(on)>0, pos = round(posB); end
-if isempty(pos), error('Connection not inside Shape'); return; end
+if isempty(pos), error('Connection not inside Shape');  end
 mask = zeros(size(frame));
 mask(pos(2), pos(1))=1;
 
