@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 13-Mar-2015 13:21:18
+% Last Modified by GUIDE v2.5 16-Mar-2015 09:00:43
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -919,4 +919,97 @@ b=1; ids=[];
 if cellId1<1 || cellId2<1 || cellId1==cellId2, 
     b=0; return; end
 ids=[cellId1, cellId2];
+
+
+% --------------------------------------------------------------------
+function doMerge_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to doMerge (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global currFrame;
+exectueMerge(currFrame)
+loadCurrFrame(currFrame, 1,handles);
+
+
+
+
+function exectueMerge(currFrame)
+global mergeInfo;
+global frameCurves;
+global cellNumbers;
+global stack;
+frame=stack(:,:,currFrame);
+
+mrgInf=mergeInfo{currFrame};
+if isempty(mrgInf), return; end
+
+for i=1:length(mrgInf)
+    item = mrgInf{i};
+    curves=frameCurves{currFrame};
+    cellIds=cellNumbers{currFrame,1};
+    %Get intersection pixel for both shapes.
+    [item.id1, item.curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), frame, item.posA, item.posB);
+    [item.id2, item.curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), frame, item.posA, item.posB);
+    item.MergedCurve =connect2Shapes(item, frame);
+    item.posA=item.iterSec1;
+    item.posB=item.iterSec2;
+    mrgInf{i}=item;
+end
+mergeInfo{currFrame}=mrgInf;
+
+function curve =connect2Shapes(item, frame)
+if isequal(item.posA,item.iterSec2) && ...
+   isequal(item.posB,item.iterSec2), return; end % we have already merged.
+bwShape1=getBWCountour(item.curve1, frame);
+bwShape2=getBWCountour(item.curve2, frame);
+bwInter1=getBWCountour([item.iterSec1(2),item.iterSec1(1)], frame);
+bwInter2=getBWCountour([item.iterSec2(2),item.iterSec2(1)], frame);
+
+A = imdilate(bwInter1,strel('disk',3,0))&bwShape1;
+B = imdilate(bwInter2,strel('disk',3,0))&bwShape2;
+piece=bwconvhull(A|B);
+
+BW=piece|bwShape1|bwShape2;
+B=bwboundaries(BW,'noholes');
+curve=B{1}(:,[2 1]);
+
+
+
+function mask = getBWCountour(curve, frame)
+mask = zeros(size(frame));
+[last,~]=size(curve);
+for i =1:last
+    mask(curve(i,1),curve(i,2))=1;
+end
+
+function [id, curve, interSect]=findIntersection(curves, cellIds, id, frame, posA, posB)
+idx1=find(id==cellIds,1); 
+curve=curves{idx1};
+maskCurve=getBWCountour(curve, frame);
+
+[maskDot] = getDotMask(posA, posB, curve, frame);
+for i =2:100
+    dilated=imdilate(maskDot,strel('disk',i,0));
+    onPoly=dilated&maskCurve;
+    if logical(sum(onPoly(:))); % we found point on curve
+        [row,col] = find(onPoly==1);
+        interSect(1)=col(1);
+        interSect(2)=row(1);
+       break
+    end
+end
+
+
+
+
+
+function mask = getDotMask(posA, posB, curve, frame)
+[in,on] = inpolygon(posA(1), posA(2), curve(:,2),curve(:,1));
+if sum(in)+sum(on)>0, pos = round(posA); end
+[in,on] = inpolygon(posB(1), posB(2), curve(:,2),curve(:,1));
+if sum(in)+sum(on)>0, pos = round(posB); end
+if isempty(pos), error('Connection not inside Shape'); return; end
+mask = zeros(size(frame));
+mask(pos(2), pos(1))=1;
+
 
