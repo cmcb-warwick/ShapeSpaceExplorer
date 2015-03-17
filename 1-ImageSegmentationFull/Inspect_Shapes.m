@@ -920,8 +920,8 @@ mergeInfo{currFrame}=l;
 
 function [b, ids]= bothPosInSideCell(pos1, pos2)
 b=1; ids=[];
-[cellId1, ~]=isClickInShape(pos1);
-[cellId2, ~]=isClickInShape(pos2);
+[cellId1, ~]=isClickInShape(round(pos1));
+[cellId2, ~]=isClickInShape(round(pos2));
 if cellId1<1 || cellId2<1 || cellId1==cellId2, 
     b=0; return; end
 ids=[cellId1, cellId2];
@@ -950,16 +950,24 @@ mrgInf=mergeInfo{currFrame};
 if isempty(mrgInf), return; end
 
 for i=1:length(mrgInf)
+    h = waitbar(0,'merge in process'); 
     item = mrgInf{i};
-    [cellAct, mrgInf]=updateMergeInforForFrame(frameCurves, cellNumbers, mergeInfo, currFrame, item, frame);
+    for j=currFrame:tlen
+        waitbar(j/tlen,h,'merge in process');
+        [cellAct, mrgInf]=updateMergeInforForFrame(frameCurves, cellNumbers, mergeInfo, j, item, frame);
+        if isempty(cellAct) || isempty(mrgInf), continue;end
+        mergeInfo{j}=mrgInf;
+        cellNumbers{j,2}=cellAct;
+    end
+    close(h);
 end
-mergeInfo{currFrame}=mrgInf;
-cellNumbers{currFrame,2}=cellAct;
+
 
 
 
 function [cellAct, mrgInf]=updateMergeInforForFrame(frameCurves, cellNumbers, mergeInfo, frmNum, item, frame)
-
+cellAct=[]; mrgInf=[];
+if isempty(frameCurves) || isempty(cellNumbers), return, end
 curves=frameCurves{frmNum};
 cellIds=cellNumbers{frmNum,1};
 cellAct=cellNumbers{frmNum,1};
@@ -1023,7 +1031,7 @@ idx1=find(id==cellIds,1);
 curve=curves{idx1};
 maskCurve=getBWCountour(curve, frame);
 
-[maskDot] = getDotMask(posA, posB, curve, frame);
+[maskDot] = getDotMask(round(posA), round(posB), curve, frame);
 for i =2:100
     dilated=imdilate(maskDot,strel('disk',i,0));
     onPoly=dilated&maskCurve;
@@ -1040,28 +1048,32 @@ end
 
 
 function mask = getDotMask(posA, posB, curve, frame)
+pos=[];
 [in,on] = inpolygon(posA(1), posA(2), curve(:,2),curve(:,1));
 if sum(in)+sum(on)>0, pos = round(posA); end
 [in,on] = inpolygon(posB(1), posB(2), curve(:,2),curve(:,1));
 if sum(in)+sum(on)>0, pos = round(posB); end
 bwShape=getBWCountour(curve, frame);
-i=1;
-while isempty(pos) %sometimes for continous frame point might be outside.
-    mask = zeros(size(frame));
-    mask(posA(2), posA(1))=1;
-    dilated=imdilate(mask,strel('disk',i,0));
+
+maskA = zeros(size(frame));
+maskA(posA(2), posA(1))=1;
+maskB = zeros(size(frame));
+maskB(posB(2), posB(1))=1;
+i=2;
+while isempty(pos) %sometimes for continous frame point might be outside
+    dilated=imdilate(maskA,strel('disk',i,0));
     merged = dilated&bwShape;
     [row, col]=find(merged==1);
     [in, on] =inpolygon(col, row,curve(:,2),curve(:,1));
     if sum(in)+sum(on)>0, pos = [col(1), row(1)];  break; end
     % test second point.
-    mask = zeros(size(frame));
-    mask(posB(2), posB(1))=1;
-    dilated=imdilate(mask,strel('disk',i,0));
+    
+    dilated=imdilate(maskB,strel('disk',i,0));
     merged = dilated&bwShape;
     [row, col]=find(merged==1);
     [in, on] =inpolygon(col, row,curve(:,2),curve(:,1));
     if sum(in)+sum(on)>0, pos = [col(1), row(1)];  break; end
+    i=i+1;
 end
 mask = zeros(size(frame));
 mask(pos(2), pos(1))=1;

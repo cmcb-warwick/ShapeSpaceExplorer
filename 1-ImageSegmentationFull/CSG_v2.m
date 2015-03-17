@@ -247,12 +247,19 @@ experiment_number = handles.experiment_number;
 Stacknumber = handles.Stack_number;
 %global Frame_no ActiveFig number_of_frames Stack Frame_curves cmap Cell_numbers Stackno
 %Stackno=Stacknumber;
-
-    load(sprintf('CSG_folder_info/folder_info_exp_%d',experiment_number))
+    cPath=mfilename('fullpath');
+    [folder,~,~] = fileparts(cPath);
+   
+    path = fullfile(folder, 'CSG_folder_info/');
+    fname =sprintf('folder_info_exp_%d',experiment_number);
+    path = fullfile(path, fname);
+    load(path);
     out_fn=foldername;
     load(sprintf([out_fn{1} 'ImageStack%03d'],Stacknumber))
     load(sprintf([out_fn{2} 'ImageStack%03dCurveData'],Stacknumber))
-    handles.Stack=eval(sprintf('ImageStack%03d',Stacknumber));
+    fName=sprintf('ImageStack%03d.mat',Stacknumber);
+    [stack, ~] = loadStackFromFile(out_fn{1}, fName);
+    handles.Stack=stack;
     clear(sprintf('ImageStack%03d',Stacknumber))
 
 handles.Frame_curves=Frame_curves;
@@ -327,6 +334,27 @@ set(gcf,'KeyPressFcn', @SelectDirectionClicked,'Interruptible','off')
 pan off % Panning will interfere with this code 
 guidata(hObject, handles);
 %set(ActiveFig,'KeyPressFcn', @SelectDirection)
+
+
+function [stack, stackNum] = loadStackFromFile(pathName, fileName)
+path = fullfile(pathName, fileName);
+tmp = load(path);
+stack=[];
+try 
+    stack=tmp.stack;
+catch % means we have some old data from first implementation.
+    try 
+    [~,fName,~] = fileparts(fileName);
+    str =['tmp.' fName];
+    stack = eval(['tmp.' fName]);
+    end
+end
+[~,fName,~] = fileparts(fileName); 
+if length(fName)>3
+   num = fName(end-2:end);
+   try stackNum= str2num(num); end
+end
+
 
 % --- Executes on button press in pushbutton2.
 function pushbutton2_Callback(hObject, eventdata, handles)
