@@ -279,23 +279,22 @@ cellActive=cellNumbers{number,2};
 nCells=length(cNumber);
 colour=prism(length(allCellIds));
 lgd={};
+
+
 for i=1:nCells
     curve =fCurves{i};
     active=cellActive(i);
     idx = find(allCellIds==cNumber(i), 1);
-    str =[ 'cell id: ' num2str(cNumber(i))];
-    lgd{end+1}=str;
     if active==0
+        lgd{end+1}=[ 'cell id: ' num2str(cNumber(i))];
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', [0.7 0.7 0.7], 'LineWidth', 2.0);
     elseif active==1
+        lgd{end+1}=[ 'cell id: ' num2str(cNumber(i))];
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(idx,:), 'LineWidth', 2.0);
     elseif active==3
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', [0.7 0.7 0.7], 'LineWidth', 2.0);
     end
 end
-state=get(handles.uitoggletool9, 'State');
-legend(handles.axes1,lgd);
-if strcmp('off', state),legend(handles.axes1,'off'); end
 
 global mergeInfo;
 l= mergeInfo{currFrame};
@@ -307,8 +306,16 @@ for i=1:length(l)
     try
         curve=str.MergedCurve;
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'g', 'LineWidth', 2.0);
+        s=[ 'cell id: ' num2str(str.ids)];
+        lgd{end+1}=s;
     end
 end
+
+
+% adding legend
+state=get(handles.uitoggletool9, 'State');
+legend(handles.axes1,lgd);
+if strcmp('off', state),legend(handles.axes1,'off'); end
 
 
 
@@ -742,6 +749,7 @@ global cellNumbers;
 global frameCurves;
 global orgFrameCurves;
 global orgCellNumbers;
+global mergeInfo;
 eIdx=currFrame;
 if allFutFrames 
    global stack;
@@ -756,6 +764,7 @@ for i=currFrame:eIdx
     cellNumbers{i,2}=cellAc;
     cellNumbers{i,1}=cellIds;
     frameCurves{i}=curves;
+    mergeInfo{i}=[];
 end
 global allCellIds;
 allCellIds=getAllCellIds(cellNumbers);
@@ -970,7 +979,7 @@ cellAct=[]; mrgInf=[];
 if isempty(frameCurves) || isempty(cellNumbers), return, end
 curves=frameCurves{frmNum};
 cellIds=cellNumbers{frmNum,1};
-cellAct=cellNumbers{frmNum,1};
+cellAct=cellNumbers{frmNum,2};
 idx1=find(cellIds==item.ids(1),1);
 idx2=find(cellIds==item.ids(2),1);
 if isempty(idx1) ||isempty(idx2), return; end % do nothing.
