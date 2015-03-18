@@ -279,18 +279,19 @@ cellActive=cellNumbers{number,2};
 nCells=length(cNumber);
 colour=prism(length(allCellIds));
 lgd={};
-
+lines=[];
 
 for i=1:nCells
     curve =fCurves{i};
     active=cellActive(i);
     idx = find(allCellIds==cNumber(i), 1);
     if active==0
-        lgd{end+1}=[ 'cell id: ' num2str(cNumber(i))];
-        plot(handles.axes1, curve(:,2), curve(:,1), 'color', [0.7 0.7 0.7], 'LineWidth', 2.0);
+        
+        lines(end+1)= plot(handles.axes1, curve(:,2), curve(:,1), 'color', [0.7 0.7 0.7], 'LineWidth', 2.0);
+        lgd{end+1}= [ 'cell id: ' num2str(cNumber(i))];
     elseif active==1
         lgd{end+1}=[ 'cell id: ' num2str(cNumber(i))];
-        plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(idx,:), 'LineWidth', 2.0);
+        lines(end+1)=plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(idx,:), 'LineWidth', 2.0);
     elseif active==3
         plot(handles.axes1, curve(:,2), curve(:,1), 'color', [0.7 0.7 0.7], 'LineWidth', 2.0);
     end
@@ -305,7 +306,7 @@ for i=1:length(l)
     h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
     try
         curve=str.MergedCurve;
-        plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'g', 'LineWidth', 2.0);
+        lines(end+1)=plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'g', 'LineWidth', 2.0);
         s=[ 'cell id: ' num2str(str.ids)];
         lgd{end+1}=s;
     end
@@ -314,7 +315,7 @@ end
 
 % adding legend
 state=get(handles.uitoggletool9, 'State');
-legend(handles.axes1,lgd);
+legend(handles.axes1,lines, lgd);
 if strcmp('off', state),legend(handles.axes1,'off'); end
 
 
@@ -590,7 +591,7 @@ global currFrame;
 global stack;
 [~,~,N]=size(stack);
 [cellId, state] =isClickInShape(pos);
-if cellId<1, return; end
+if cellId<1 || state==3, return; end
 eIdx=currFrame; 
 if modifier, eIdx=N; end
 removesCellsFromStack(currFrame, eIdx, cellId, state);
@@ -617,6 +618,7 @@ for i=1:length(curves)
     id = cellIds(i);
     [in,on]=inpolygon(pos(1,1), pos(1,2), curve(:,2), curve(:,1));
     if (in+on)>0
+        if cellAc(i)==3, state=3; break; end
         cellAc(i)=mod(cellAc(i)+1,2);
         cellId=id;
         state=cellAc(i);
