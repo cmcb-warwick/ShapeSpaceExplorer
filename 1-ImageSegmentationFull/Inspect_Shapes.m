@@ -958,9 +958,11 @@ mergeInfo{currFrame}=l;
 
 function [b, ids]= bothPosInSideCell(pos1, pos2)
 b=1; ids=[];
-[cellId1, ~]=isClickInShape(round(pos1));
-[cellId2, ~]=isClickInShape(round(pos2));
+[cellId1, state1]=isClickInShape(round(pos1));
+[cellId2, state2]=isClickInShape(round(pos2));
 if cellId1<1 || cellId2<1 || cellId1==cellId2, 
+    b=0; return; end
+if state1==3 ||  state2==3,
     b=0; return; end
 ids=[cellId1, cellId2];
 
