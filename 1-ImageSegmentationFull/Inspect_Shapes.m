@@ -306,8 +306,9 @@ for i=1:length(l)
     h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
     try
         curve=str.MergedCurve;
-        lines(end+1)=plot(handles.axes1, curve(:,2), curve(:,1), 'color', 'g', 'LineWidth', 2.0);
-        s=[ 'cell id: ' num2str(str.ids)];
+        idx = find(allCellIds==str.id, 1);
+        lines(end+1)=plot(handles.axes1, curve(:,2), curve(:,1), 'color', colour(idx,:), 'LineWidth', 2.0);
+        s=[ 'cell id: ' num2str(str.id)];
         lgd{end+1}=s;
     end
 end
@@ -560,30 +561,45 @@ end
 
 
 function changeIdOfCell(pos)
-[cellId, ~] =isClickInShape(pos);
+[cellId, state] =isClickInShape(pos);
 if cellId<1, return; end
 msg = ['The current cell id = ' num2str(cellId) ', which will changed into the New Id.'];
 warning('off');
 newId=FilterDialog(msg, 'new Id ', num2str(cellId));
 if newId<1, return; end % user clicked cancel.
 if newId==cellId, return; end
-changeIds(cellId, newId);
+changeIds(cellId, newId, state);
 
 
-function changeIds(cellId, newId)
+function changeIds(cellId, newId, state)
 global cellNumbers;
 global stack;
-
+global mergeInfo;
 [~,~,N]=size(stack);
 for i=1:N
-    cellIds=cellNumbers{i,1};
-    idx = find(cellIds==cellId);
-    if isempty(idx), continue; end
-    cellIds(idx)=newId;
-    cellNumbers{i,1}=cellIds;
+    if state==3
+        mergeInfo{i} = changeMergedId(mergeInfo{i},cellId, newId);
+    else %change cell id.
+        cellIds=cellNumbers{i,1};
+        idx = find(cellIds==cellId);
+        if isempty(idx), continue; end
+        cellIds(idx)=newId;
+        cellNumbers{i,1}=cellIds;
+    end
 end
 global allCellIds;
 allCellIds=getAllCellIds(cellNumbers);
+
+
+function mrgInf = changeMergedId(mrgInf,cellId, newId)
+for i=1:length(mrgInf)
+    item = mrgInf{i};
+    if item.id==cellId,
+       item.id=newId;
+       mrgInf{i}=item;
+       break;
+    end
+end
 
 
 function selectTogglePressed(pos, modifier, handles)
@@ -607,6 +623,7 @@ function [cellId, state] =isClickInShape(pos)
 global frameCurves;
 global currFrame;
 global cellNumbers;
+global mergeInfo;
 if isempty(frameCurves) || isempty(currFrame), return; end;
 cellAc=cellNumbers{currFrame,2};
 cellIds=cellNumbers{currFrame,1};
@@ -618,12 +635,22 @@ for i=1:length(curves)
     id = cellIds(i);
     [in,on]=inpolygon(pos(1,1), pos(1,2), curve(:,2), curve(:,1));
     if (in+on)>0
+        cellId=id;
         if cellAc(i)==3, state=3; break; end
         cellAc(i)=mod(cellAc(i)+1,2);
-        cellId=id;
         state=cellAc(i);
         break;
     end
+end
+if state ==3 % if we operate on a merged item, we need to check there.
+   mrgInf=mergeInfo{currFrame};
+   for i =1:length(mrgInf)
+       item = mrgInf{i};
+       if sum(find(item.ids==cellId))>0
+          cellId=item.id;
+          break
+       end
+   end
 end
 
 
@@ -986,7 +1013,7 @@ idx1=find(cellIds==item.ids(1),1);
 idx2=find(cellIds==item.ids(2),1);
 if isempty(idx1) ||isempty(idx2), return; end % do nothing.
 mrgInf=mergeInfo{frmNum};
-
+item.id=min(item.ids);
 [item.id1, item.curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), frame, item.posA, item.posB);
 [item.id2, item.curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), frame, item.posA, item.posB);
 item.MergedCurve =connect2Shapes(item, frame);
