@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 16-Mar-2015 09:00:43
+% Last Modified by GUIDE v2.5 18-Mar-2015 11:57:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -1088,5 +1088,3 @@ while isempty(pos) %sometimes for continous frame point might be outside
 end
 mask = zeros(size(frame));
 mask(pos(2), pos(1))=1;
-
-
