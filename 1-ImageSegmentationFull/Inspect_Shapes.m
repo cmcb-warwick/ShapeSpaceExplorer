@@ -904,15 +904,38 @@ zoom off
 pan off
 h=imline(handles.axes1);
 position = wait(h);
+
 if isempty(position), return; end
 [inside, ids]=bothPosInSideCell(position(1,:), position(2,:));
 if ~inside,h.delete(); return; end
 h.setColor('m');
 h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
+hMyMenu = uicontextmenu;
+uimenu(hMyMenu, 'Label', 'Remove', 'Callback', @(hObject,handles)removeInLine(h, hObject, handles));
+set(findobj(h, 'Type', 'line'), 'UIContextMenu', hMyMenu);
+
+
 m.posA=position(1,:);
 m.posB=position(2,:);
 m.ids=ids;
 updateMergeInfo(m, h);
+
+
+
+function removeInLine(h, hObject, handles)
+if isempty(h), return; end
+pos = h.getPosition();
+%h.delete()
+global currFrame;
+global mergeInfo;
+
+mrgInfo = mergeInfo{currFrame};
+if isempty(mrgInfo), return; end
+for i=1:length(mrgInfo)
+    item = mrgInfo{i};
+    display('hep');
+end
+
 
 
 function updateMergeInfo(merge, h)
