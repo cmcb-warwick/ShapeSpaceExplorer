@@ -299,7 +299,7 @@ end
 global mergeInfo;
 l= mergeInfo{currFrame};
 for i=1:length(l)
-    str=l{i};
+    str=l{i}; if isempty(str), continue; end
     try
         curve=str.MergedCurve;
         idx = find(allCellIds==str.id, 1);
@@ -310,7 +310,7 @@ for i=1:length(l)
     h=imline(handles.axes1, [str.posA(1), str.posB(1)], [str.posA(2), str.posB(2)]);
     h.setColor('m');
     h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
-   
+    upateContextMenu(h, [], handles);
 end
 
 
@@ -910,12 +910,7 @@ position = wait(h);
 if isempty(position), return; end
 [inside, ids]=bothPosInSideCell(position(1,:), position(2,:));
 if ~inside || isempty(ids),h.delete(); return; end
-h.setColor('m');
-h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
-hMyMenu = uicontextmenu;
-uimenu(hMyMenu, 'Label', 'Remove', 'Callback', @(hObject,handles)removeInLine(h, hObject, handles));
-set(findobj(h, 'Type', 'line'), 'UIContextMenu', hMyMenu);
-
+upateContextMenu(h, hObject, handles);
 
 m.posA=position(1,:);
 m.posB=position(2,:);
@@ -923,11 +918,18 @@ m.ids=ids;
 updateMergeInfo(m, h);
 
 
+function upateContextMenu(h, hObject, handles)
+h.setColor('m');
+h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
+hMyMenu = uicontextmenu;
+uimenu(hMyMenu, 'Label', 'Remove', 'Callback', @(hObject,handles)removeInLine(h, hObject, handles));
+set(findobj(h, 'Type', 'line'), 'UIContextMenu', hMyMenu);
+
+
 
 function removeInLine(h, hObject, handles)
 if isempty(h), return; end
 pos = h.getPosition();
-%h.delete()
 global currFrame;
 global mergeInfo;
 
@@ -935,8 +937,14 @@ mrgInfo = mergeInfo{currFrame};
 if isempty(mrgInfo), return; end
 for i=1:length(mrgInfo)
     item = mrgInfo{i};
-    display('hep');
+    if xor(isequal(pos(2,:), item.posA), isequal(pos(2,:), item.posB)) && ...
+     xor(isequal(pos(1,:), item.posA), isequal(pos(1,:), item.posB))
+    mrgInfo{i}=[];
+    h.delete();
+    end
+ 
 end
+mergeInfo{currFrame}=mrgInfo;
 
 
 
@@ -949,6 +957,7 @@ found =0;
 cIds=sort(merge.ids);
 for i=1:length(l)
     tmp = l{i};
+    if isempty(tmp), continue; end
     ids = sort(tmp.ids);
     if isequal(ids, cIds);
        h.delete(); found=1;
