@@ -299,7 +299,7 @@ end
 global mergeInfo;
 l= mergeInfo{currFrame};
 for i=1:length(l)
-    str=l{i}; if isempty(str), continue; end
+    str=l{i}; 
     try
         curve=str.MergedCurve;
         idx = find(allCellIds==str.id, 1);
@@ -921,7 +921,7 @@ updateMergeInfo(m, h);
 function upateContextMenu(h, hObject, handles)
 h.setColor('m');
 h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
-hMyMenu = uicontextmenu;
+hMyMenu = uicontextmenu('Parent',handles.figure1);
 uimenu(hMyMenu, 'Label', 'Remove', 'Callback', @(hObject,handles)removeInLine(h, hObject, handles));
 set(findobj(h, 'Type', 'line'), 'UIContextMenu', hMyMenu);
 
@@ -934,13 +934,16 @@ global currFrame;
 global mergeInfo;
 
 mrgInfo = mergeInfo{currFrame};
-if isempty(mrgInfo), return; end
 for i=1:length(mrgInfo)
     item = mrgInfo{i};
     if xor(isequal(pos(2,:), item.posA), isequal(pos(2,:), item.posB)) && ...
-     xor(isequal(pos(1,:), item.posA), isequal(pos(1,:), item.posB))
-    mrgInfo{i}=[];
-    h.delete();
+        xor(isequal(pos(1,:), item.posA), isequal(pos(1,:), item.posB))
+        mrgInfo{i}=[];
+        emptyCells = cellfun('isempty', mrgInfo);
+        cols = size(mrgInfo,2);
+        mrgInfo(emptyCells) = [];
+        mrgInfo = reshape(mrgInfo, [], cols);    
+        h.delete();
     end
  
 end
