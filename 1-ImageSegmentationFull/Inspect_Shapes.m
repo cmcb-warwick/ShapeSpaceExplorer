@@ -286,7 +286,6 @@ for i=1:nCells
     active=cellActive(i);
     idx = find(allCellIds==cNumber(i), 1);
     if active==0
-        
         lines(end+1)= plot(handles.axes1, curve(:,2), curve(:,1), 'color', [0.7 0.7 0.7], 'LineWidth', 2.0);
         lgd{end+1}= [ 'cell id: ' num2str(cNumber(i))];
     elseif active==1
@@ -301,9 +300,6 @@ global mergeInfo;
 l= mergeInfo{currFrame};
 for i=1:length(l)
     str=l{i};
-    h=imline(handles.axes1, [str.posA(1), str.posB(1)], [str.posA(2), str.posB(2)]);
-    h.setColor('m');
-    h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
     try
         curve=str.MergedCurve;
         idx = find(allCellIds==str.id, 1);
@@ -311,6 +307,10 @@ for i=1:length(l)
         s=[ 'cell id: ' num2str(str.id)];
         lgd{end+1}=s;
     end
+    h=imline(handles.axes1, [str.posA(1), str.posB(1)], [str.posA(2), str.posB(2)]);
+    h.setColor('m');
+    h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
+   
 end
 
 
@@ -619,7 +619,7 @@ if cellId<1, return; end
 
 
 
-function [cellId, state] =isClickInShape(pos)
+function [cellId, state, mergedId] =isClickInShape(pos)
 global frameCurves;
 global currFrame;
 global cellNumbers;
@@ -629,6 +629,7 @@ cellAc=cellNumbers{currFrame,2};
 cellIds=cellNumbers{currFrame,1};
 curves =frameCurves{currFrame};
 cellId=-1;
+mergedId=-1;
 state=0;
 for i=1:length(curves)
     curve=curves{i};
@@ -636,6 +637,7 @@ for i=1:length(curves)
     [in,on]=inpolygon(pos(1,1), pos(1,2), curve(:,2), curve(:,1));
     if (in+on)>0
         cellId=id;
+        mergedId=id;
         if cellAc(i)==3, state=3; break; end
         cellAc(i)=mod(cellAc(i)+1,2);
         state=cellAc(i);
@@ -907,7 +909,7 @@ position = wait(h);
 
 if isempty(position), return; end
 [inside, ids]=bothPosInSideCell(position(1,:), position(2,:));
-if ~inside,h.delete(); return; end
+if ~inside || isempty(ids),h.delete(); return; end
 h.setColor('m');
 h.addNewPositionCallback(@(pos)updatePosition(pos, handles, h));
 hMyMenu = uicontextmenu;
@@ -962,7 +964,10 @@ global currFrame;
 l=mergeInfo{currFrame};
 [inside, cIds]=bothPosInSideCell(posts(1,:), posts(2,:));
 cIds=sort(cIds);
-if isempty(cIds), h.delete(); loadCurrFrame(currFrame, 1, handles); 
+if isempty(cIds) 
+    warning('off');
+    h.delete();
+    loadCurrFrame(currFrame, 1, handles);
     return;
 end
 for i=1:length(l)
@@ -981,13 +986,17 @@ mergeInfo{currFrame}=l;
 
 function [b, ids]= bothPosInSideCell(pos1, pos2)
 b=1; ids=[];
-[cellId1, state1]=isClickInShape(round(pos1));
-[cellId2, state2]=isClickInShape(round(pos2));
-if cellId1<1 || cellId2<1 || cellId1==cellId2, 
+[cellId1, state1, mId1] =isClickInShape(round(pos1));
+[cellId2, state2, mId2]=isClickInShape(round(pos2));
+if cellId1<1 || cellId2<1
     b=0; return; end
-if state1==3 ||  state2==3,
-    b=0; return; end
-ids=[cellId1, cellId2];
+if (state1==3 && state2==3) && mId2>1 && mId1>1 && ~(mId1==mId2)
+   ids=[mId1, mId2]; end
+if ~(cellId1==cellId2) && ~(state1==3) &&~(state2==3)
+    ids=[cellId1, cellId2]; end
+
+
+
 
 
 % --------------------------------------------------------------------
