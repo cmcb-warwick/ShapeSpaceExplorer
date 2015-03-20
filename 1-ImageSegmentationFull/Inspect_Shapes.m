@@ -915,6 +915,7 @@ upateContextMenu(h, hObject, handles);
 m.posA=position(1,:);
 m.posB=position(2,:);
 m.ids=ids;
+m.id=min(m.ids);
 updateMergeInfo(m, h);
 
 
@@ -936,7 +937,7 @@ global stack;
 mId = getMergedIds(currFrame, pos);
 if mId <1, return; end 
 for i=currFrame:tlen
-    removeMergedItemFor(mId, currFrame);
+    removeMergedItemFor(mId, i);
 end
 h.delete(); 
 loadCurrFrame(currFrame, 1, guihandles(hObject));
@@ -1068,11 +1069,11 @@ for i=1:length(mrgInf)
     h = waitbar(0,'merge in process'); 
     item = mrgInf{i};
     for j=currFrame:tlen
-        waitbar(j/tlen,h,'merge in process');
         [cellAct, mrgInf]=updateMergeInforForFrame(frameCurves, cellNumbers, mergeInfo, j, item, frame);
         if isempty(cellAct) || isempty(mrgInf), continue;end
         mergeInfo{j}=mrgInf;
         cellNumbers{j,2}=cellAct;
+         waitbar(j/tlen,h,'merge in process');
     end
     close(h);
 end
@@ -1090,7 +1091,6 @@ idx1=find(cellIds==item.ids(1),1);
 idx2=find(cellIds==item.ids(2),1);
 if isempty(idx1) ||isempty(idx2), return; end % do nothing.
 mrgInf=mergeInfo{frmNum};
-item.id=min(item.ids);
 [item.id1, item.curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), frame, item.posA, item.posB);
 [item.id2, item.curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), frame, item.posA, item.posB);
 item.MergedCurve =connect2Shapes(item, frame);
