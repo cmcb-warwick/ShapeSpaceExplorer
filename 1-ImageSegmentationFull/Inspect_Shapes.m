@@ -1144,20 +1144,50 @@ end
 function [id, curve, interSect]=findIntersection(curves, cellIds, id, frame, posA, posB)
 idx1=find(id==cellIds,1); 
 curve=curves{idx1};
-maskCurve=getBWCountour(curve, frame);
+dx=0;dy=0;d=Inf;
+for i=1:length(curve(:,1))
+    [dx,dy,d]=updateDistanceInfo(dx,dy, curve(i,2), curve(i,1), d, posA);
+    [dx,dy,d]=updateDistanceInfo(dx,dy, curve(i,2), curve(i,1), d, posB);
+end
+interSect(1)=dx;
+interSect(2)=dy;
 
-[maskDot] = getDotMask(round(posA), round(posB), curve, frame);
-for i =2:100
-    dilated=imdilate(maskDot,strel('disk',i,0));
-    onPoly=dilated&maskCurve;
-    if logical(sum(onPoly(:))); % we found point on curve
-        [row,col] = find(onPoly==1);
-        interSect(1)=col(1);
-        interSect(2)=row(1);
-       break
-    end
+
+function [dx,dy,d]=updateDistanceInfo(dx,dy, cX, cY, d, pos)
+nwD=sqrt((pos(1)-cX)^2+(pos(2)-cY)^2);
+if nwD<d
+   dx=cX;
+   dy=cY;
+   d=nwD;
 end
 
+% maskCurve=getBWCountour(curve, frame);
+% [~, xlen]=size(frame);
+% [maskDot] = getDotMask(round(posA), round(posB), curve, frame);
+% previous=1;
+% for i =1:log2(xlen) %iterate large steps.
+%     rad = 2^i;
+%     dilated=imdilate(maskDot,strel('disk',rad,0));
+%     onPoly=dilated&maskCurve;
+%     if logical(sum(onPoly(:))); % we found point on curve
+%        break;
+%     end
+%     previous=i;
+% end
+% iStr =2^previous+1;
+% sEnd =2^(previous+1);
+% 
+% for i=iStr:sEnd
+%     dilated=imdilate(maskDot,strel('disk',i,0));
+%     onPoly=dilated&maskCurve;
+%     if logical(sum(onPoly(:))); % we found point on curve
+%         [row,col] = find(onPoly==1);
+%         idx =round(length(row)/2);
+%         interSect(1)=col(idx);
+%         interSect(2)=row(idx);
+%        break;
+%     end
+% end
 
 
 
