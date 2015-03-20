@@ -1066,14 +1066,14 @@ mrgInf=mergeInfo{currFrame};
 if isempty(mrgInf), return; end
 
 for i=1:length(mrgInf)
-    h = waitbar(0,'merge in process'); 
+    h = waitbar(0,'Merging ... '); 
     item = mrgInf{i};
     for j=currFrame:tlen
         [cellAct, mrgInf]=updateMergeInforForFrame(frameCurves, cellNumbers, mergeInfo, j, item, frame);
         if isempty(cellAct) || isempty(mrgInf), continue;end
         mergeInfo{j}=mrgInf;
         cellNumbers{j,2}=cellAct;
-         waitbar(j/tlen,h,'merge in process');
+         waitbar(j/tlen,h,['Merging at frame ' num2str(j) 'of' num2str(tlen)]);
     end
     close(h);
 end
@@ -1091,8 +1091,8 @@ idx1=find(cellIds==item.ids(1),1);
 idx2=find(cellIds==item.ids(2),1);
 if isempty(idx1) ||isempty(idx2), return; end % do nothing.
 mrgInf=mergeInfo{frmNum};
-[item.id1, item.curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), frame, item.posA, item.posB);
-[item.id2, item.curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), frame, item.posA, item.posB);
+[item.id1, item.curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), item.posA, item.posB);
+[item.id2, item.curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), item.posA, item.posB);
 item.MergedCurve =connect2Shapes(item, frame);
 item.posA=item.iterSec1;
 item.posB=item.iterSec2;
@@ -1141,7 +1141,7 @@ for i =1:last
     mask(curve(i,1),curve(i,2))=1;
 end
 
-function [id, curve, interSect]=findIntersection(curves, cellIds, id, frame, posA, posB)
+function [id, curve, interSect]=findIntersection(curves, cellIds, id, posA, posB)
 idx1=find(id==cellIds,1); 
 curve=curves{idx1};
 dx=0;dy=0;d=Inf;
@@ -1161,64 +1161,7 @@ if nwD<d
    d=nwD;
 end
 
-% maskCurve=getBWCountour(curve, frame);
-% [~, xlen]=size(frame);
-% [maskDot] = getDotMask(round(posA), round(posB), curve, frame);
-% previous=1;
-% for i =1:log2(xlen) %iterate large steps.
-%     rad = 2^i;
-%     dilated=imdilate(maskDot,strel('disk',rad,0));
-%     onPoly=dilated&maskCurve;
-%     if logical(sum(onPoly(:))); % we found point on curve
-%        break;
-%     end
-%     previous=i;
-% end
-% iStr =2^previous+1;
-% sEnd =2^(previous+1);
-% 
-% for i=iStr:sEnd
-%     dilated=imdilate(maskDot,strel('disk',i,0));
-%     onPoly=dilated&maskCurve;
-%     if logical(sum(onPoly(:))); % we found point on curve
-%         [row,col] = find(onPoly==1);
-%         idx =round(length(row)/2);
-%         interSect(1)=col(idx);
-%         interSect(2)=row(idx);
-%        break;
-%     end
-% end
 
 
 
 
-function mask = getDotMask(posA, posB, curve, frame)
-pos=[];
-[in,on] = inpolygon(posA(1), posA(2), curve(:,2),curve(:,1));
-if sum(in)+sum(on)>0, pos = round(posA); end
-[in,on] = inpolygon(posB(1), posB(2), curve(:,2),curve(:,1));
-if sum(in)+sum(on)>0, pos = round(posB); end
-bwShape=getBWCountour(curve, frame);
-
-maskA = zeros(size(frame));
-maskA(posA(2), posA(1))=1;
-maskB = zeros(size(frame));
-maskB(posB(2), posB(1))=1;
-i=2;
-while isempty(pos) %sometimes for continous frame point might be outside
-    dilated=imdilate(maskA,strel('disk',i,0));
-    merged = dilated&bwShape;
-    [row, col]=find(merged==1);
-    [in, on] =inpolygon(col, row,curve(:,2),curve(:,1));
-    if sum(in)+sum(on)>0, pos = [col(1), row(1)];  break; end
-    % test second point.
-    
-    dilated=imdilate(maskB,strel('disk',i,0));
-    merged = dilated&bwShape;
-    [row, col]=find(merged==1);
-    [in, on] =inpolygon(col, row,curve(:,2),curve(:,1));
-    if sum(in)+sum(on)>0, pos = [col(1), row(1)];  break; end
-    i=i+1;
-end
-mask = zeros(size(frame));
-mask(pos(2), pos(1))=1;
