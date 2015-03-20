@@ -396,23 +396,29 @@ save(mPath,'frameCurves', 'cellNumbers', 'mergeInfo', '-v7.3');
 function cellFrameData = getCellFrameData(stackNumber)
 global cellNumbers;
 global frameCurves;
+global mergeInfo;
 cellFrameData={};
 cellIds=getAllCellIds(cellNumbers);
+j=1; % we index only the non_empty contours. 
 for i=1:length(cellIds)
     id = cellIds(i);
-    [contours, badFrmes]=getContourInfo(cellNumbers, frameCurves, id);
-    cellFrameData(i).Stack_number=stackNumber;
-    cellFrameData(i).Cell_number=id;
-    cellFrameData(i).Contours=contours;
-    cellFrameData(i).BadFrames=badFrmes;
+    [contours, badFrmes]=getContourInfo(cellNumbers, frameCurves, id, mergeInfo);
+    if length(contours)<1, 
+        continue; end
+    cellFrameData(j).Stack_number=stackNumber;
+    cellFrameData(j).Cell_number=id;
+    cellFrameData(j).Contours=contours;
+    cellFrameData(j).BadFrames=badFrmes;
+    j=j+1;
 end
 
 
 
-function[contours, badFrmes]=getContourInfo(cellNumbers, frameCurves, id)
+function[contours, badFrmes]=getContourInfo(cellNumbers, frameCurves, id, mergeInfo)
 contours={};
 badFrmes={};
 faultyFrmes=[];
+goodFrames=[];
 for i=1:length(cellNumbers)
     num=cellNumbers{i,1};
     cellAc=cellNumbers{i,2};
@@ -420,15 +426,33 @@ for i=1:length(cellNumbers)
     idx=find(num==id,1);
     if cellAc(idx)==1 % it is a good frame
         contours{end+1}=curves{idx};
-    else
+        goodFrames(end+1)=i;
+    elseif cellAc(idx)==0   
         faultyFrmes(end+1)=i;
-    end  
+        goodFrames(end+1)=i;
+    elseif isempty(idx) %check merged.
+        curve=getMergedContour(mergeInfo{i},id);
+        if ~isempty(curve), contours{end+1}=curve; goodFrames(end+1)=i; end
+    end
+        
 end
 badFrmes{1}=faultyFrmes; % this was the original structure.
+if ~isempty(faultyFrmes), return; end
+diffG=diff(goodFrames);
+a=find(diffG==1);
+if ~(length(a)==length(diffG)),
+    badFrmes{1}=[0]; end % artificially saying it is not continous. 
 
 
 
-
+function curve=getMergedContour(mrgInfo,id)
+curve={};
+for i=1:length(mrgInfo)
+    m=mrgInfo{i};
+    if id==m.id
+        curve=m.MergedCurve;
+    end
+end
 
 % looks at all cell ids and returns those
 % as a number array back.
