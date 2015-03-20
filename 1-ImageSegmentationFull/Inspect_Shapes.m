@@ -931,25 +931,56 @@ function removeInLine(h, hObject, handles)
 if isempty(h), return; end
 pos = h.getPosition();
 global currFrame;
-global mergeInfo;
+global stack;
+[~,~,tlen]=size(stack);
+mId = getMergedIds(currFrame, pos);
+if mId <1, return; end 
+for i=currFrame:tlen
+    removeMergedItemFor(mId, currFrame);
+end
+h.delete(); 
+loadCurrFrame(currFrame, 1, guihandles(hObject));
 
-mrgInfo = mergeInfo{currFrame};
+
+function removeMergedItemFor(mId, frameIdx)
+global mergeInfo;
+global cellNumbers;
+cellAc=cellNumbers{frameIdx,2};
+cellIds=cellNumbers{frameIdx,1};
+
+mrgInfo = mergeInfo{frameIdx};
 for i=1:length(mrgInfo)
     item = mrgInfo{i};
-    if xor(isequal(pos(2,:), item.posA), isequal(pos(2,:), item.posB)) && ...
-        xor(isequal(pos(1,:), item.posA), isequal(pos(1,:), item.posB))
+    if item.id==mId
         mrgInfo{i}=[];
         emptyCells = cellfun('isempty', mrgInfo);
         cols = size(mrgInfo,2);
         mrgInfo(emptyCells) = [];
-        mrgInfo = reshape(mrgInfo, [], cols);    
-        h.delete();
+        mrgInfo = reshape(mrgInfo, [], cols);   
+        for j=1:length(item.ids) %unmerge shapes.
+            idx = find(cellIds==item.ids(j), 1);
+            cellAc(idx)=1;
+        end
     end
  
 end
-mergeInfo{currFrame}=mrgInfo;
+mergeInfo{frameIdx}=mrgInfo;
+cellNumbers{frameIdx,2}=cellAc;
 
 
+function [mId] = getMergedIds(frameIdx, pos)
+global mergeInfo;
+mId=-1; 
+mrgInfo = mergeInfo{frameIdx};
+for i=1:length(mrgInfo)
+    item = mrgInfo{i};
+    if xor(isequal(pos(2,:), item.posA), isequal(pos(2,:), item.posB)) && ...
+        xor(isequal(pos(1,:), item.posA), isequal(pos(1,:), item.posB))
+        mId=item.id;
+        return;
+    end
+ 
+end
 
 function updateMergeInfo(merge, h)
 global mergeInfo;
