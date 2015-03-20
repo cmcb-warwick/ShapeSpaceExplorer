@@ -238,22 +238,31 @@ end
 
 
 function [frameCurves,cellNumbers,mergeInfo] = loadSavedCurveDataFrom(pathName, fileName, stackNumber)
-name=sprintf('ManCorrtdCrves%03d.mat',stackNumber); mergeInfo={};
+name=sprintf('ManCorrtdCrves%03d.mat',stackNumber); 
 path =fullfile(pathName, name);
 if ~exist(path, 'file'), 
     [frameCurves,cellNumbers] =loadCurveDataFrom(pathName, fileName);
-    for i=1:length(frameCurves)
-        mergeInfo{end+1}=[];
-    end
-    return; end
-tmp =load(path);
-frameCurves=tmp.frameCurves;
-cellNumbers=tmp.cellNumbers;
-
-for i=1:length(frameCurves)
-    mergeInfo{end+1}=[];
+    mergeInfo=setUpMergeInfo(length(frameCurves));
+    return; 
 end
 
+tmp =load(path);
+try 
+frameCurves=tmp.frameCurves;
+cellNumbers=tmp.cellNumbers;
+mergeInfo=tmp.mergeInfo;
+end
+if isempty(mergeInfo)
+    mergeInfo=setUpMergeInfo(length(frameCurves));
+end
+
+
+
+function mergeInfo=setUpMergeInfo(tlen)
+mergeInfo={};
+for i=1:tlen
+     mergeInfo{end+1}=[];
+end
 
 function loadCurrFrame(number, activeChange, handles)
 global stack;
@@ -333,6 +342,14 @@ function uipushsaveBtn_ClickedCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.uipushsaveBtn, 'Enable', 'off');
+[idsOk, fid] = areCellIdsCorrectForAllFrames();
+if ~idsOk, 
+     msg =['There is an issue with cell ids from frame ' num2str(fid) ' onwards.\n Current Modification cannot be chagned.'];
+     warndlg(msg,'!! Warning !!'); 
+    set(handles.uipushsaveBtn, 'Enable', 'on');
+    return;
+end
+
 global pathName;
 global stackNumber;
 if isempty(pathName)
@@ -345,6 +362,7 @@ end
    
 global cellNumbers; 
 global frameCurves;
+global mergeInfo;
 if isempty(cellNumbers) || isempty(frameCurves)
     msg = DialogMessages(11);
     helpdlg(msg, 'Info');
@@ -369,7 +387,7 @@ helpdlg(msg, 'Info');
 
 fileName=sprintf('ManCorrtdCrves%03d.mat',stackNumber); 
 mPath =fullfile(pathName, fileName);
-save(mPath,'frameCurves', 'cellNumbers', '-v7.3');
+save(mPath,'frameCurves', 'cellNumbers', 'mergeInfo', '-v7.3');
 
 
 
@@ -430,15 +448,21 @@ end
 function cellArray = getCellArray()
 global cellNumbers;
 global frameCurves;
+global mergeInfo;
 cellArray={};
 for i = 1:length(cellNumbers)
     cellId=cellNumbers{i,1};
     cellAc=cellNumbers{i,2};
     curves=frameCurves{i};
     for j=1:length(cellId);
-        if cellAc(j) % if it is active cell, add it
+        if cellAc(j)==1 % if it is active cell, add it
             cellArray{end+1}=curves{j};
         end
+    end
+    mrgInf=mergeInfo{i};
+    for j=1:length(mrgInf)
+        m=mrgInf{j};
+        cellArray{end+1}=m.MergedCurve;
     end
 end
 
@@ -557,6 +581,8 @@ global currFrame;
 if strcmp('on', idState)==1
    changeIdOfCell(pos);
    loadCurrFrame(currFrame,1,handles);
+   [idsOk, fid]=areCellIdsCorrectForAllFrames;
+   if ~idsOk, warndlg(['There is an issue with cell ids from frame ' num2str(fid) ' onwards.'],'!! Warning !!'); end
 end
 
 
@@ -620,6 +646,9 @@ if cellId<1, return; end
 
 
 function [cellId, state, mergedId] =isClickInShape(pos)
+cellId=-1;
+mergedId=-1;
+state=0;
 global frameCurves;
 global currFrame;
 global cellNumbers;
@@ -628,9 +657,7 @@ if isempty(frameCurves) || isempty(currFrame), return; end;
 cellAc=cellNumbers{currFrame,2};
 cellIds=cellNumbers{currFrame,1};
 curves =frameCurves{currFrame};
-cellId=-1;
-mergedId=-1;
-state=0;
+
 for i=1:length(curves)
     curve=curves{i};
     id = cellIds(i);
@@ -1064,7 +1091,6 @@ frame=stack(:,:,currFrame);
 [~,~,tlen]=size(stack);
 mrgInf=mergeInfo{currFrame};
 if isempty(mrgInf), return; end
-
 for i=1:length(mrgInf)
     h = waitbar(0,'Merging ... '); 
     item = mrgInf{i};
@@ -1091,9 +1117,9 @@ idx1=find(cellIds==item.ids(1),1);
 idx2=find(cellIds==item.ids(2),1);
 if isempty(idx1) ||isempty(idx2), return; end % do nothing.
 mrgInf=mergeInfo{frmNum};
-[item.id1, item.curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), item.posA, item.posB);
-[item.id2, item.curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), item.posA, item.posB);
-item.MergedCurve =connect2Shapes(item, frame);
+[item.id1, curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), item.posA, item.posB);
+[item.id2, curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), item.posA, item.posB);
+item.MergedCurve =connect2Shapes(item, frame, curve1, curve2);
 item.posA=item.iterSec1;
 item.posB=item.iterSec2;
 
@@ -1114,11 +1140,11 @@ end
 if ~found, mrgInf{end+1}=item; end
 
 
-function curve =connect2Shapes(item, frame)
+function curve =connect2Shapes(item, frame, curve1, curve2)
 if isequal(item.posA,item.iterSec2) && ...
    isequal(item.posB,item.iterSec2), return; end % we have already merged.
-bwShape1=getBWCountour(item.curve1, frame);
-bwShape2=getBWCountour(item.curve2, frame);
+bwShape1=getBWCountour(curve1, frame);
+bwShape2=getBWCountour(curve2, frame);
 bwInter1=getBWCountour([item.iterSec1(2),item.iterSec1(1)], frame);
 bwInter2=getBWCountour([item.iterSec2(2),item.iterSec2(1)], frame);
 
@@ -1141,7 +1167,7 @@ for i =1:last
     mask(curve(i,1),curve(i,2))=1;
 end
 
-function [id, curve, interSect]=findIntersection(curves, cellIds, id, posA, posB)
+function [id, curve,interSect]=findIntersection(curves, cellIds, id, posA, posB)
 idx1=find(id==cellIds,1); 
 curve=curves{idx1};
 dx=0;dy=0;d=Inf;
@@ -1161,7 +1187,25 @@ if nwD<d
    d=nwD;
 end
 
-
+function [b, frmId] = areCellIdsCorrectForAllFrames()
+b=1; frmId=-1;
+global stack;
+global mergeInfo;
+global cellNumbers;
+[~, ~, tlen]=size(stack);
+for i=1:tlen
+    allIds=[];
+    cellIds=cellNumbers{i,1};
+    cellAct=cellNumbers{i,2};
+    ids = cellAct<2;
+    allIds=[allIds, cellIds(ids)];
+    mrgInfo = mergeInfo{i};
+    for j=1:length(mrgInfo)
+        m=mrgInfo{j};
+        allIds(end+1)=m.id;
+    end
+    if ~(length(allIds)==length(unique(allIds))), b=0; frmId=i; break; end
+end
 
 
 
