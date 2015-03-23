@@ -991,8 +991,11 @@ set(handles.uitoggletool6, 'State', 'off');
 set(handles.setId, 'State', 'off');
 zoom off
 pan off
+
 h=imline(handles.axes1);
+g=msgbox('say what to do to the user!');
 position = wait(h);
+close(g);
 global currFrame;
 if isempty(position), return; end
 [inside, ids]=bothPosInSideCell(position(1,:), position(2,:));
