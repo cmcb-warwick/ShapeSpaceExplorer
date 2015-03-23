@@ -429,21 +429,42 @@ for i=1:length(cellNumbers)
         goodFrames(end+1)=i;
     elseif cellAc(idx)==0   
         faultyFrmes(end+1)=i;
-        goodFrames(end+1)=i;
-    elseif isempty(idx) %check merged.
+    elseif ~isempty(idx) %check merged.
         curve=getMergedContour(mergeInfo{i},id);
         if ~isempty(curve), contours{end+1}=curve; goodFrames(end+1)=i; end
     end
         
 end
+% missing frames which can also be for jump of id, are added.
+[minFrmIdx , maxFrmIdx] = getMinMaxFrame(faultyFrmes, goodFrames);
+
+faulty = zeros(maxFrmIdx-minFrmIdx+1,1);
+if isempty(faulty), return; end
+gIdx=goodFrames-minFrmIdx+1;
+faulty(gIdx)=1;
+fIdx=find(faulty==0);
+if isempty(fIdx), return; end
+faultyFrmes = fIdx+minFrmIdx-1;
 badFrmes{1}=faultyFrmes; % this was the original structure.
-if ~isempty(faultyFrmes), return; end
-diffG=diff(goodFrames);
-a=find(diffG==1);
-if ~(length(a)==length(diffG)),
-    badFrmes{1}=[0]; end % artificially saying it is not continous. 
+ 
 
 
+
+function [minFrmIdx , maxFrmIdx] = getMinMaxFrame(faultyFrmes, goodFrames)
+if isempty(faultyFrmes) && ~isempty(goodFrames)
+   minFrmIdx = min(goodFrames);
+   maxFrmIdx=  max(goodFrames);
+   return;
+end
+
+if ~isempty(faultyFrmes) && isempty(goodFrames)
+    minFrmIdx = min(faultyFrmes);
+    maxFrmIdx=  max(faultyFrmes); 
+   return;
+end
+minFrmIdx = min(min(goodFrames), min(faultyFrmes));
+maxFrmIdx=  max(max(goodFrames), max(faultyFrmes));
+    
 
 function curve=getMergedContour(mrgInfo,id)
 curve={};
