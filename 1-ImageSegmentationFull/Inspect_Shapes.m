@@ -978,7 +978,7 @@ zoom off
 pan off
 h=imline(handles.axes1);
 position = wait(h);
-
+global currFrame;
 if isempty(position), return; end
 [inside, ids]=bothPosInSideCell(position(1,:), position(2,:));
 if ~inside || isempty(ids),h.delete(); return; end
@@ -989,6 +989,8 @@ m.posB=position(2,:);
 m.ids=ids;
 m.id=min(m.ids);
 updateMergeInfo(m, h);
+exectueMerge(currFrame);
+loadCurrFrame(currFrame, 1,handles);
 
 
 function upateContextMenu(h, hObject, handles)
@@ -1113,20 +1115,6 @@ if ~(cellId1==cellId2) && ~(state1==3) &&~(state2==3)
 
 
 
-
-
-% --------------------------------------------------------------------
-function doMerge_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to doMerge (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-global currFrame;
-exectueMerge(currFrame)
-loadCurrFrame(currFrame, 1,handles);
-
-
-
-
 function exectueMerge(currFrame)
 global mergeInfo;
 global frameCurves;
@@ -1165,8 +1153,7 @@ mrgInf=mergeInfo{frmNum};
 [item.id1, curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), item.posA, item.posB);
 [item.id2, curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), item.posA, item.posB);
 item.MergedCurve =connect2Shapes(item, frame, curve1, curve2);
-item.posA=item.iterSec1;
-item.posB=item.iterSec2;
+
 
 idx1=find(cellIds==item.id1, 1); %mark as 3
 cellAct(idx1)=3;
