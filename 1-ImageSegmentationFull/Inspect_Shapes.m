@@ -751,8 +751,16 @@ function figure1_WindowButtonUpFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
+global currFrame;
+try 
+    if handles.MergedPosChanged==1
+       handles.MergedPosChanged=0;
+        guidata(handles.figure1,handles); 
+       
+       exectueMerge(currFrame);
+       loadCurrFrame(currFrame, 1,handles);
+    end
+end
 
 
 % remove the cell with cellId from all future frames.
@@ -1107,8 +1115,8 @@ for i=1:length(l)
     end
 end
 mergeInfo{currFrame}=l;
-% handles.MergesPosChanged=1;
-% guidata(handles.figure1,handles); 
+handles.MergedPosChanged=1;
+guidata(handles.figure1,handles); 
 
 function [b, ids]= bothPosInSideCell(pos1, pos2)
 b=1; ids=[];
