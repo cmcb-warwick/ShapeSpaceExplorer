@@ -637,7 +637,7 @@ if cellId<1, return; end
 msg = ['The current cell id = ' num2str(cellId) ', which will changed into the New Id.'];
 warning('off');
 newId=FilterDialog(msg, 'new Id ', num2str(cellId));
-if newId<1, return; end % user clicked cancel.
+if newId<0, return; end % user clicked cancel.
 if newId==cellId, return; end
 changeIds(cellId, newId, state);
 
@@ -1115,6 +1115,10 @@ if ~(cellId1==cellId2) && ~(state1==3) &&~(state2==3)
 
 
 
+
+
+
+
 function exectueMerge(currFrame)
 global mergeInfo;
 global frameCurves;
@@ -1153,8 +1157,8 @@ mrgInf=mergeInfo{frmNum};
 [item.id1, curve1, item.iterSec1]=findIntersection(curves, cellIds,item.ids(1), item.posA, item.posB);
 [item.id2, curve2, item.iterSec2]=findIntersection(curves, cellIds,item.ids(2), item.posA, item.posB);
 item.MergedCurve =connect2Shapes(item, frame, curve1, curve2);
-
-
+item.posA=item.iterSec1;
+item.posB=item.iterSec2;
 idx1=find(cellIds==item.id1, 1); %mark as 3
 cellAct(idx1)=3;
 idx2=find(cellIds==item.id2, 1);
@@ -1238,3 +1242,7 @@ for i=1:tlen
     end
     if ~(length(allIds)==length(unique(allIds))), b=0; frmId=i; break; end
 end
+
+
+function myCallbackFcn(jListbox,jEventData,hListbox)
+  display('mouse print');
