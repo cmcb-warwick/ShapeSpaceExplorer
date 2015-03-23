@@ -515,6 +515,7 @@ end
 
 
 % --------------------------------------------------------------------
+% Toolbar: Data Cursor
 function uitoggletool6_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -526,6 +527,7 @@ zoom off
 pan off
 
 % --------------------------------------------------------------------
+% Toolbar: Pan
 function uitoggletool5_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -536,6 +538,7 @@ zoom off
 pan off
 
 % --------------------------------------------------------------------
+% Toolbar: Pan on
 function uitoggletool2_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -546,6 +549,7 @@ zoom off
 pan off
 
 % --------------------------------------------------------------------
+% Toolbar: zoom on
 function uitoggletool1_OnCallback(hObject, eventdata, handles)
 % hObject    handle to uitoggletool1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -557,7 +561,9 @@ pan off
 
 
 % --------------------------------------------------------------------
+% Toolbar: Change ID
 function setId_OnCallback(hObject, eventdata, handles)
+
 % hObject    handle to setId (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -577,7 +583,7 @@ set(handles.setId, 'State', 'off');
 setptr(handles.figure1, 'arrow');
 
 
-
+% Toolbar: Free IM ROI
 % --------------------------------------------------------------------
 function mergeShape_OnCallback(hObject, eventdata, handles)
 % hObject    handle to mergeShape (see GCBO)
@@ -745,6 +751,7 @@ function figure1_WindowButtonUpFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 
 
 
@@ -1029,9 +1036,8 @@ for i=1:length(mrgInfo)
     if item.id==mId
         mrgInfo{i}=[];
         emptyCells = cellfun('isempty', mrgInfo);
-        cols = size(mrgInfo,2);
         mrgInfo(emptyCells) = [];
-        mrgInfo = reshape(mrgInfo, [], cols);   
+        mrgInfo = reshape(mrgInfo, [], 1);   
         for j=1:length(item.ids) %unmerge shapes.
             idx = find(cellIds==item.ids(j), 1);
             cellAc(idx)=1;
@@ -1101,6 +1107,8 @@ for i=1:length(l)
     end
 end
 mergeInfo{currFrame}=l;
+% handles.MergesPosChanged=1;
+% guidata(handles.figure1,handles); 
 
 function [b, ids]= bothPosInSideCell(pos1, pos2)
 b=1; ids=[];
@@ -1244,5 +1252,3 @@ for i=1:tlen
 end
 
 
-function myCallbackFcn(jListbox,jEventData,hListbox)
-  display('mouse print');
