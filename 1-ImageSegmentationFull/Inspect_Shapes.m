@@ -22,7 +22,7 @@ function varargout = Inspect_Shapes(varargin)
 
 % Edit the above text to modify the response to help Inspect_Shapes
 
-% Last Modified by GUIDE v2.5 18-Mar-2015 11:57:25
+% Last Modified by GUIDE v2.5 23-Mar-2015 10:00:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -1251,6 +1251,3 @@ for i=1:tlen
     end
     if ~(length(allIds)==length(unique(allIds))), b=0; frmId=i; break; end
 end
-
-
-
