@@ -1085,7 +1085,7 @@ b=1; ids=[];
 [cellId2, state2, mId2]=isClickInShape(round(pos2));
 if cellId1<1 || cellId2<1
     b=0; return; end
-if (state1==3 && state2==3) && mId2>1 && mId1>1 && ~(mId1==mId2)
+if (state1==3 && state2==3) && mId2>0 && mId1>0 && ~(mId1==mId2)
    ids=[mId1, mId2]; end
 if ~(cellId1==cellId2) && ~(state1==3) &&~(state2==3)
     ids=[cellId1, cellId2]; end
