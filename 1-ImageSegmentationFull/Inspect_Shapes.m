@@ -95,15 +95,18 @@ if ~isempty(stack)
         uipushsaveBtn_ClickedCallback(hObject, eventdata, handles); end   
 end
 
-% --------------------------------------------------------------------
-function uipushtool1_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to uipushtool1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-checkForSavingCurrentMovie(hObject, eventdata, handles);
-
+function resetGUIVariables(handles)
 clearvars -global % clears all global variables
 cla(handles.axes1);
+set(handles.frames, 'String','');
+set(handles.currFileName, 'string', '' );
+
+
+% --------------------------------------------------------------------
+% Tooltip: Open Folder Button
+function uipushtool1_ClickedCallback(hObject, eventdata, handles)
+checkForSavingCurrentMovie(hObject, eventdata, handles);
+resetGUIVariables(handles);
 global stack;
 global pathName;
 [fileName,pathName] = uigetfile('*.mat','Select a processed Matlab file');
@@ -132,7 +135,10 @@ updateSliderSteps(frames, handles);
 global allCellIds;
 allCellIds=getAllCellIds(cellNumbers);
 loadCurrFrame(1, 1, handles);
-%set up gui
+setUpGUI(handles, frames);
+
+               
+function setUpGUI(handles, frames)
 set(handles.uipushsaveBtn, 'Enable', 'on');
 try zoom(handles.figure1, 'out'); end
 set(handles.filterSize, 'Enable', 'on');
@@ -141,7 +147,8 @@ set(handles.liveSpan, 'Enable', 'on');
 set(handles.slider1, 'Enable', 'on');
 msg =['1/' num2str(frames)];
 set(handles.frames, 'String',msg);
-               
+
+
 
 
 % --- Executes on slider movement.
@@ -933,6 +940,7 @@ loadCurrFrame(currFrame, 1, handles);% repaint figure;
 
 
 % --------------------------------------------------------------------
+% this is the free shape drawing tool
 function pMerge_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to pMerge (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -992,14 +1000,13 @@ set(handles.setId, 'State', 'off');
 zoom off
 pan off
 g=helpdlg(DialogMessages( 14 ),'How to Merge');
-movegui(g,[186+851,412+761-25]);
 fp=getpixelposition(handles.figure1,true);
-movegui(g,[fp(1)+fp(3),fp(2)+fp(4)-25]);
+movegui(g,[fp(1)+fp(3),fp(2)+fp(4)-60]);
 h=imline(handles.axes1);
 
 
 position = wait(h);
-close(g);
+try close(g);end
 global currFrame;
 if isempty(position), return; end
 [inside, ids]=bothPosInSideCell(position(1,:), position(2,:));
