@@ -336,6 +336,96 @@ legend(handles.axes1,lines, lgd);
 if strcmp('off', state),legend(handles.axes1,'off'); end
 
 
+% we basically split tracks that are not continous.
+%%%%%%%%%%%%%%
+function prepareIdsForSaving()
+global allCellIds;
+global stack;
+global mergeInfo;
+global cellNumbers;
+[~,~,t]=size(stack);
+ids2Split={};
+for i=1:length(allCellIds)
+    id = allCellIds(i);
+    [isIdCont, goodFrames]=isIdContinous(cellNumbers, mergeInfo, id,t);
+    if ~isIdCont 
+        ids2Split{end+1,1}=id;
+        ids2Split{end, 2}=goodFrames;
+    end
+end
+
+nextId = max(allCellIds)+1;
+s=size(ids2Split);
+for i=1:s(1)
+    id = ids2Split{i,1};
+    frms = ids2Split{i,2}; 
+   [mInfo, cellNum, nextId] = splitTrackForId(id, frms, mergeInfo, cellNumbers, nextId);
+   mergeInfo=mInfo;
+   cellNumbers=cellNum;
+end
+allCellIds=getAllCellIds(cellNumbers);
+
+
+
+function [mergeInfo, cellNumbers, nextId] = splitTrackForId(id, frms, mergeInfo, cellNumbers, nextId)
+currId = id;
+for i=1:length(frms)
+    if frms(i)-frms(1)>0 && frms(i)-frms(i-1)>1
+        currId=nextId;
+        nextId=nextId+1; 
+    end
+    cIds = cellNumbers{frms(i),1};
+    act = cellNumbers{frms(i),2};
+    idx =find(cIds==id,1);
+    if ~isempty(idx) && ~(act(idx)==3)
+        cIds(idx)=currId;
+        cellNumbers{frms(i),1}=cIds;
+    else
+        mrgInf =mergeInfo{frms(i)};
+        for j=1:length(mrgInf)
+            item =mrgInf{j};
+            if item.id==id, item.id=currId;
+                mrgInf{j}=item;
+                mergeInfo{frms(i)}=mrgInf;
+                break;
+            end
+        end
+    end
+    
+    
+end
+
+
+function [b,goodFrame]= isIdContinous(cellNumbers, mergeInfo, id,t)
+goodFrame=[];b=1;
+for j=1:t
+        cIds = cellNumbers{j,1};
+        idx =find(cIds==id,1);
+        if isempty(idx), continue; end
+        cActive =cellNumbers{j,2};
+        mrgInfo=mergeInfo{j};
+        if cActive==1, goodFrame(end+1)=j; 
+        elseif checkIfIdIsInMerged(id, mrgInfo)
+             goodFrame(end+1)=j;
+        end
+end
+if isempty(goodFrame), return; end
+dFrames = diff(goodFrame); 
+aFrames = find(dFrames==1);
+if ~(length(dFrames)==length(aFrames)), b=0; end
+    
+
+
+
+
+function idIsInMerged = checkIfIdIsInMerged(id, mrgInfo)
+idIsInMerged=0;
+for m=1:length(mrgInfo)
+    item = mrgInfo{m};
+ if item.id==id, idIsInMerged =1; return; end 
+end
+
+%
 
 % legend(handles.axes1,state);
 % load merge info if state is pressed.
@@ -376,6 +466,9 @@ if isempty(cellNumbers) || isempty(frameCurves)
     set(handles.uipushsaveBtn, 'Enable', 'on');
     return
 end
+global currFrame;
+prepareIdsForSaving(); % we only want continous tracks.
+loadCurrFrame(currFrame, 1, handles); % if changes happend, we want updated gui.
 
 fileName=sprintf('CellArray%03d.mat',stackNumber);
 cPath =fullfile(pathName, fileName);
@@ -395,6 +488,7 @@ helpdlg(msg, 'Info');
 fileName=sprintf('ManCorrtdCrves%03d.mat',stackNumber); 
 mPath =fullfile(pathName, fileName);
 save(mPath,'frameCurves', 'cellNumbers', 'mergeInfo', '-v7.3');
+
 
 
 
@@ -650,7 +744,7 @@ if cellId<1, return; end
 msg = ['The current cell id = ' num2str(cellId) ', which will changed into the New Id.'];
 warning('off');
 newId=FilterDialog(msg, 'new Id ', num2str(cellId));
-if newId<0, return; end % user clicked cancel.
+if newId<=0, return; end % user clicked cancel.
 if newId==cellId, return; end
 changeIds(cellId, newId, state);
 
