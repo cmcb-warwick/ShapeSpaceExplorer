@@ -991,9 +991,13 @@ set(handles.uitoggletool6, 'State', 'off');
 set(handles.setId, 'State', 'off');
 zoom off
 pan off
-
+g=helpdlg(DialogMessages( 14 ),'How to Merge');
+movegui(g,[186+851,412+761-25]);
+fp=getpixelposition(handles.figure1,true);
+movegui(g,[fp(1)+fp(3),fp(2)+fp(4)-25]);
 h=imline(handles.axes1);
-g=msgbox('say what to do to the user!');
+
+
 position = wait(h);
 close(g);
 global currFrame;
@@ -1078,6 +1082,7 @@ function updateMergeInfo(merge, h)
 global mergeInfo;
 global currFrame;
 l=mergeInfo{currFrame};
+
 if isempty(l), l={}; end
 found =0;
 cIds=sort(merge.ids);
