@@ -24,8 +24,12 @@ function RunMeFirst(files, framesConfig, msConfig, savefolderpath)
 N=length(files);%number of .dv files
 h = waitbar(0,['0 movies of ' num2str(N) ' movies converted.']);
 allFrameNum=0;
+originalFileName={};
+stackFileName={};
 for i=1:N
+   [~,originFileName{i,1}, ~]=fileparts(files{i});
    stackName=sprintf('ImageStack%03d.mat',i);
+   stackFileName{i,1}=stackName;
    msg =[ num2str(i) ' movies of ' num2str(N) ' movies converted.'];
    if i==1, msg =[ num2str(i) ' movie of ' num2str(N) ' movies converted.'];end 
    if framesConfig.subSet 
@@ -55,7 +59,12 @@ for i=1:N;
 end
 delete(h)
 close all force
+
+tableFilename=fullfile(savefolderpath, 'FileMapping.csv');
+T = table(originFileName, stackFileName);
+writetable(T,tableFilename,'Delimiter',',');
 end
+
 
 function cFrame = StackCellSeg( ImageStack,Stacknumber,savefolderpath,sbw,rbw, currentFrame, allFramNum, h)
 %STACKCELLSEG Summary of this function goes here
