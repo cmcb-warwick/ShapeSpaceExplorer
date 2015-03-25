@@ -402,7 +402,7 @@ for j=1:t
         cIds = cellNumbers{j,1};
         cActive =cellNumbers{j,2};
         idx =find(cIds==id,1);
-        if ~isempty(idx) && ~(cActive(idx)==3);  goodFrame(end+1)=j; continue; end
+        if ~isempty(idx) && cActive(idx)==1;  goodFrame(end+1)=j; continue; end
         mrgInfo=mergeInfo{j};
         if checkIfIdIsInMerged(id, mrgInfo)
              goodFrame(end+1)=j;
