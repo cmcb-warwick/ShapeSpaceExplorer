@@ -22,7 +22,7 @@ function varargout = InteractiveShapeSlicer(varargin)
 
 % Edit the above text to modify the response to help InteractiveShapeSlicer
 
-% Last Modified by GUIDE v2.5 25-Mar-2015 16:41:08
+% Last Modified by GUIDE v2.5 25-Mar-2015 17:06:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -98,13 +98,15 @@ end
 SCORE = getScoreFrom(cellShapeData);
 plotScore(SCORE, handles.axes1);
 handles.score=SCORE;
+handles.path=path;
+handles.CSD=cellShapeData;
 guidata(handles.figure1,handles); 
 
 
 function plotScore(SCORE, axes)
 if isempty(SCORE), return; end
-orangeCol=[237/255 94/255 48/255];
-plot(axes,SCORE(:,1),SCORE(:,2),'*', 'color', orangeCol)
+
+plot(axes,SCORE(:,1),SCORE(:,2),'*', 'color',[0.5,.5,.5])
 axis equal; axis tight;
 hold on
 
@@ -139,15 +141,15 @@ function figure1_ResizeFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
  
-%set(gca,'xlim',[-10 10],'ylim',[-10 10]);
-pos =get(handles.figure1, 'Position'); %[0 0 xwidth ywidth]
-pos(1)=10;
-pos(2)=0;
-pos(3)=pos(3)-20;
-set(gca, 'Position', pos);
-try 
-    plotScore(handles.score, handles.axes1); 
-end
+% %set(gca,'xlim',[-10 10],'ylim',[-10 10]);
+% pos =get(handles.figure1, 'Position'); %[0 0 xwidth ywidth]
+% pos(1)=10;
+% pos(2)=0;
+% pos(3)=pos(3)-20;
+% set(gca, 'Position', pos);
+% try 
+%     plotScore(handles.score, handles.axes1); 
+% end
 
 
 
@@ -165,10 +167,12 @@ function brush_OnCallback(hObject, eventdata, handles)
 % hObject    handle to brush (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-brush on
 zoom off
 pan off
-set(handles.brush, 'State', 'on');
+h = brush(handles.figure1);
+orangeCol=[237/255 94/255 48/255];
+set(h,'Color',orangeCol,'Enable','on');
+
 
 % --------------------------------------------------------------------
 function zoom_in_OnCallback(hObject, eventdata, handles)
@@ -190,3 +194,78 @@ function pan_OnCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.brush, 'State', 'off');
+
+
+    
+
+
+% --------------------------------------------------------------------
+function genFig_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to genFig (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%set(handles.brush, 'State', 'off');
+hBrushLine = findall(handles.axes1,'tag','Brushing');
+brushedData = get(hBrushLine, {'Xdata','Ydata'});
+if isempty(brushedData), return; end
+brushedIdx = ~isnan(brushedData{1});
+x = brushedData{1}(brushedIdx);
+y = brushedData{2}(brushedIdx);
+csd =[];
+try csd = handles.CSD;end
+if isempty(csd), return; end;
+[cx, cy] =getCenterCoordinate(x,y);
+[selectedIdx, mIdx] = findSelectedIdx(csd, x,y, cx, cy);
+if isempty(mIdx) || ~isempty(find(selectedIdx==0, 1)), return; end
+avshape=shapemean(csd,selectedIdx,mIdx,0);
+
+figure
+orangeCol=[237/255 94/255 48/255];
+plot(avshape, 'color', orangeCol,'LineWidth',3)
+axis equal
+%  c=princomp([real(avshape) imag(avshape)]);
+%  theta=atan2(c(2),c(1));
+%  avshape=avshape*exp(1i*(-theta));
+%  avshape=-avshape*sign(max(real(avshape))+min(real(avshape)));
+%  avshape=avshape*exp(1i*(pi/4));
+%  avshape=0.5*step*avshape/(1.1*max(abs(avshape)));
+% f = figure;
+%  plot(f,avshape, 'color', 'm');
+%  hold on
+%  axis equal
+%  axis xy off
+
+
+function [selectedIdx, mIdx] = findSelectedIdx(csd, x,y, cx, cy)
+mIdx=[];
+selectedIdx=zeros(length(x),1);
+allScores=csd.set.SCORE;
+for i=1:length(x)
+    for j=1:length(allScores)
+        if x(i)==allScores(j,1) && y(i)==allScores(j,2)
+           selectedIdx(i)=j;
+        end 
+    end
+end
+% find the center Coordinate.
+for i=1:length(x) 
+    if cx==x(i) && cy==y(i)
+       mIdx=selectedIdx(i); break;
+    end  
+end
+
+
+
+function [cx, cy] =getCenterCoordinate(x,y)
+cDist = Inf;
+for i=1:length(x)
+    cd=0;
+    for j=1:length(x)
+         cd =cd+ sqrt((x(i)-x(j))^2+(y(i)-y(j))^2);
+    end
+    if cd<cDist,
+        cx=x(i);
+        cy=y(i);
+        cDist=cd;
+    end
+end
