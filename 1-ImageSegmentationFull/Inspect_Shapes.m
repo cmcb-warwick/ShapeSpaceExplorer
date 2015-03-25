@@ -400,12 +400,11 @@ function [b,goodFrame]= isIdContinous(cellNumbers, mergeInfo, id,t)
 goodFrame=[];b=1;
 for j=1:t
         cIds = cellNumbers{j,1};
-        idx =find(cIds==id,1);
-        if isempty(idx), continue; end
         cActive =cellNumbers{j,2};
+        idx =find(cIds==id,1);
+        if ~isempty(idx) && ~(cActive(idx)==3);  goodFrame(end+1)=j; continue; end
         mrgInfo=mergeInfo{j};
-        if cActive==1, goodFrame(end+1)=j; 
-        elseif checkIfIdIsInMerged(id, mrgInfo)
+        if checkIfIdIsInMerged(id, mrgInfo)
              goodFrame(end+1)=j;
         end
 end
@@ -755,14 +754,14 @@ global stack;
 global mergeInfo;
 [~,~,N]=size(stack);
 for i=1:N
-    if state==3
-        mergeInfo{i} = changeMergedId(mergeInfo{i},cellId, newId);
-    else %change cell id.
-        cellIds=cellNumbers{i,1};
-        idx = find(cellIds==cellId);
-        if isempty(idx), continue; end
-        cellIds(idx)=newId;
-        cellNumbers{i,1}=cellIds;
+     cellIds=cellNumbers{i,1};
+     cellAct=cellNumbers{i,2};
+     idx = find(cellIds==cellId);
+     if ~isempty(idx) && ~(cellAct(idx)==3)
+         cellIds(idx)=newId;
+         cellNumbers{i,1}=cellIds;
+     else
+        mergeInfo{i} = changeMergedId(mergeInfo{i},cellId, newId);    
     end
 end
 global allCellIds;
