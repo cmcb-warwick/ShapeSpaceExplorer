@@ -22,7 +22,7 @@ function varargout = InteractiveShapeSlicer(varargin)
 
 % Edit the above text to modify the response to help InteractiveShapeSlicer
 
-% Last Modified by GUIDE v2.5 25-Mar-2015 15:43:45
+% Last Modified by GUIDE v2.5 25-Mar-2015 16:41:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,7 +57,8 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-cla reset
+cla
+figure1_ResizeFcn(hObject, eventdata, handles);
 % UIWAIT makes InteractiveShapeSlicer wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -95,17 +96,17 @@ end
 % now we are ready to plot
 
 SCORE = getScoreFrom(cellShapeData);
-plotScore(SCORE);
+plotScore(SCORE, handles.axes1);
 handles.score=SCORE;
 guidata(handles.figure1,handles); 
 
 
-function plotScore(SCORE)
+function plotScore(SCORE, axes)
 if isempty(SCORE), return; end
 orangeCol=[237/255 94/255 48/255];
-plot(SCORE(:,1),SCORE(:,2),'*', 'color', orangeCol)
+plot(axes,SCORE(:,1),SCORE(:,2),'*', 'color', orangeCol)
 axis equal; axis tight;
-
+hold on
 
     
 function filleDoesNotexist(filename)
@@ -145,6 +146,47 @@ pos(2)=0;
 pos(3)=pos(3)-20;
 set(gca, 'Position', pos);
 try 
-    plotScore(handles.score) 
+    plotScore(handles.score, handles.axes1); 
 end
 
+
+
+
+
+% --------------------------------------------------------------------
+function brush_OffCallback(hObject, eventdata, handles)
+% hObject    handle to brush (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+brush off
+set(handles.brush, 'State', 'off');
+% --------------------------------------------------------------------
+function brush_OnCallback(hObject, eventdata, handles)
+% hObject    handle to brush (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+brush on
+zoom off
+pan off
+set(handles.brush, 'State', 'on');
+
+% --------------------------------------------------------------------
+function zoom_in_OnCallback(hObject, eventdata, handles)
+% hObject    handle to zoom_in (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.brush, 'State', 'off');
+
+% --------------------------------------------------------------------
+function zoom_out_OnCallback(hObject, eventdata, handles)
+% hObject    handle to zoom_out (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.brush, 'State', 'off');
+
+% --------------------------------------------------------------------
+function pan_OnCallback(hObject, eventdata, handles)
+% hObject    handle to pan (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.brush, 'State', 'off');
