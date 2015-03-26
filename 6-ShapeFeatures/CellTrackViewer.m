@@ -103,9 +103,26 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
 %contents{get(hObject,'Value')} returns selected item from popupmenu1
-idx=get(hObject,'Value');
-set(handles.text1, 'String',idx);
-display('changed');
+trackId=get(hObject,'Value');
+handles.CurrentTrackId=trackId;
+guidata(handles.figure1,handles); % we store this data in the gui
+plotShapeSpace(hObject, eventdata, handles);
+
+
+
+function plotShapeSpace(hObject, eventdata, handles)
+cla(handles.axes4);
+plot(handles.axes4, handles.score(:,1), handles.score(:,2), '*', 'color',[0.5,.5,.5])
+track = handles.tracks{handles.CurrentTrackId};
+idxes = find(handles.indices==track.AbsIdx);
+x = handles.score(idxes,1);
+y = handles.score(idxes,2);
+hold on
+orangeCol=[237/255 94/255 48/255];
+plot(handles.axes4, x,y, '-', 'color', orangeCol);
+plot(handles.axes4, x,y, '*', 'color', orangeCol);
+plot(handles.axes4, x(1),y(1), 'O', 'color', orangeCol, 'MarkerSize', 10);
+
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu1_CreateFcn(hObject, eventdata, handles)
@@ -130,12 +147,55 @@ function open_ClickedCallback(hObject, eventdata, handles)
 if fileName==0, return; end
 [handles.stack, handles.stackNumber] = loadStackFromFile(pathName, fileName);
 set(handles.text1, 'String', handles.stackNumber);
-[tracks, lbls]= loadTrackInfo(pathName,handles.stackNumber);
-if isempty(tracks), resetGUI(hObject, eventdata, handles); return; end
+[handles.tracks, lbls]= loadTrackInfo(pathName,handles.stackNumber);
+if isempty(handles.tracks), resetGUI(hObject, eventdata, handles), return; end
 set(handles.popupmenu1, 'string', lbls);
-set(handles.popupmenu1, 'Value', 1);
+handles.csd = loadCellShapeData(pathName);
+if isempty(handles.csd),resetGUI(hObject, eventdata, handles), return; end 
+handles.score = getScoreFrom(handles.csd);
+[handles.indices, handles.contours]=loadBigcellarrayandindex(pathName);
+if isempty(handles.indices)  || isempty(handles.contours), return; end
+handles.CurrentTrackId=1;
+guidata(handles.figure1,handles); % we store this data in the gui.
+set(handles.popupmenu1, 'Value', 1); % set first as default value.
+plotShapeSpace(hObject, eventdata, handles)
 
 
+
+function [indices, contours]=loadBigcellarrayandindex(folderPath)
+indices=[]; contours=[];
+bPath = fullfile(folderPath, 'Bigcellarrayandindex.mat');
+if ~exist(bPath, 'file'),filleDoesNotexist(bPath); return; end
+try data = load(bPath);
+indices=data.cell_indices;
+contours=data.BigCellArray;
+catch
+    fileHasWrongStructure(cellShapePath);
+    return;
+end
+
+
+
+function SCORE = getScoreFrom(CellShapeData)
+if isfield(CellShapeData.set,'SCORE')
+    SCORE=CellShapeData.set.SCORE;
+else
+    for i=1:N
+       SCORE(i,:)= CellShapeData.point(i).SCORE;
+    end
+end
+
+
+function csd = loadCellShapeData(folderPath)
+csd=[];
+bPath = fullfile(folderPath, 'CellShapeData.mat');
+if ~exist(bPath, 'file'),filleDoesNotexist(bPath); return; end
+try data = load(bPath);
+csd=data.CellShapeData;
+catch
+    fileHasWrongStructure(cellShapePath);
+    return;
+end
 
 function resetGUI(hObject, eventdata, handles)
 set(handles.popupmenu1, 'string', {'No Cell Tracks found.  '});
