@@ -162,6 +162,18 @@ plot(handles.axes4, x,y, '*', 'color', orangeCol);
 plot(handles.axes4, x(handles.frmId),y(handles.frmId), 'O', 'color', orangeCol, 'MarkerSize', 10);
 msg=[num2str(handles.frmId) '/' num2str(length(x)) ' '];
 set(handles.text1, 'String', msg);
+% axes 3
+cla(handles.axes2);
+for i=1:length(track.Contours)
+    curve = track.Contours{i};
+    plot(handles.axes2, curve(:,1), curve(:,2), '-', 'color', [0.5,.5,.5]);
+    hold(handles.axes2, 'on');
+end
+curve = track.Contours{handles.frmId};
+plot(handles.axes2, curve(:,1), curve(:,2), '-', 'color', orangeCol, 'LineWidth', 3);
+
+
+
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu1_CreateFcn(hObject, eventdata, handles)
