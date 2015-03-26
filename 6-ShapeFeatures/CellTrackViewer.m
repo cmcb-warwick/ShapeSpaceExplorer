@@ -102,8 +102,10 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu1
-
+%contents{get(hObject,'Value')} returns selected item from popupmenu1
+idx=get(hObject,'Value');
+set(handles.text1, 'String',idx);
+display('changed');
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu1_CreateFcn(hObject, eventdata, handles)
@@ -128,8 +130,57 @@ function open_ClickedCallback(hObject, eventdata, handles)
 if fileName==0, return; end
 [handles.stack, handles.stackNumber] = loadStackFromFile(pathName, fileName);
 set(handles.text1, 'String', handles.stackNumber);
+[tracks, lbls]= loadTrackInfo(pathName,handles.stackNumber);
+if isempty(tracks), resetGUI(hObject, eventdata, handles); return; end
+set(handles.popupmenu1, 'string', lbls);
+set(handles.popupmenu1, 'Value', 1);
 
 
+
+function resetGUI(hObject, eventdata, handles)
+set(handles.popupmenu1, 'string', {'No Cell Tracks found.  '});
+cla(handles.axes2);
+cla(handles.axes3);
+cla(handles.axes4);
+
+
+%extract the relevant tracks and abs id from big structure.
+function [tracks, labels]= loadTrackInfo(pathName,stackNumber)
+tracks={}; labels={};
+bPath = fullfile(pathName, 'BigCellDataStruct.mat');
+if ~exist(bPath, 'file'),filleDoesNotexist(bPath); return; end
+try data = load(bPath);
+bigStructure=data.BigCellDataStruct;
+catch
+    fileHasWrongStructure(cellShapePath);
+    return;
+end
+s =size(bigStructure);
+for i=1:s(2)
+    tmp = bigStructure(i);
+    if tmp.Stack_number==stackNumber
+       tmp.AbsIdx=i;
+       tracks{end+1}=tmp;
+       labels{end+1}=sprintf('Image Stack %03d : Cell Id %02d',stackNumber, tmp.Cell_number);
+    end
+end
+
+
+
+    
+function filleDoesNotexist(filename)
+display('-------');
+display(['The file "' filename '" does not exist in your Analysis folder.']);
+display('Please check whether previous steps have been succesfully completed.');
+display('-------');
+
+
+function fileHasWrongStructure(filename)
+display('-------');
+display(['The file "' filename '" does not have the expected structure in your Analysis folder.']);
+display('Please check whether previous steps have been succesfully completed.');
+display('-------');
+   
 
 
 function [stack, stackNum] = loadStackFromFile(pathName, fileName)
