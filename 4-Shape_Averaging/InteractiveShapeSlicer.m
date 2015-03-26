@@ -54,13 +54,18 @@ function InteractiveShapeSlicer_OpeningFcn(hObject, eventdata, handles, varargin
 
 % Choose default command line output for InteractiveShapeSlicer
 handles.output = hObject;
-
+resetAxes(handles);
 % Update handles structure
 guidata(hObject, handles);
-set(handles.brush, 'State', 'off');
+
 %figure1_ResizeFcn(hObject, eventdata, handles);
 % UIWAIT makes InteractiveShapeSlicer wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
+
+function resetAxes(handles)
+set(handles.brush, 'State', 'off');
+cla(handles.axes2,'reset');
+set(gca,'xtick',[],'ytick',[],'Xcolor','w','Ycolor','w')
 
 
 % --- Outputs from this function are returned to the command line.
@@ -79,7 +84,7 @@ function open_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to open (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-set(handles.brush, 'State', 'off');
+resetAxes(handles);
 path = uigetdir();
 if path==0, return; end
 cellShapePath = fullfile(path, 'CellShapeData.mat');
