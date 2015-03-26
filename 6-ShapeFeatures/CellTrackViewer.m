@@ -57,7 +57,10 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+figObj=handles.figure1;
+addlistener(handles.slider1,'ContinuousValueChange',@(figObj, handles)slider1_ValueChanged(figObj, handles));
 
+resetGUI(hObject, eventdata, handles);
 % UIWAIT makes CellTrackViewer wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -94,19 +97,54 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over slider1.
+function slider1_ValueChanged(hObject, eventdata, ~)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+hObj=guihandles(hObject);
+stordInfo =getappdata(hObj.figure1);
+obj=stordInfo.UsedByGUIData_m;
+num = floor(get(obj.slider1,'Value'));
+if ~(num==1) && obj.frmId==num, return; end % for num==1 we have a strange exception. I could not figure out why.
+obj.frmId=num;
+plotShapeSpace(obj, [], obj);
+
+
 
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
 %contents{get(hObject,'Value')} returns selected item from popupmenu1
-trackId=get(hObject,'Value');
+%update slider.
+trackId=get(handles.popupmenu1,'Value');
+sl=handles.tracks{trackId};
+frames=length(sl.Contours);
+updateSliderSteps(handles.slider1, frames);
+
 handles.CurrentTrackId=trackId;
 guidata(handles.figure1,handles); % we store this data in the gui
 plotShapeSpace(hObject, eventdata, handles);
+
+
+
+
+
+function updateSliderSteps(slider, numSteps)
+if numSteps>1
+set(slider, 'Min', 1.0);
+set(slider, 'Max', numSteps);
+set(slider, 'Value', 1);
+set(slider, 'SliderStep', [1/(numSteps-1) , 1/(numSteps-1) ]);
+return;
+end
+set(slider, 'Max', 1.1);
+set(slider, 'Value', 1);
+set(slider, 'SliderStep', [0.5 , 0.5 ]);
 
 
 
@@ -121,8 +159,9 @@ hold on
 orangeCol=[237/255 94/255 48/255];
 plot(handles.axes4, x,y, '-', 'color', orangeCol);
 plot(handles.axes4, x,y, '*', 'color', orangeCol);
-plot(handles.axes4, x(1),y(1), 'O', 'color', orangeCol, 'MarkerSize', 10);
-
+plot(handles.axes4, x(handles.frmId),y(handles.frmId), 'O', 'color', orangeCol, 'MarkerSize', 10);
+msg=[num2str(handles.frmId) '/' num2str(length(x)) ' '];
+set(handles.text1, 'String', msg);
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu1_CreateFcn(hObject, eventdata, handles)
@@ -150,16 +189,17 @@ set(handles.text1, 'String', handles.stackNumber);
 [handles.tracks, lbls]= loadTrackInfo(pathName,handles.stackNumber);
 if isempty(handles.tracks), resetGUI(hObject, eventdata, handles), return; end
 set(handles.popupmenu1, 'string', lbls);
+set(handles.popupmenu1, 'Enable', 'on');
 handles.csd = loadCellShapeData(pathName);
 if isempty(handles.csd),resetGUI(hObject, eventdata, handles), return; end 
 handles.score = getScoreFrom(handles.csd);
 [handles.indices, handles.contours]=loadBigcellarrayandindex(pathName);
 if isempty(handles.indices)  || isempty(handles.contours), return; end
 handles.CurrentTrackId=1;
+handles.frmId=1;
 guidata(handles.figure1,handles); % we store this data in the gui.
 set(handles.popupmenu1, 'Value', 1); % set first as default value.
-plotShapeSpace(hObject, eventdata, handles)
-
+popupmenu1_Callback(hObject, eventdata, handles);
 
 
 function [indices, contours]=loadBigcellarrayandindex(folderPath)
@@ -199,10 +239,11 @@ end
 
 function resetGUI(hObject, eventdata, handles)
 set(handles.popupmenu1, 'string', {'No Cell Tracks found.  '});
+set(handles.popupmenu1, 'Enable', 'off');
 cla(handles.axes2);
 cla(handles.axes3);
 cla(handles.axes4);
-
+set(handles.text1, 'String', ' ');
 
 %extract the relevant tracks and abs id from big structure.
 function [tracks, labels]= loadTrackInfo(pathName,stackNumber)
