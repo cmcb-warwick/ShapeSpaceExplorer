@@ -22,7 +22,7 @@ function varargout = InteractiveShapeSlicer(varargin)
 
 % Edit the above text to modify the response to help InteractiveShapeSlicer
 
-% Last Modified by GUIDE v2.5 25-Mar-2015 17:06:37
+% Last Modified by GUIDE v2.5 26-Mar-2015 09:13:17
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,8 +57,8 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-cla
-figure1_ResizeFcn(hObject, eventdata, handles);
+set(handles.brush, 'State', 'off');
+%figure1_ResizeFcn(hObject, eventdata, handles);
 % UIWAIT makes InteractiveShapeSlicer wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -79,6 +79,7 @@ function open_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to open (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.brush, 'State', 'off');
 path = uigetdir();
 if path==0, return; end
 cellShapePath = fullfile(path, 'CellShapeData.mat');
@@ -96,18 +97,19 @@ end
 % now we are ready to plot
 
 SCORE = getScoreFrom(cellShapeData);
-plotScore(SCORE, handles.axes1);
+plotScore(SCORE, handles.axes2);
 handles.score=SCORE;
 handles.path=path;
 handles.CSD=cellShapeData;
 guidata(handles.figure1,handles); 
 
 
-function plotScore(SCORE, axes)
+function plotScore(SCORE, axes1, fig1)
+%set(0, 'currentfigure', fig);  %# for figures
+%set(f, 'currentaxes', axs);  %# for axes with handle axs on figure f
 if isempty(SCORE), return; end
-
-plot(axes,SCORE(:,1),SCORE(:,2),'*', 'color',[0.5,.5,.5])
-axis equal; axis tight;
+plot(axes1,SCORE(:,1),SCORE(:,2),'*', 'color',[0.5,.5,.5]);
+axis equal; axis tight; box on
 hold on
 
     
@@ -140,16 +142,6 @@ function figure1_ResizeFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
- 
-% %set(gca,'xlim',[-10 10],'ylim',[-10 10]);
-% pos =get(handles.figure1, 'Position'); %[0 0 xwidth ywidth]
-% pos(1)=10;
-% pos(2)=0;
-% pos(3)=pos(3)-20;
-% set(gca, 'Position', pos);
-% try 
-%     plotScore(handles.score, handles.axes1); 
-% end
 
 
 
@@ -205,7 +197,7 @@ function genFig_ClickedCallback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %set(handles.brush, 'State', 'off');
-hBrushLine = findall(handles.axes1,'tag','Brushing');
+hBrushLine = findall(handles.axes2,'tag','Brushing');
 brushedData = get(hBrushLine, {'Xdata','Ydata'});
 if isempty(brushedData), return; end
 brushedIdx = ~isnan(brushedData{1});
@@ -223,17 +215,7 @@ figure
 orangeCol=[237/255 94/255 48/255];
 plot(avshape, 'color', orangeCol,'LineWidth',3)
 axis equal
-%  c=princomp([real(avshape) imag(avshape)]);
-%  theta=atan2(c(2),c(1));
-%  avshape=avshape*exp(1i*(-theta));
-%  avshape=-avshape*sign(max(real(avshape))+min(real(avshape)));
-%  avshape=avshape*exp(1i*(pi/4));
-%  avshape=0.5*step*avshape/(1.1*max(abs(avshape)));
-% f = figure;
-%  plot(f,avshape, 'color', 'm');
-%  hold on
-%  axis equal
-%  axis xy off
+
 
 
 function [selectedIdx, mIdx] = findSelectedIdx(csd, x,y, cx, cy)
@@ -269,3 +251,12 @@ for i=1:length(x)
         cDist=cd;
     end
 end
+
+
+% --------------------------------------------------------------------
+function save_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to save (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[filename, pathname, filterindex]=uiputfile({'*.eps';'*.pdf'; '*.fig'},'Save Average Shape Files');
+display(filterindex)
