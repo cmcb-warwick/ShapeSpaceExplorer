@@ -216,7 +216,7 @@ if isempty(csd), return; end;
 if isempty(mIdx) || ~isempty(find(selectedIdx==0, 1)), return; end
 avshape=shapemean(csd,selectedIdx,mIdx,0);
 
-figure
+figure(10)
 orangeCol=[237/255 94/255 48/255];
 plot(avshape, 'color', orangeCol,'LineWidth',3)
 axis equal
@@ -263,5 +263,20 @@ function save_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[filename, pathname, filterindex]=uiputfile({'*.eps';'*.pdf'; '*.fig'},'Save Average Shape Files');
-display(filterindex)
+[filename, pathname, filterindex]=uiputfile({'*.eps'; '*.fig'},'Save Average Shape Files');
+[~,name,ext] = fileparts(filename);
+if filterindex==1
+   saveas(handles.figure1, fullfile(pathname, filename), 'epsc');   
+elseif filterindex==2
+    savefig(handles.figure1,fullfile(pathname, filename))
+end
+% if avergage fig does not exist, we are done.
+if ~(ishandle(10) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
+avgPath =[name '_Avg_Shape' ext];
+if filterindex==1
+   saveas(10, fullfile(pathname, avgPath), 'epsc');   
+elseif filterindex==2
+    savefig(10,fullfile(pathname, avgPath))
+end    
+
+
