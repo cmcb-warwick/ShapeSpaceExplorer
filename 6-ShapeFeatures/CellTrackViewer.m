@@ -127,10 +127,32 @@ frames=length(sl.Contours);
 updateSliderSteps(handles.slider1, frames);
 
 handles.CurrentTrackId=trackId;
+handles.com = calculateGravityTrackFrom(handles);
 guidata(handles.figure1,handles); % we store this data in the gui
+
 plotShapeSpace(hObject, eventdata, handles);
 
 
+% calculate center of mass
+function com = calculateGravityTrackFrom(handles)
+track = handles.tracks{handles.CurrentTrackId};
+com = zeros(length(track.Contours),2);
+h=waitbar(0, 'prepare shape track');
+N=length(track.Contours);
+% get dimensions
+xmax=0; ymax=0;
+for i=1:N
+    curve = track.Contours{i};
+    xmax = max(xmax, max(curve(:,1)));
+    ymax = max(ymax, max(curve(:,2)));
+    bw=poly2mask(curve(:,1), curve(:,2), ymax,xmax);
+    [y, x] = find( bw );
+    com(i,1)=mean(x);
+    com(i,2)=mean(y);
+    msg =['prepare shape track' num2str(i) '/' num2str(N)];
+    waitbar(i/N, h, msg);
+end
+close(h);
 
 
 
@@ -164,10 +186,14 @@ msg=[num2str(handles.frmId) '/' num2str(length(x)) ' '];
 set(handles.text1, 'String', msg);
 % axes 3
 cla(handles.axes2);
+
+plot(handles.axes2, handles.com(:,1), handles.com(:,2), '.', 'color', [0.5,.5,.5], 'MarkerSize',20);
+hold(handles.axes2, 'on');
+plot(handles.axes2, handles.com(:,1), handles.com(:,2), '-', 'color', [0.5,.5,.5], 'LineWidth',3);
+plot(handles.axes2, handles.com(handles.frmId,1), handles.com(handles.frmId,2), '.', 'color', orangeCol, 'MarkerSize',20)
 for i=1:length(track.Contours)
     curve = track.Contours{i};
     plot(handles.axes2, curve(:,1), curve(:,2), '-', 'color', [0.5,.5,.5]);
-    hold(handles.axes2, 'on');
 end
 curve = track.Contours{handles.frmId};
 plot(handles.axes2, curve(:,1), curve(:,2), '-', 'color', orangeCol, 'LineWidth', 3);
