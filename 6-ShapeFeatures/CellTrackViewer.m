@@ -109,7 +109,7 @@ obj=stordInfo.UsedByGUIData_m;
 num = floor(get(obj.slider1,'Value'));
 if ~(num==1) && obj.frmId==num, return; end % for num==1 we have a strange exception. I could not figure out why.
 obj.frmId=num;
-plotShapeSpace(obj, [], obj);
+plotFig(obj, [], obj);
 
 
 
@@ -130,7 +130,7 @@ handles.CurrentTrackId=trackId;
 handles.com = calculateGravityTrackFrom(handles);
 guidata(handles.figure1,handles); % we store this data in the gui
 
-plotShapeSpace(hObject, eventdata, handles);
+plotFig(hObject, eventdata, handles);
 
 
 % calculate center of mass
@@ -168,11 +168,15 @@ set(slider, 'Max', 1.1);
 set(slider, 'Value', 1);
 set(slider, 'SliderStep', [0.5 , 0.5 ]);
 
-
+function plotFig(hObject, eventdata, handles)
+plotShapeSpace(hObject, eventdata, handles); %axes4;
+plotShapeTrack(hObject, eventdata, handles); %axes 3
 
 function plotShapeSpace(hObject, eventdata, handles)
 cla(handles.axes4);
-plot(handles.axes4, handles.score(:,1), handles.score(:,2), '*', 'color',[0.5,.5,.5])
+plot(handles.axes4, handles.score(:,1), handles.score(:,2), '*', 'color',[0.5,.5,.5]);
+axis(handles.axes4, 'equal'); 
+axis(handles.axes4, 'tight');
 track = handles.tracks{handles.CurrentTrackId};
 idxes = find(handles.indices==track.AbsIdx);
 x = handles.score(idxes,1);
@@ -184,9 +188,12 @@ plot(handles.axes4, x,y, '*', 'color', orangeCol);
 plot(handles.axes4, x(handles.frmId),y(handles.frmId), 'O', 'color', orangeCol, 'MarkerSize', 10);
 msg=[num2str(handles.frmId) '/' num2str(length(x)) ' '];
 set(handles.text1, 'String', msg);
-% axes 3
-cla(handles.axes2);
 
+
+function plotShapeTrack(hObject, eventdata, handles) % axes 3 plot the shapes. 
+cla(handles.axes2);
+orangeCol=[237/255 94/255 48/255];
+track = handles.tracks{handles.CurrentTrackId};
 plot(handles.axes2, handles.com(:,1), handles.com(:,2), '.', 'color', [0.5,.5,.5], 'MarkerSize',20);
 hold(handles.axes2, 'on');
 plot(handles.axes2, handles.com(:,1), handles.com(:,2), '-', 'color', [0.5,.5,.5], 'LineWidth',3);
