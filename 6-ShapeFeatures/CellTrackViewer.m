@@ -174,7 +174,7 @@ plotShapeTrack(hObject, eventdata, handles); %axes 3
 
 function plotShapeSpace(hObject, eventdata, handles)
 cla(handles.axes4);
-plot(handles.axes4, handles.score(:,1), handles.score(:,2), '*', 'color',[0.5,.5,.5]);
+plot(handles.axes4, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
 axis(handles.axes4, 'equal'); 
 axis(handles.axes4, 'tight');
 track = handles.tracks{handles.CurrentTrackId};
@@ -183,8 +183,10 @@ x = handles.score(idxes,1);
 y = handles.score(idxes,2);
 hold on
 orangeCol=[237/255 94/255 48/255];
-plot(handles.axes4, x,y, '-', 'color', orangeCol);
-plot(handles.axes4, x,y, '*', 'color', orangeCol);
+blueCol=[156/255,187/255,229/255];
+plot(handles.axes4, x,y, '-', 'color', blueCol,'MarkerSize', 20);
+plot(handles.axes4, x,y, '.', 'color', blueCol,'MarkerSize', 20);
+plot(handles.axes4, x(handles.frmId),y(handles.frmId), '.', 'color', orangeCol, 'MarkerSize', 20);
 plot(handles.axes4, x(handles.frmId),y(handles.frmId), 'O', 'color', orangeCol, 'MarkerSize', 10);
 msg=[num2str(handles.frmId) '/' num2str(length(x)) ' '];
 set(handles.text1, 'String', msg);
@@ -193,11 +195,13 @@ set(handles.text1, 'String', msg);
 function plotShapeTrack(hObject, eventdata, handles) % axes 3 plot the shapes. 
 cla(handles.axes2);
 orangeCol=[237/255 94/255 48/255];
+blueCol=[156/255,187/255,229/255];
 track = handles.tracks{handles.CurrentTrackId};
-plot(handles.axes2, handles.com(:,1), handles.com(:,2), '.', 'color', [0.5,.5,.5], 'MarkerSize',20);
+plot(handles.axes2, handles.com(:,1), handles.com(:,2), '.', 'color', blueCol, 'MarkerSize',20);
 hold(handles.axes2, 'on');
-plot(handles.axes2, handles.com(:,1), handles.com(:,2), '-', 'color', [0.5,.5,.5], 'LineWidth',3);
+plot(handles.axes2, handles.com(:,1), handles.com(:,2), '-', 'color', blueCol, 'LineWidth',3);
 plot(handles.axes2, handles.com(handles.frmId,1), handles.com(handles.frmId,2), '.', 'color', orangeCol, 'MarkerSize',20)
+plot(handles.axes2, handles.com(handles.frmId,1), handles.com(handles.frmId,2), 'O', 'color', orangeCol, 'MarkerSize',15)
 for i=1:length(track.Contours)
     curve = track.Contours{i};
     plot(handles.axes2, curve(:,1), curve(:,2), '-', 'color', [0.5,.5,.5]);
@@ -286,7 +290,6 @@ function resetGUI(hObject, eventdata, handles)
 set(handles.popupmenu1, 'string', {'No Cell Tracks found.  '});
 set(handles.popupmenu1, 'Enable', 'off');
 cla(handles.axes2);
-cla(handles.axes3);
 cla(handles.axes4);
 set(handles.text1, 'String', ' ');
 
