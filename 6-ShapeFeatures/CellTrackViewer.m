@@ -174,9 +174,19 @@ plotShapeTrack(hObject, eventdata, handles); %axes 3
 
 function plotShapeSpace(hObject, eventdata, handles)
 cla(handles.axes4);
+set(handles.axes4, 'Position' , [60 7.5 102 51]);
 plot(handles.axes4, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
 axis(handles.axes4, 'equal'); 
+pos = get(handles.axes4, 'Position');
+antTightInset = get(handles.axes4, 'TightInset');
 axis(handles.axes4, 'tight');
+
+postTihgtInset = get(handles.axes4, 'TightInset');
+offsetX= 2*(antTightInset(1) - postTihgtInset(1))*(antTightInset(3) - postTihgtInset(3));
+offsetY= 2*(antTightInset(2) - postTihgtInset(2))*(antTightInset(4) - postTihgtInset(4));
+       
+
+set(handles.axes4, 'Position' , [(pos(1)+offsetX) (pos(2)+offsetY) pos(3) pos(4)]);
 track = handles.tracks{handles.CurrentTrackId};
 idxes = find(handles.indices==track.AbsIdx);
 x = handles.score(idxes,1);
@@ -196,6 +206,7 @@ function plotShapeTrack(hObject, eventdata, handles) % axes 3 plot the shapes.
 cla(handles.axes2);
 orangeCol=[237/255 94/255 48/255];
 blueCol=[156/255,187/255,229/255];
+
 track = handles.tracks{handles.CurrentTrackId};
 plot(handles.axes2, handles.com(:,1), handles.com(:,2), '.', 'color', blueCol, 'MarkerSize',20);
 hold(handles.axes2, 'on');
