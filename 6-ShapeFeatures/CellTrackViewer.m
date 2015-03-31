@@ -169,24 +169,24 @@ set(slider, 'Value', 1);
 set(slider, 'SliderStep', [0.5 , 0.5 ]);
 
 function plotFig(hObject, eventdata, handles)
-plotShapeSpace(hObject, eventdata, handles); %axes4;
+plotShapeSpace(handles.axes4, handles); %axes4;
 plotShapeTrack(hObject, eventdata, handles); %axes 3
 
-function plotShapeSpace(hObject, eventdata, handles)
-cla(handles.axes4);
-set(handles.axes4, 'Position' , [60 7.5 102 51]);
-plot(handles.axes4, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
-axis(handles.axes4, 'equal'); 
-pos = get(handles.axes4, 'Position');
-antTightInset = get(handles.axes4, 'TightInset');
-axis(handles.axes4, 'tight');
+function plotShapeSpace(axes, handles)
+cla(axes);
+%set(axes, 'Position' , [60 7.5 102 51]);
+plot(axes, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
+axis(axes, 'equal'); 
+% pos = get(axes, 'Position');
+% antTightInset = get(axes, 'TightInset');
+axis(axes, 'tight');
 
-postTihgtInset = get(handles.axes4, 'TightInset');
-offsetX= 2*(antTightInset(1) - postTihgtInset(1))*(antTightInset(3) - postTihgtInset(3));
-offsetY= 2*(antTightInset(2) - postTihgtInset(2))*(antTightInset(4) - postTihgtInset(4));
+% postTihgtInset = get(handles.axes4, 'TightInset');
+% offsetX= 2*(antTightInset(1) - postTihgtInset(1))*(antTightInset(3) - postTihgtInset(3));
+% offsetY= 2*(antTightInset(2) - postTihgtInset(2))*(antTightInset(4) - postTihgtInset(4));
        
 
-set(handles.axes4, 'Position' , [(pos(1)+offsetX) (pos(2)+offsetY) pos(3) pos(4)]);
+%set(axes, 'Position' , [(pos(1)+offsetX) (pos(2)+offsetY) pos(3) pos(4)]);
 track = handles.tracks{handles.CurrentTrackId};
 idxes = find(handles.indices==track.AbsIdx);
 x = handles.score(idxes,1);
@@ -194,12 +194,12 @@ y = handles.score(idxes,2);
 hold on
 orangeCol=[237/255 94/255 48/255];
 blueCol=[156/255,187/255,229/255];
-plot(handles.axes4, x,y, '-', 'color', blueCol,'MarkerSize', 20);
-plot(handles.axes4, x,y, '.', 'color', blueCol,'MarkerSize', 20);
-plot(handles.axes4, x(handles.frmId),y(handles.frmId), '.', 'color', orangeCol, 'MarkerSize', 20);
-plot(handles.axes4, x(handles.frmId),y(handles.frmId), 'O', 'color', orangeCol, 'MarkerSize', 10);
-msg=[num2str(handles.frmId) '/' num2str(length(x)) ' '];
-set(handles.text1, 'String', msg);
+plot(axes, x,y, '-', 'color', blueCol,'MarkerSize', 20);
+plot(axes, x,y, '.', 'color', blueCol,'MarkerSize', 20);
+plot(axes, x(handles.frmId),y(handles.frmId), '.', 'color', orangeCol, 'MarkerSize', 20);
+plot(axes, x(handles.frmId),y(handles.frmId), 'O', 'color', orangeCol, 'MarkerSize', 10);
+% msg=[num2str(handles.frmId) '/' num2str(length(x)) ' '];
+% set(handles.text1, 'String', msg);
 
 
 function plotShapeTrack(hObject, eventdata, handles) % axes 3 plot the shapes. 
@@ -368,4 +368,32 @@ function save_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-display('save');
+[filename, pathname]=uiputfile({'*.tiff';},'Save Average Shape Files');
+if filename ==0, return; end
+[~,name,~] = fileparts(filename);
+folder = fullfile(pathname, name);
+if exist(folder, 'dir')==7 
+   rmdir(folder,'s'); end
+mkdir(folder);
+currentFrameId = handles.frmId;
+track = handles.tracks{handles.CurrentTrackId};
+idxes = find(handles.indices==track.AbsIdx);
+x = handles.score(idxes,1);
+f=figure(10);
+set(0, 'currentfigure', f);
+movieFileName=fullfile(folder, '_movie.tiff');
+for i =1:length(x)
+    handles.frmId=i;
+    guidata(handles.figure1,handles);
+    axes=subplot(1,1,1);
+    plotShapeSpace(axes, handles)
+    frName=sprintf('frame%03d.eps',i); 
+    saveas(f, fullfile(folder, frName), 'epsc'); 
+    A = getframe(f);
+    imwrite(A.cdata, movieFileName, 'WriteMode', 'append',  'Compression','none');
+end
+
+handles.frmId=currentFrameId;
+guidata(handles.figure1,handles);
+
+set(0, 'currentfigure', handles.figure1);
