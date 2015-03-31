@@ -22,7 +22,7 @@ function varargout = CellTrackViewer(varargin)
 
 % Edit the above text to modify the response to help CellTrackViewer
 
-% Last Modified by GUIDE v2.5 26-Mar-2015 11:22:39
+% Last Modified by GUIDE v2.5 31-Mar-2015 14:56:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -361,3 +361,11 @@ if length(fName)>3
    num = fName(end-2:end);
    try stackNum= str2num(num); end
 end
+
+
+% --------------------------------------------------------------------
+function save_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to save (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+display('save');
