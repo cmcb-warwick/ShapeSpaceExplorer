@@ -22,7 +22,7 @@ function varargout = GroupMaking(varargin)
 
 % Edit the above text to modify the response to help GroupMaking
 
-% Last Modified by GUIDE v2.5 01-Apr-2015 13:43:49
+% Last Modified by GUIDE v2.5 01-Apr-2015 13:49:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,7 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % UIWAIT makes GroupMaking wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -70,9 +70,8 @@ function varargout = GroupMaking_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
-
-
+varargout={'new'};
+delete(handles.figure1);
 
 function edit1_Callback(hObject, eventdata, handles)
 % hObject    handle to edit1 (see GCBO)
@@ -138,3 +137,18 @@ function cancel_Callback(hObject, eventdata, handles)
 % hObject    handle to cancel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+h= handles.figure1;
+if isequal(get(h, 'waitstatus'), 'waiting')
+    uiresume(h)
+else
+    delete(h);
+end
