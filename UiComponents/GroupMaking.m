@@ -143,6 +143,7 @@ end
 tracks = get(handles.edit2, 'String');
 comma=sum(find(tracks == ','));
 line=sum(find(tracks == '-'));
+numTracks=[];
 if comma==1
    display('comma');
 elseif line==1
@@ -150,11 +151,12 @@ elseif line==1
 else % single number
     num = round(str2num(tracks));
     if ~ isValidNumber(tracks,num, handles.maxTrack); return; end
+    numTracks(1)=num;
 end
     
 display(groupName);
-display(handles.maxTrack);
-display(tracks)
+display(numTracks);
+
 
 function b =isValidNumber(sNum, num, maxTrack)
 b=1;
