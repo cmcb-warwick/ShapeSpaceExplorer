@@ -69,6 +69,8 @@ guidata(handles.figure1,handles);
 uiwait(handles.figure1);
 
 
+
+
 % --- Outputs from this function are returned to the command line.
 function varargout = GroupMaking_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -138,9 +140,43 @@ if isempty(strtrim(groupName)) || strcmp('...',groupName)==1
     errordlg(msg, 'Error', mode);
     return;
 end
+tracks = get(handles.edit2, 'String');
+comma=sum(find(tracks == ','));
+line=sum(find(tracks == '-'));
+if comma==1
+   display('comma');
+elseif line==1
+    display('line');
+else % single number
+    num = round(str2num(tracks));
+    if ~ isValidNumber(tracks,num, handles.maxTrack); return; end
+end
     
 display(groupName);
 display(handles.maxTrack);
+display(tracks)
+
+function b =isValidNumber(sNum, num, maxTrack)
+b=1;
+if isempty(num) || ~isnumeric(num), b=0;
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = notValidNumberFor(sNum, maxTrack);
+    errordlg(msg, 'Error', mode);
+   return;
+end
+if  num<1 || num > maxTrack
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = notValidNumberFor(sNum, maxTrack);
+    errordlg(msg, 'Error', mode);
+   return;
+end
+
+
+function msg = notValidNumberFor(num, maxNum)
+if isempty(num), num =' '; end
+msg =[ 'The input: "' num '" is not a valid number.' char(10) ...
+       'Please enter numbers betwen 1 and ' num2str(maxNum) '.'];
+ 
 
 % --- Executes on button press in doAnalysis.
 function doAnalysis_Callback(hObject, eventdata, handles)
