@@ -170,44 +170,20 @@ set(slider, 'SliderStep', [0.5 , 0.5 ]);
 
 function plotFig(hObject, eventdata, handles)
 plotShapeSpace(hObject, eventdata, handles); %axes4;
-plotShapeTrack(hObject, eventdata, handles); %axes 3
+plotShapeTrack(handles.axes2, handles); %axes 3
 
 function plotShapeSpace(hObject, eventdata, handles)
 
 set(handles.axes4, 'Position' , [60 7.5 102 51]);
-tlen=plotShapeOnAxes(handles.axes4, handles);
+tlen=plotShapeSpaceOnAxes(handles.axes4, handles);
 msg=[num2str(handles.frmId) '/' num2str(tlen) ' '];
 set(handles.text1, 'String', msg);
 
-% plot(axes, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
-% axis(axes, 'equal'); 
-% % pos = get(axes, 'Position');
-% % antTightInset = get(axes, 'TightInset');
-% axis(axes, 'tight');
-% 
-% % postTihgtInset = get(handles.axes4, 'TightInset');
-% % offsetX= 2*(antTightInset(1) - postTihgtInset(1))*(antTightInset(3) - postTihgtInset(3));
-% % offsetY= 2*(antTightInset(2) - postTihgtInset(2))*(antTightInset(4) - postTihgtInset(4));
-%        
-% 
-% %set(axes, 'Position' , [(pos(1)+offsetX) (pos(2)+offsetY) pos(3) pos(4)]);
-% track = handles.tracks{handles.CurrentTrackId};
-% idxes = find(handles.indices==track.AbsIdx);
-% x = handles.score(idxes,1);
-% y = handles.score(idxes,2);
-% hold on
-% orangeCol=[237/255 94/255 48/255];
-% blueCol=[156/255,187/255,229/255];
-% plot(axes, x,y, '-', 'color', blueCol,'MarkerSize', 20);
-% plot(axes, x,y, '.', 'color', blueCol,'MarkerSize', 20);
-% plot(axes, x(handles.frmId),y(handles.frmId), '.', 'color', orangeCol, 'MarkerSize', 20);
-% plot(axes, x(handles.frmId),y(handles.frmId), 'O', 'color', orangeCol, 'MarkerSize', 10);
 
 
 
 
-
-function trackLength=plotShapeOnAxes(axes, handles)
+function trackLength=plotShapeSpaceOnAxes(axes, handles)
 cla(axes);
 axis(axes, 'auto');
 plot(axes, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
@@ -229,23 +205,23 @@ axis(axes, 'equal');
 axis(axes, 'tight');
 
 
-function plotShapeTrack(hObject, eventdata, handles) % axes 3 plot the shapes. 
-cla(handles.axes2);
+function plotShapeTrack(axes, handles) % axes 3 plot the shapes. 
+cla(axes);
 orangeCol=[237/255 94/255 48/255];
 blueCol=[156/255,187/255,229/255];
 
 track = handles.tracks{handles.CurrentTrackId};
-plot(handles.axes2, handles.com(:,1), handles.com(:,2), '.', 'color', blueCol, 'MarkerSize',20);
-hold(handles.axes2, 'on');
-plot(handles.axes2, handles.com(:,1), handles.com(:,2), '-', 'color', blueCol, 'LineWidth',3);
-plot(handles.axes2, handles.com(handles.frmId,1), handles.com(handles.frmId,2), '.', 'color', orangeCol, 'MarkerSize',20)
-plot(handles.axes2, handles.com(handles.frmId,1), handles.com(handles.frmId,2), 'O', 'color', orangeCol, 'MarkerSize',15)
+plot(axes, handles.com(:,1), handles.com(:,2), '.', 'color', blueCol, 'MarkerSize',20);
+hold(axes, 'on');
+plot(axes, handles.com(:,1), handles.com(:,2), '-', 'color', blueCol, 'LineWidth',3);
+plot(axes, handles.com(handles.frmId,1), handles.com(handles.frmId,2), '.', 'color', orangeCol, 'MarkerSize',20)
+plot(axes, handles.com(handles.frmId,1), handles.com(handles.frmId,2), 'O', 'color', orangeCol, 'MarkerSize',15)
 for i=1:length(track.Contours)
     curve = track.Contours{i};
-    plot(handles.axes2, curve(:,1), curve(:,2), '-', 'color', [0.5,.5,.5]);
+    plot(axes, curve(:,1), curve(:,2), '-', 'color', [0.5,.5,.5]);
 end
 curve = track.Contours{handles.frmId};
-plot(handles.axes2, curve(:,1), curve(:,2), '-', 'color', orangeCol, 'LineWidth', 3);
+plot(axes, curve(:,1), curve(:,2), '-', 'color', orangeCol, 'LineWidth', 3);
 
 
 
@@ -397,29 +373,69 @@ function save_ClickedCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 [filename, pathname]=uiputfile({'*.tiff';},'Save Average Shape Files');
 if filename ==0, return; end
-[~,name,~] = fileparts(filename);
-folder = fullfile(pathname, name);
-if exist(folder, 'dir')==7 
-   rmdir(folder,'s'); end
-mkdir(folder);
+[folderSpace, folderShapes]= setUpFolderStructure(pathname, filename);
+
+
 currentFrameId = handles.frmId;
-tlen=plotShapeOnAxes(handles.axes4, handles);
+tlen=plotShapeSpaceOnAxes(handles.axes4, handles);
 f=figure();
 set(0, 'currentfigure', f);
-set(0,'DefaultFigureVisible','off');
+
+
+writeShapeSpaceToFile(f, folderSpace, tlen, handles)
+
+
+
+handles.frmId=currentFrameId;
+guidata(handles.figure1,handles);
+
+
+
+
+
+
+
+set(0, 'currentfigure', handles.figure1);
+
+
+
+function [folderSpace, folderShapes]= setUpFolderStructure(pathname, filename)
+[~,name,~] = fileparts(filename);
+folder = fullfile(pathname, [name '_Movies']);
+
+if exist(folder, 'dir')==7 
+   rmdir(folder,'s'); end
+folderSpace= fullfile(folder, 'ShapeSpace_Only');
+folderShapes= fullfile(folder, 'Shapes_Only');
+mkdir(folder);
+mkdir(folderSpace);
+mkdir(folderShapes);
+
+function writeShapeSpaceToFile(f, folderSpace, tlen, handles)
 set(f,'color','white');
-movieFileName=fullfile(folder, '_movie.tiff');
+movieFileName=fullfile(folderSpace, '_movie.tiff');
 for i =1:tlen
     handles.frmId=i;
     guidata(handles.figure1,handles);
     axes=subplot(1,1,1);
-    plotShapeOnAxes(axes, handles);
+    plotShapeSpaceOnAxes(axes, handles);
     frName=sprintf('frame%03d.eps',i); 
-    saveas(f, fullfile(folder, frName), 'epsc'); 
+    saveas(f, fullfile(folderSpace, frName), 'epsc'); 
     A = getframe(f);
     imwrite(A.cdata, movieFileName, 'WriteMode', 'append',  'Compression','none');
 end
 
-handles.frmId=currentFrameId;
-guidata(handles.figure1,handles);
-set(0, 'currentfigure', handles.figure1);
+
+function writeShapesToFile(f, folderSpace, tlen, handles)
+set(f,'color','white');
+movieFileName=fullfile(folderSpace, '_movie.tiff');
+for i =1:tlen
+    handles.frmId=i;
+    guidata(handles.figure1,handles);
+    axes=subplot(1,1,1);
+    plotShapeSpaceOnAxes(axes, handles);
+    frName=sprintf('frame%03d.eps',i); 
+    saveas(f, fullfile(folderSpace, frName), 'epsc'); 
+    A = getframe(f);
+    imwrite(A.cdata, movieFileName, 'WriteMode', 'append',  'Compression','none');
+end
