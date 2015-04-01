@@ -222,7 +222,7 @@ for i=1:length(track.Contours)
 end
 curve = track.Contours{handles.frmId};
 plot(ax, curve(:,1), curve(:,2), '-', 'color', orangeCol, 'LineWidth', 3);
-
+axis(ax, 'equal');
 
 
 
@@ -386,10 +386,25 @@ writeShapeSpaceToFile(f, folderSpace, tlen, handles)
 writeShapesToFile(f, folderShapes, tlen, handles)
 
 
+
+
 handles.frmId=currentFrameId;
 guidata(handles.figure1,handles);
 
-
+ax1=subplot(5,3,[4,7,10]);
+ax2=subplot(5,3,[2,3,5,6,8,9,11,12,14,15]);
+movieFileName=fullfile(pathname, filename);
+tmpFile=fullfile(pathname, 'tmp4211.eps'); % without saving the frame before, getFrame works not correcltly. 
+for i =1:tlen
+    handles.frmId=i;
+    guidata(handles.figure1,handles);
+    plotShapeTrack(ax1, handles);
+    plotShapeSpaceOnAxes(ax2, handles);
+    saveas(f, tmpFile, 'epsc');
+    A = getframe(f);
+    imwrite(A.cdata, movieFileName, 'WriteMode', 'append',  'Compression','none');
+end
+delete(tmpFile);
 
 set(0, 'currentfigure', handles.figure1);
 close(f);
