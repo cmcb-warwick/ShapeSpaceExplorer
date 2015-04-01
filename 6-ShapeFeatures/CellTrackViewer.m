@@ -22,7 +22,7 @@ function varargout = CellTrackViewer(varargin)
 
 % Edit the above text to modify the response to help CellTrackViewer
 
-% Last Modified by GUIDE v2.5 31-Mar-2015 14:56:16
+% Last Modified by GUIDE v2.5 01-Apr-2015 10:21:49
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -169,6 +169,7 @@ set(slider, 'Value', 1);
 set(slider, 'SliderStep', [0.5 , 0.5 ]);
 
 function plotFig(hObject, eventdata, handles)
+
 plotShapeSpace(hObject, eventdata, handles); %axes4;
 plotShapeTrack(handles.axes2, handles); %axes 3
 
