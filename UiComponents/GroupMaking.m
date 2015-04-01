@@ -57,6 +57,11 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+cPath=mfilename('fullpath');
+[folder,~,~] = fileparts(cPath);
+imFile = fullfile(folder, 'img/', 'header.png');
+img=imread(imFile);
+imshow(img,'Parent',handles.axes1)
 
 % UIWAIT makes GroupMaking wait for user response (see UIRESUME)
 uiwait(handles.figure1);
@@ -123,6 +128,16 @@ function saveGroup_Callback(hObject, eventdata, handles)
 % hObject    handle to saveGroup (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+% handles.edit1, handles.edit2.
+groupName = get(handles.edit1, 'String');
+if isempty(strtrim(groupName)) || strcmp('...',groupName)==1
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(15);
+    errordlg(msg, 'Error', mode);
+    return;
+end
+    
+display(groupName);
 
 
 % --- Executes on button press in doAnalysis.
