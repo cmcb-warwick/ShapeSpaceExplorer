@@ -169,28 +169,54 @@ set(slider, 'Value', 1);
 set(slider, 'SliderStep', [0.5 , 0.5 ]);
 
 function plotFig(hObject, eventdata, handles)
-plotShapeSpace(handles.axes4, handles); %axes4;
+plotShapeSpace(hObject, eventdata, handles); %axes4;
 plotShapeTrack(hObject, eventdata, handles); %axes 3
 
-function plotShapeSpace(axes, handles)
+function plotShapeSpace(hObject, eventdata, handles)
+
+set(handles.axes4, 'Position' , [60 7.5 102 51]);
+tlen=plotShapeOnAxes(handles.axes4, handles);
+msg=[num2str(handles.frmId) '/' num2str(tlen) ' '];
+set(handles.text1, 'String', msg);
+
+% plot(axes, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
+% axis(axes, 'equal'); 
+% % pos = get(axes, 'Position');
+% % antTightInset = get(axes, 'TightInset');
+% axis(axes, 'tight');
+% 
+% % postTihgtInset = get(handles.axes4, 'TightInset');
+% % offsetX= 2*(antTightInset(1) - postTihgtInset(1))*(antTightInset(3) - postTihgtInset(3));
+% % offsetY= 2*(antTightInset(2) - postTihgtInset(2))*(antTightInset(4) - postTihgtInset(4));
+%        
+% 
+% %set(axes, 'Position' , [(pos(1)+offsetX) (pos(2)+offsetY) pos(3) pos(4)]);
+% track = handles.tracks{handles.CurrentTrackId};
+% idxes = find(handles.indices==track.AbsIdx);
+% x = handles.score(idxes,1);
+% y = handles.score(idxes,2);
+% hold on
+% orangeCol=[237/255 94/255 48/255];
+% blueCol=[156/255,187/255,229/255];
+% plot(axes, x,y, '-', 'color', blueCol,'MarkerSize', 20);
+% plot(axes, x,y, '.', 'color', blueCol,'MarkerSize', 20);
+% plot(axes, x(handles.frmId),y(handles.frmId), '.', 'color', orangeCol, 'MarkerSize', 20);
+% plot(axes, x(handles.frmId),y(handles.frmId), 'O', 'color', orangeCol, 'MarkerSize', 10);
+
+
+
+
+
+function trackLength=plotShapeOnAxes(axes, handles)
 cla(axes);
-%set(axes, 'Position' , [60 7.5 102 51]);
+axis(axes, 'auto');
 plot(axes, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
-axis(axes, 'equal'); 
-% pos = get(axes, 'Position');
-% antTightInset = get(axes, 'TightInset');
-axis(axes, 'tight');
 
-% postTihgtInset = get(handles.axes4, 'TightInset');
-% offsetX= 2*(antTightInset(1) - postTihgtInset(1))*(antTightInset(3) - postTihgtInset(3));
-% offsetY= 2*(antTightInset(2) - postTihgtInset(2))*(antTightInset(4) - postTihgtInset(4));
-       
-
-%set(axes, 'Position' , [(pos(1)+offsetX) (pos(2)+offsetY) pos(3) pos(4)]);
 track = handles.tracks{handles.CurrentTrackId};
 idxes = find(handles.indices==track.AbsIdx);
 x = handles.score(idxes,1);
 y = handles.score(idxes,2);
+trackLength=length(x);
 hold on
 orangeCol=[237/255 94/255 48/255];
 blueCol=[156/255,187/255,229/255];
@@ -198,8 +224,9 @@ plot(axes, x,y, '-', 'color', blueCol,'MarkerSize', 20);
 plot(axes, x,y, '.', 'color', blueCol,'MarkerSize', 20);
 plot(axes, x(handles.frmId),y(handles.frmId), '.', 'color', orangeCol, 'MarkerSize', 20);
 plot(axes, x(handles.frmId),y(handles.frmId), 'O', 'color', orangeCol, 'MarkerSize', 10);
-% msg=[num2str(handles.frmId) '/' num2str(length(x)) ' '];
-% set(handles.text1, 'String', msg);
+
+axis(axes, 'equal'); 
+axis(axes, 'tight');
 
 
 function plotShapeTrack(hObject, eventdata, handles) % axes 3 plot the shapes. 
@@ -376,17 +403,17 @@ if exist(folder, 'dir')==7
    rmdir(folder,'s'); end
 mkdir(folder);
 currentFrameId = handles.frmId;
-track = handles.tracks{handles.CurrentTrackId};
-idxes = find(handles.indices==track.AbsIdx);
-x = handles.score(idxes,1);
-f=figure(10);
+tlen=plotShapeOnAxes(handles.axes4, handles);
+f=figure();
 set(0, 'currentfigure', f);
+set(0,'DefaultFigureVisible','off');
+set(f,'color','white');
 movieFileName=fullfile(folder, '_movie.tiff');
-for i =1:length(x)
+for i =1:tlen
     handles.frmId=i;
     guidata(handles.figure1,handles);
     axes=subplot(1,1,1);
-    plotShapeSpace(axes, handles)
+    plotShapeOnAxes(axes, handles);
     frName=sprintf('frame%03d.eps',i); 
     saveas(f, fullfile(folder, frName), 'epsc'); 
     A = getframe(f);
@@ -395,5 +422,4 @@ end
 
 handles.frmId=currentFrameId;
 guidata(handles.figure1,handles);
-
 set(0, 'currentfigure', handles.figure1);
