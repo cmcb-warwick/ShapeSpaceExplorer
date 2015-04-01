@@ -379,15 +379,12 @@ if filename ==0, return; end
 
 currentFrameId = handles.frmId;
 tlen=plotShapeSpaceOnAxes(handles.axes4, handles);
-f=figure();
+f=figure('Visible','Off'); %does not keep if invisible. though
+set(f, 'Position', [0, 0, 1024, 1024]);
 set(0, 'currentfigure', f);
-
 
 writeShapeSpaceToFile(f, folderSpace, tlen, handles)
 writeShapesToFile(f, folderShapes, tlen, handles)
-
-
-
 
 handles.frmId=currentFrameId;
 guidata(handles.figure1,handles);
