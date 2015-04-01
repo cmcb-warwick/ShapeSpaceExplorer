@@ -61,8 +61,10 @@ cPath=mfilename('fullpath');
 [folder,~,~] = fileparts(cPath);
 imFile = fullfile(folder, 'img/', 'header.png');
 img=imread(imFile);
-imshow(img,'Parent',handles.axes1)
-
+imshow(img,'Parent',handles.axes1);
+handles.maxTrack=999;
+if ~isempty(varargin), handles.maxTrack=varargin{1}; end
+guidata(handles.figure1,handles);
 % UIWAIT makes GroupMaking wait for user response (see UIRESUME)
 uiwait(handles.figure1);
 
@@ -138,7 +140,7 @@ if isempty(strtrim(groupName)) || strcmp('...',groupName)==1
 end
     
 display(groupName);
-
+display(handles.maxTrack);
 
 % --- Executes on button press in doAnalysis.
 function doAnalysis_Callback(hObject, eventdata, handles)
