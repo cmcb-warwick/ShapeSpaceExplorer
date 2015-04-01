@@ -205,23 +205,23 @@ axis(axes, 'equal');
 axis(axes, 'tight');
 
 
-function plotShapeTrack(axes, handles) % axes 3 plot the shapes. 
-cla(axes);
+function plotShapeTrack(ax, handles) % axes 3 plot the shapes. 
+cla(ax);
 orangeCol=[237/255 94/255 48/255];
 blueCol=[156/255,187/255,229/255];
 
 track = handles.tracks{handles.CurrentTrackId};
-plot(axes, handles.com(:,1), handles.com(:,2), '.', 'color', blueCol, 'MarkerSize',20);
-hold(axes, 'on');
-plot(axes, handles.com(:,1), handles.com(:,2), '-', 'color', blueCol, 'LineWidth',3);
-plot(axes, handles.com(handles.frmId,1), handles.com(handles.frmId,2), '.', 'color', orangeCol, 'MarkerSize',20)
-plot(axes, handles.com(handles.frmId,1), handles.com(handles.frmId,2), 'O', 'color', orangeCol, 'MarkerSize',15)
+plot(ax, handles.com(:,1), handles.com(:,2), '.', 'color', blueCol, 'MarkerSize',20);
+hold(ax, 'on');
+plot(ax, handles.com(:,1), handles.com(:,2), '-', 'color', blueCol, 'LineWidth',3);
+plot(ax, handles.com(handles.frmId,1), handles.com(handles.frmId,2), '.', 'color', orangeCol, 'MarkerSize',20)
+plot(ax, handles.com(handles.frmId,1), handles.com(handles.frmId,2), 'O', 'color', orangeCol, 'MarkerSize',15)
 for i=1:length(track.Contours)
     curve = track.Contours{i};
-    plot(axes, curve(:,1), curve(:,2), '-', 'color', [0.5,.5,.5]);
+    plot(ax, curve(:,1), curve(:,2), '-', 'color', [0.5,.5,.5]);
 end
 curve = track.Contours{handles.frmId};
-plot(axes, curve(:,1), curve(:,2), '-', 'color', orangeCol, 'LineWidth', 3);
+plot(ax, curve(:,1), curve(:,2), '-', 'color', orangeCol, 'LineWidth', 3);
 
 
 
@@ -383,7 +383,7 @@ set(0, 'currentfigure', f);
 
 
 writeShapeSpaceToFile(f, folderSpace, tlen, handles)
-
+writeShapesToFile(f, folderShapes, tlen, handles)
 
 
 handles.frmId=currentFrameId;
@@ -391,11 +391,8 @@ guidata(handles.figure1,handles);
 
 
 
-
-
-
-
 set(0, 'currentfigure', handles.figure1);
+close(f);
 
 
 
@@ -426,16 +423,17 @@ for i =1:tlen
 end
 
 
-function writeShapesToFile(f, folderSpace, tlen, handles)
+function writeShapesToFile(f, folder, tlen, handles)
 set(f,'color','white');
-movieFileName=fullfile(folderSpace, '_movie.tiff');
+clf;
+movieFileName=fullfile(folder, '_movie.tiff');
 for i =1:tlen
     handles.frmId=i;
     guidata(handles.figure1,handles);
     axes=subplot(1,1,1);
-    plotShapeSpaceOnAxes(axes, handles);
+    plotShapeTrack(axes, handles);
     frName=sprintf('frame%03d.eps',i); 
-    saveas(f, fullfile(folderSpace, frName), 'epsc'); 
+    saveas(f, fullfile(folder, frName), 'epsc'); 
     A = getframe(f);
     imwrite(A.cdata, movieFileName, 'WriteMode', 'append',  'Compression','none');
 end
