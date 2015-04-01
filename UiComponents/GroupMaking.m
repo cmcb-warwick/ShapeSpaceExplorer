@@ -141,8 +141,8 @@ if isempty(strtrim(groupName)) || strcmp('...',groupName)==1
     return;
 end
 tracks = get(handles.edit2, 'String');
-comma=sum(find(tracks == ','));
-line=sum(find(tracks == '-'));
+comma=logical(sum(find(tracks == ',')));
+line=logical(sum(find(tracks == '-')));
 numTracks=[];
 if comma==1
    display('comma');
