@@ -72,7 +72,7 @@ mat=ones(sb1,1)*(1:(sb2))+(sb2+2)*(0:(sb1-1))'*ones(1,sb2);
 subplot(sb1,sb2+2,mat(:)');
 
 for i=1:L
-    plot(SCORE(i,1),SCORE(i,2),'*','Color',colourmap(norm_prop(i),:));
+    plot(SCORE(i,1),SCORE(i,2),'.','Color',colourmap(norm_prop(i),:), 'MarkerSize', 6);
     hold on
 end
 axis equal
