@@ -22,7 +22,7 @@ function varargout = GroupMaking(varargin)
 
 % Edit the above text to modify the response to help GroupMaking
 
-% Last Modified by GUIDE v2.5 01-Apr-2015 13:49:24
+% Last Modified by GUIDE v2.5 02-Apr-2015 11:07:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,6 +63,15 @@ imFile = fullfile(folder, 'img/', 'header.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes1);
 handles.maxTrack=999;
+handles.cNumber=1;
+
+import com.mathworks.mwswing.checkboxtree.*
+jRoot = DefaultCheckBoxNode('Groups');
+jTree = com.mathworks.mwswing.MJTree(jRoot);
+jScrollPane = com.mathworks.mwswing.MJScrollPane(jTree);
+javacomponent(jScrollPane,[16,50,419,100],handles.figure1);
+handles.scroll = jScrollPane;
+handles.root = jRoot;
 if ~isempty(varargin), handles.maxTrack=varargin{1}; end
 guidata(handles.figure1,handles);
 % UIWAIT makes GroupMaking wait for user response (see UIRESUME)
@@ -154,10 +163,31 @@ else % single number
     numTracks(1)=num;
     
 end
-    
-display(groupName);
-display(numTracks);
+ % if we arrive here. 
+if ~isempty(numTracks)
+    str.id = handles.cNumber;
+    handles.cNumber = handles.cNumber+1;
+    str.tracks=numTracks;
+    str.name = groupName;
+    handles.groups{str.id}=str;
+    guidata(handles.figure1,handles);
+end
+setEditsFields('...', '...', handles);
+s = size(handles.groups)
+array ={}
+for i=1:s(2)
+    str = handles.groups{i};
+    if ~isempty(str)
+        array{end+1}=str.name;
+    end
+end
 
+
+
+
+function  setEditsFields(string1, string2, handles)
+set(handles.edit1, 'String', string1); 
+set(handles.edit2, 'String', string2);
 
 function numbers =getNumbersFromInput(tracks,maxTrack)
 numbers=[];
@@ -267,4 +297,27 @@ if isequal(get(h, 'waitstatus'), 'waiting')
     uiresume(h)
 else
     delete(h);
+end
+
+
+% --- Executes on selection change in listbox1.
+function listbox1_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox1
+
+
+% --- Executes during object creation, after setting all properties.
+function listbox1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
