@@ -63,4 +63,11 @@ msgs{11}=['There are no segemenated cells in stack.' char(10) ...
 msgs{15} = ['You entered an empty group name.' char(10) ... 
             'Please enter a meaningful name' ];
 
+        
+msgs{16} = ['Your input is not in the correct format.' char(10) ... 
+            'Please enter a range like that: 1-3' ];
+      
+
+        
+
 end

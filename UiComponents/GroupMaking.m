@@ -147,7 +147,7 @@ numTracks=[];
 if comma==1
    display('comma');
 elseif line==1
-    display('line');
+    numTracks=getNumberFromRange(tracks, handles.maxTrack);
 else % single number
     num = round(str2num(tracks));
     if ~ isValidNumber(tracks,num, handles.maxTrack); return; end
@@ -158,28 +158,74 @@ display(groupName);
 display(numTracks);
 
 
+function numbers= getNumberFromRange(tracks, maxTrack)
+numbers =[];
+tokens = tokenizeString(tracks, '-');
+s = size(tokens);
+if isempty(tokens)  || ~(s(2)==2)
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = DialogMessages(16);
+    errordlg(msg, 'Error', mode);
+    return; 
+end
+num1 = round(str2num(tokens{1}));
+num2 = round(str2num(tokens{2}));
+if ~(num1<=num2)
+    mode = struct('WindowStyle','non-modal','Interpreter','tex');
+    msg = notValidRange(tokens{1}, tokens{2});
+    errordlg(msg, 'Error', mode);
+    return; 
+end
+if isValidNumber(tokens{1}, num1, maxTrack) && ...
+   isValidNumber(tokens{2}, num2, maxTrack) 
+   for i =num1:num2
+       numbers(end+1)=i; 
+   end
+end
+
+function tokens = tokenizeString(str, del)
+remain =str;
+tokens={};
+while (~isempty(remain))
+    [token, remain] = strtok(str, del);
+    str = remain;
+    if ~isempty(token), tokens{end+1}=token;end
+end
+
+
+
 function b =isValidNumber(sNum, num, maxTrack)
 b=1;
 if isempty(num) || ~isnumeric(num), b=0;
     mode = struct('WindowStyle','non-modal','Interpreter','tex');
     msg = notValidNumberFor(sNum, maxTrack);
     errordlg(msg, 'Error', mode);
+    b=0;
    return;
 end
 if  num<1 || num > maxTrack
     mode = struct('WindowStyle','non-modal','Interpreter','tex');
     msg = notValidNumberFor(sNum, maxTrack);
     errordlg(msg, 'Error', mode);
+    b=0;
    return;
 end
+
+
+
 
 
 function msg = notValidNumberFor(num, maxNum)
 if isempty(num), num =' '; end
 msg =[ 'The input: "' num '" is not a valid number.' char(10) ...
-       'Please enter numbers betwen 1 and ' num2str(maxNum) '.'];
+       'Please enter integer numbers betwen 1 and ' num2str(maxNum) '.'];
  
 
+function msg = notValidRange(num1, num2)
+if isempty(num1), num1 =' '; end
+if isempty(num2), num2 =' '; end
+msg =[ 'The range from: "' num1 '" to ' num2 ' is not a valid range.' char(10) ...
+       'Please enter a sensible range, such as 1-3'];
 % --- Executes on button press in doAnalysis.
 function doAnalysis_Callback(hObject, eventdata, handles)
 % hObject    handle to doAnalysis (see GCBO)
