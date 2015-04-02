@@ -145,19 +145,34 @@ comma=logical(sum(find(tracks == ',')));
 line=logical(sum(find(tracks == '-')));
 numTracks=[];
 if comma==1
-   display('comma');
+   numTracks =getNumbersFromInput(tracks,handles.maxTrack);
 elseif line==1
     numTracks=getNumberFromRange(tracks, handles.maxTrack);
 else % single number
     num = round(str2num(tracks));
-    if ~ isValidNumber(tracks,num, handles.maxTrack); return; end
+    if ~ isValidNumber(tracks,num, handles.maxTrack), return; end
     numTracks(1)=num;
+    
 end
     
 display(groupName);
 display(numTracks);
 
 
+function numbers =getNumbersFromInput(tracks,maxTrack)
+numbers=[];
+tokens = tokenizeString(tracks, ',');
+   s=size(tokens);
+   for i=1:s(2)
+       num = round(str2num(tokens{i}));
+       if ~ isValidNumber(tokens{i},num, maxTrack), 
+           numbers=[]; return; 
+       end
+       numbers(end+1)=num;
+   end
+   numbers = sort(numbers);
+   
+   
 function numbers= getNumberFromRange(tracks, maxTrack)
 numbers =[];
 tokens = tokenizeString(tracks, '-');
