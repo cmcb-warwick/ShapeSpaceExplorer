@@ -179,7 +179,9 @@ handles.root.removeAllChildren();
 for i=1:s(2)
     str = handles.groups{i};
     if ~isempty(str)
-        n =DefaultCheckBoxNode(str.name);
+        label =strcat(str.name, ': [');
+        label =strcat(label, getTracks2Str(str.tracks), ']');
+        n =DefaultCheckBoxNode(label);
         handles.root.add(n);
     end
 end
@@ -190,7 +192,15 @@ end
 
 
 
-
+function str =getTracks2Str(array)
+str='';
+for i=1:length(array)
+    if (i==1)
+       str=strcat(str, num2str(array(i)));
+    else
+       str=strcat(str,', ', num2str(array(i)));
+    end
+end
 
 function  setEditsFields(string1, string2, handles)
 set(handles.edit1, 'String', string1); 
