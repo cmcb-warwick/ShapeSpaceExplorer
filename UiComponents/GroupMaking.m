@@ -70,7 +70,7 @@ jRoot = DefaultCheckBoxNode('Groups');
 jTree = com.mathworks.mwswing.MJTree(jRoot);
 jScrollPane = com.mathworks.mwswing.MJScrollPane(jTree);
 javacomponent(jScrollPane,[16,50,419,100],handles.figure1);
-handles.scroll = jScrollPane;
+handles.tree = jTree;
 handles.root = jRoot;
 if ~isempty(varargin), handles.maxTrack=varargin{1}; end
 guidata(handles.figure1,handles);
@@ -173,14 +173,21 @@ if ~isempty(numTracks)
     guidata(handles.figure1,handles);
 end
 setEditsFields('...', '...', handles);
-s = size(handles.groups)
-array ={}
+s = size(handles.groups);
+import com.mathworks.mwswing.checkboxtree.*
+handles.root.removeAllChildren();
 for i=1:s(2)
     str = handles.groups{i};
     if ~isempty(str)
-        array{end+1}=str.name;
+        n =DefaultCheckBoxNode(str.name);
+        handles.root.add(n);
     end
 end
+handles.tree.updateUI()
+for i=0:(s(2)-1)
+    handles.tree.expandRow(i)
+end
+
 
 
 
