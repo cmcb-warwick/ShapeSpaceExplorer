@@ -103,7 +103,7 @@ for i=2:y_slices
    plot(xm,[b2(i) b2(i)],'color',greenCol);
 end
 plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
-fPath=fullfile(path, '4_ShapeSlicer_combined.fig');
+fPath=fullfile(figPath, '4_ShapeSlicer_combined.fig');
 savefig(fPath);
 
 end
