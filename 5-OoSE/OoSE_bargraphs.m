@@ -20,7 +20,7 @@ exem_D=D(wish_list,:);
 over_clusters=T2(wish_idx);
 
 for i=unique(over_clusters)
-    plot(OoSE_emb(over_clusters==i,1),OoSE_emb(over_clusters==i,2),'*','color',colour(i,:))
+    plot(OoSE_emb(over_clusters==i,1),OoSE_emb(over_clusters==i,2),'.','color',colour(i,:), 'MarkerSize', 10);
     if i==1; hold on; end
 end
 fPath=fullfile(figPath,'5_OsSE_dots.fig');
@@ -84,7 +84,7 @@ colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 
 n_exems=length(wish_list);
 exem_list=sort(wish_list);
-figure
+figure('visible', 'off')
 dendrogram(linkagemat,0);
 if number==0
     return
@@ -92,7 +92,7 @@ else
     close
 end
 
-figure
+figure('visible', 'off')
 [~,T]=dendrogram(linkagemat,number);
 close
 
@@ -108,9 +108,11 @@ for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
-    plot(SCORE(points,1),SCORE(points,2),'x','Color',colour(clust_order(i),:))
+    alpha(0.9);
+    plot(SCORE(points,1),SCORE(points,2),'o','Color',colour(clust_order(i),:), 'MarkerSize', 5)
     hold on
 end
+ alpha(1.0);
 %axis tight
 axis equal
 grid on
