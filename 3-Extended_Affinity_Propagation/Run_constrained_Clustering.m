@@ -14,7 +14,7 @@ else
     filleDoesNotexist(cellShapePath);
     return;
 end
-ordered_list(classes, cellShapeData, folder);
+ordered_list(classes, cellShapeData, folder, folder);
 display('Constrained Clustering run successfully');
 display('-------');
 end

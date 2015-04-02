@@ -22,7 +22,7 @@ function varargout = GroupMaking(varargin)
 
 % Edit the above text to modify the response to help GroupMaking
 
-% Last Modified by GUIDE v2.5 02-Apr-2015 11:07:27
+% Last Modified by GUIDE v2.5 02-Apr-2015 13:56:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,6 +72,8 @@ jScrollPane = com.mathworks.mwswing.MJScrollPane(jTree);
 javacomponent(jScrollPane,[16,50,419,100],handles.figure1);
 handles.tree = jTree;
 handles.root = jRoot;
+jTree.getSelectionModel().setSelectionMode(jTree.getSelectionModel().SINGLE_TREE_SELECTION);
+%set(tree, 'NodeSelectedCallback', @(jRoot)SelectedCallBack(h,object,handles));
 if ~isempty(varargin), handles.maxTrack=varargin{1}; end
 guidata(handles.figure1,handles);
 % UIWAIT makes GroupMaking wait for user response (see UIRESUME)
@@ -183,6 +185,7 @@ for i=1:s(2)
         label =strcat(label, getTracks2Str(str.tracks), ']');
         n =DefaultCheckBoxNode(label);
         handles.root.add(n);
+     
     end
 end
 handles.tree.updateUI()
@@ -338,3 +341,21 @@ function listbox1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on key press with focus on figure1 or any of its controls.
+function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  structure with the following fields (see FIGURE)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+
+% key = get(handles.figure1,'CurrentKey');
+% if(strcmp (key , 'backspace'))
+%     node=handles.tree.getLastSelectedPathComponent;
+%     if isempty(node), return; end
+%     index=handles.root.getIndex(node);
+%     if index==-1, return, end
+%  end

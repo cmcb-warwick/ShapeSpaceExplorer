@@ -1,4 +1,4 @@
-function ordered_list(number,CellShapeData,APe_output_foldername)
+function ordered_list(number,CellShapeData,inputFolder,APe_output_foldername)
 %ORDERED_LIST generates a number of figures bringing together BAM DM and
 %APe. APe is a hierarchical clustering extension to Affinity Propagation
 %using Wishart Seriation, this should have been executed using
@@ -14,10 +14,10 @@ function ordered_list(number,CellShapeData,APe_output_foldername)
 %savedestination should be the same as for AP_Seriation_analysis_finaledit
 
 
-load([APe_output_foldername '/APclusterOutput.mat']);
-load([APe_output_foldername '/wish_list.mat']);
-load([APe_output_foldername '/linkagemat.mat']);
-figPath=fullfile(APe_output_foldername, 'Figures');
+load(fullfile(inputFolder, '/APclusterOutput.mat'));
+load(fullfile(inputFolder, '/wish_list.mat'));
+load(fullfile(inputFolder, '/linkagemat.mat'));
+figPath=fullfile(inputFolder, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end
 
 N=length(CellShapeData.point);
@@ -49,7 +49,8 @@ if number==0
     figure
     dendrogram(linkagemat,number);
     fPath=fullfile(figPath, '3_Dendrogram_of_Shapes.fig');
-    savefig(fPath);
+    if ~isempty(APe_output_foldername)
+        savefig(fPath); end
     return
 end
 figure('visible','off')
@@ -74,14 +75,16 @@ for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
-    plot(SCORE(points,1),SCORE(points,2),'*','Color',colour(i,:))
+    plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(i,:), 'MarkerSize', 10)
     hold on
 end
 axis tight
 axis equal
 grid on
-fPath=fullfile(figPath, '3_Coloured_Shape_in_ShapeSpace.fig');
-savefig(fPath);
+if ~isempty(APe_output_foldername)
+    fPath=fullfile(figPath, '3_Coloured_Shape_in_ShapeSpace.fig');
+    savefig(fPath);
+end
 
 L=length(wish_list);
 
@@ -120,8 +123,10 @@ while c<=a*b
     delete(h(c))
     c=c+1;
 end
-fPath=fullfile(figPath, '3_Avg_Shape_for_Clusters.fig');
-savefig(fPath);
+if~isempty(APe_output_foldername)
+    fPath=fullfile(figPath, '3_Avg_Shape_for_Clusters.fig');
+    savefig(fPath);
+end
 
 end
 
