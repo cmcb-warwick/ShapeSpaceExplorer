@@ -64,22 +64,47 @@ end
 
 for i =1: length(items)
     item = items{i};
-h = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);
-fPath=fullfile(groupPath, [item.name '.fig']);
-ePath = fullfile(groupPath, [item.name '.eps']);
-savefig(h,fPath);
-saveas(h, ePath, 'epsc');
+    [h, clusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);
+    fPath=fullfile(groupPath, [item.name '_ShapeSpace.fig']);
+    ePath = fullfile(groupPath, [item.name '_ShapeSpace.eps']);
+    savefig(h,fPath);
+    saveas(h, ePath, 'epsc');
+    h = plotBars(clusters,number);
+    fPath=fullfile(groupPath, [item.name '_barplot.fig']);
+    ePath = fullfile(groupPath, [item.name '_barplot.eps']);
+    savefig(h,fPath);
+    saveas(h, ePath, 'epsc');
 end
 end
 
 
+function f = plotBars(clusters,number)
+f=figure(11);
+clf;
 
-
-function h = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx,T, stacks)
 colour=jet(number);
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+mMax = max(clusters(:,2));
+ylim([0, mMax * 1.2]);  %# The 1.2 factor is just an example
+for i=1:number
+    h=bar(i,clusters(i,2));
+    set(h,'FaceColor',colour(clusters(i,1),:))
+    %text(i - 0.11, clusters(i,2) + 3, ['', num2str(clusters(i,2))], 'VerticalAlignment', 'top', 'FontSize', 12)
 
+    hold on
+end
+
+set(gca, 'XTick', 1:number, 'XTickLabel', clusters(:,1));
+end
+
+
+
+function [h, clusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx,T, stacks)
+colour=jet(number);
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+clusters= zeros(number,2);
 % prepare T2;
 n_exems=length(wish_list);
 exem_list=sort(wish_list);  
@@ -110,8 +135,9 @@ grid on
         clust_idx=clust_order(i);
         exems=wish_list(T2==clust_idx);
         points=ismember(idx.*gIds,exems);
+        clusters(i,1)=clust_idx;
+        clusters(i,2)=sum(points);
         plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(i,:), 'MarkerSize', 14)
-        hold on
     end
 % till here we plot all shapes. no group hightlighted.
 
