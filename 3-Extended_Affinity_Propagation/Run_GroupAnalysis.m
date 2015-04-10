@@ -60,7 +60,8 @@ if max(T(:))<number
 end
     
 
-
+classes={};
+labels={};
 
 for i =1: length(items)
     item = items{i};
@@ -73,7 +74,49 @@ for i =1: length(items)
     fPath=fullfile(groupPath, [item.name '_barplot.fig']);
     ePath = fullfile(groupPath, [item.name '_barplot.eps']);
     savefig(h,fPath);
-    saveas(h, ePath, 'epsc');
+    saveas(h, ePath, 'epsc');  
+    labels{end+1}=item.name;
+    for j =1:length(clusters(:,1))
+        if isempty(classes) || isempty(classes{clusters(j,1)})
+            classes{clusters(j,1)}=[]; end
+        c=classes{clusters(j,1)};
+        c(end+1)=clusters(j,2);
+        classes{clusters(j,1)}=c;   
+    end
+    
+end
+labels{end+1}='all';
+plotClusterBars(classes,labels, groupPath)
+
+
+
+end
+
+
+
+
+function plotClusterBars(classes,labels, groupPath)
+
+s = size(classes);
+colour=jet(s(2));
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+
+
+
+for i =1:s(2)
+    f=figure(12);
+    clf;
+    ePath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot.eps']);
+    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot.eps']);
+    array = classes{i};
+    array(end+1)=sum(array);
+    h=bar(array);
+    set(h,'FaceColor',colour(i,:))
+    hold on
+    set(gca, 'XTick', 1:s(2), 'XTickLabel', labels);
+    savefig(f,fPath);
+    saveas(f, ePath, 'epsc'); 
 end
 end
 
@@ -90,8 +133,6 @@ ylim([0, mMax * 1.2]);  %# The 1.2 factor is just an example
 for i=1:number
     h=bar(i,clusters(i,2));
     set(h,'FaceColor',colour(clusters(i,1),:))
-    %text(i - 0.11, clusters(i,2) + 3, ['', num2str(clusters(i,2))], 'VerticalAlignment', 'top', 'FontSize', 12)
-
     hold on
 end
 
