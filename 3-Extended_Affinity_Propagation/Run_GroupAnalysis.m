@@ -49,15 +49,7 @@ for i=1:N
     NewCellArray{i}=CellShapeData.point(i).coords_comp;
 end
 
-
-colour=jet(number);
-colour=flipud(colour);
-colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
-
-
-n_exems=length(wish_list);
-exem_list=sort(wish_list);
-
+% check cluster.
 figure('visible','off')
 [~,T]=dendrogram(linkagemat,number);
 if max(T(:))<number
@@ -67,15 +59,37 @@ if max(T(:))<number
     return
 end
     
-    
+
+
+
+stacks=[3];
+h = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, stacks);
+fPath=fullfile(groupPath, 'Group3.fig');
+ePath = fullfile(groupPath, 'Group3.eps');
+savefig(h,fPath);
+saveas(h, ePath, 'epsc');
+end
+
+
+
+
+function h = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx,T, stacks)
+colour=jet(number);
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+
+% prepare T2;
+n_exems=length(wish_list);
+exem_list=sort(wish_list);  
 for i=1:n_exems
 T2(i)=T(exem_list==wish_list(i));
 end
-
 d=diff([0 T2]);
 clust_order=T2(logical(d));
 
-figure
+
+h=figure(10);
+clf;
 for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
@@ -87,18 +101,16 @@ axis tight
 axis equal
 grid on
 
-
-
-
-stack_indices=getStackIndices(BigCellDataStruct);
-gIds =getAllIndicesFor(stack_indices, [2]);
-for i=1:number
-    clust_idx=clust_order(i);
-    exems=wish_list(T2==clust_idx);
-    points=ismember(idx.*gIds,exems);
-    plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(i,:), 'MarkerSize', 14)
-    hold on
-end
+%now plot the group
+    stack_indices=getStackIndices(BigCellDataStruct);
+    gIds =getAllIndicesFor(stack_indices, stacks);
+    for i=1:number
+        clust_idx=clust_order(i);
+        exems=wish_list(T2==clust_idx);
+        points=ismember(idx.*gIds,exems);
+        plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(i,:), 'MarkerSize', 14)
+        hold on
+    end
 % till here we plot all shapes. no group hightlighted.
 
 end
