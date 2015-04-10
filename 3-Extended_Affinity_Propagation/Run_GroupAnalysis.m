@@ -62,12 +62,14 @@ end
 
 
 
-stacks=[3];
-h = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, stacks);
-fPath=fullfile(groupPath, 'Group3.fig');
-ePath = fullfile(groupPath, 'Group3.eps');
+for i =1: length(items)
+    item = items{i};
+h = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);
+fPath=fullfile(groupPath, [item.name '.fig']);
+ePath = fullfile(groupPath, [item.name '.eps']);
 savefig(h,fPath);
 saveas(h, ePath, 'epsc');
+end
 end
 
 
