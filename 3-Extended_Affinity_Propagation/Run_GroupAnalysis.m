@@ -162,7 +162,7 @@ for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
-    plot(SCORE(points,1),SCORE(points,2),'o','Color',colour(i,:), 'MarkerSize', 5)
+    plot(SCORE(points,1),SCORE(points,2),'o','Color',colour(clust_idx,:), 'MarkerSize', 5)
     hold on
 end
 axis tight
@@ -178,7 +178,7 @@ grid on
         points=ismember(idx.*gIds,exems);
         clusters(i,1)=clust_idx;
         clusters(i,2)=sum(points);
-        plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(i,:), 'MarkerSize', 14)
+        plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(clust_idx,:), 'MarkerSize', 14)
     end
 % till here we plot all shapes. no group hightlighted.
 
