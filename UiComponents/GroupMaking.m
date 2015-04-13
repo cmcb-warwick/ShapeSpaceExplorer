@@ -178,7 +178,8 @@ else % single number
     numTracks(1)=num;
     
 end
-setEditsFields('...', '...', handles);
+
+setEditsFields('', '', handles);
 % add to tree.
 label =strcat(groupName, ': [');
 label =strcat(label, getTracks2Str(numTracks), ']');
@@ -258,7 +259,8 @@ end
 
 function b =isValidNumber(sNum, num, maxTrack)
 b=1;
-if isempty(num) || ~isnumeric(num), b=0;
+if isempty(num) || ~isnumeric(num) || isnan(num)
+    b=0;
     mode = struct('WindowStyle','non-modal','Interpreter','tex');
     msg = notValidNumberFor(sNum, maxTrack);
     errordlg(msg, 'Error', mode);
@@ -372,6 +374,7 @@ function deleteNode(hObject, eventData, jtree, figure1)
 global lastNode
 if isempty(lastNode),return; end
 model =jtree.getModel();
-model.removeNodeFromParent(lastNode); % the node we remember from showing context menu.
-root=model.getRoot();
-model.reload(root);
+try 
+model.removeNodeFromParent(lastNode); 
+catch % the node we remember from showing context menu.
+end
