@@ -5,7 +5,7 @@ inputFolder ='/Users/iasmam/Desktop/Analysis';
 number=4;
 items={};
 str.name = 'Group1';
-str.tracks=[1];
+str.tracks=[1,2];
 str.id=1;
 items{1}=str;
 
@@ -62,7 +62,8 @@ end
 
 classes={};
 labels={};
-
+groupNames={};
+groupStacks={};
 for i =1: length(items)
     item = items{i};
     [h, clusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);
@@ -83,12 +84,14 @@ for i =1: length(items)
         c(end+1)=clusters(j,2);
         classes{clusters(j,1)}=c;   
     end
-    
+    groupNames{end+1}=item.name;
+    groupStacks{end+1}=item.tracks;
 end
 labels{end+1}='all';
 plotClusterBars(classes,labels, groupPath)
-
-
+tableFilename=fullfile(groupPath, 'GroupMapping.csv');
+T = table(groupNames', groupStacks');
+writetable(T,tableFilename,'Delimiter',',');
 
 end
 
