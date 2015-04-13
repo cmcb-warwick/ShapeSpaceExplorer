@@ -71,13 +71,13 @@ jTree = com.mathworks.mwswing.MJTree(jRoot);
 jScrollPane = com.mathworks.mwswing.MJScrollPane(jTree);
 javacomponent(jScrollPane,[16,50,419,100],handles.figure1);
 handles.tree = jTree;
-handles.root = jRoot;
-
 menuItem1 = javax.swing.JMenuItem('delete Group');
-set(menuItem1,'ActionPerformedCallback',@myFunc1);
+hf1=handle(menuItem1, 'CallbackProperties');
+set(hf1,'ActionPerformedCallback',{@deleteNode, jTree});
 jmenu = javax.swing.JPopupMenu;
 jmenu.add(menuItem1);
-set(jTree, 'MousePressedCallback', {@mousePressedCallback,jmenu});
+hf = handle(jTree,'CallbackProperties');
+set(hf, 'MousePressedCallback', {@mousePressedCallback,jmenu});
 jTree.getSelectionModel().setSelectionMode(jTree.getSelectionModel().SINGLE_TREE_SELECTION);
 %set(tree, 'NodeSelectedCallback', @(jRoot)SelectedCallBack(h,object,handles));
 if ~isempty(varargin), handles.maxTrack=varargin{1}; end
@@ -182,13 +182,17 @@ if ~isempty(numTracks)
 end
 setEditsFields('...', '...', handles);
 s = size(handles.groups);
-import com.mathworks.mwswing.checkboxtree.* % add item.
+
 label =strcat(str.name, ': [');
 label =strcat(label, getTracks2Str(str.tracks), ']');
-n =DefaultCheckBoxNode(label);
-handles.root.add(n);
-handles.tree.updateUI()
-for i=0:(s(2)-1)
+import com.mathworks.mwswing.checkboxtree.*
+node =DefaultCheckBoxNode(label);
+jtree=handles.tree;
+model =jtree.getModel();
+root=model.getRoot();
+model.insertNodeInto(node, root, root.getChildCount())
+model.reload(root);
+for i=0:root.getChildCount()
     handles.tree.expandRow(i)
 end
 
@@ -351,13 +355,6 @@ function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
 
-% key = get(handles.figure1,'CurrentKey');
-% if(strcmp (key , 'backspace'))
-%     node=handles.tree.getLastSelectedPathComponent;
-%     if isempty(node), return; end
-%     index=handles.root.getIndex(node);
-%     if index==-1, return, end
-%  end
 
 
 function mousePressedCallback(hTree, eventData, jmenu)
@@ -368,31 +365,21 @@ function mousePressedCallback(hTree, eventData, jmenu)
       jtree = eventData.getSource;
       treePath = jtree.getPathForLocation(clickX, clickY);
       if strcmp(treePath.getLastPathComponent, 'Groups')==1, return; end % no context for root.
-      try
-         % Modify the context menu or some other element
-         % based on the clicked node. Here is an example:
-         node = treePath.getLastPathComponent;
-         nodeName = ['Current node: ' char(node.getName)];
-         item = jmenu.add(nodeName);
-
-         % remember to call jmenu.remove(item) in item callback
-         % or use the timer hack shown here to remove the item:
-         timerFcn = {@removeItem,jmenu,item};
-         start(timer('TimerFcn',timerFcn,'StartDelay',0.2));
-      catch
-         % clicked location is NOT on top of any node
-         % Note: can also be tested by isempty(treePath)
-      end
-
+      handles = guihandles(gca);
+      handles.lastNode=treePath.getLastPathComponent();
+      guidata(gca,handles);
       % Display the (possibly-modified) context menu
       jmenu.show(jtree, clickX, clickY);
       jmenu.repaint;
    end
    
-% Remove the extra context menu item after display
-function removeItem(hObj,eventData,jmenu,item)
-   jmenu.remove(item);
 
 
-function myFunc1(hObject, eventData)
-display('delete');
+
+function deleteNode(hObject, eventData, data1)
+handles = guihandles(gca);
+jtree= handles.tree;
+model =jtree.getModel();
+model.removeNodeFromParent(node); % the node we remember from showing context menu.
+root=model.getRoot();
+model.reload(root);

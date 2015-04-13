@@ -5,7 +5,7 @@ inputFolder ='/Users/iasmam/Desktop/Analysis';
 number=4;
 items={};
 str.name = 'Group1';
-str.tracks=[1,2];
+str.tracks=[1];
 str.id=1;
 items{1}=str;
 
