@@ -63,14 +63,13 @@ imFile = fullfile(folder, 'img/', 'header.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes1);
 handles.maxTrack=999;
-handles.cNumber=1;
 
 import com.mathworks.mwswing.checkboxtree.*
 jRoot = DefaultCheckBoxNode('Groups');
 jTree = com.mathworks.mwswing.MJTree(jRoot);
+handles.tree=jTree;
 jScrollPane = com.mathworks.mwswing.MJScrollPane(jTree);
 javacomponent(jScrollPane,[16,50,419,100],handles.figure1);
-handles.tree = jTree;
 menuItem1 = javax.swing.JMenuItem('delete Group');
 hf1=handle(menuItem1, 'CallbackProperties');
 set(hf1,'ActionPerformedCallback',{@deleteNode, jTree, handles.figure1});
@@ -95,6 +94,15 @@ function varargout = GroupMaking_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
+
+jtree=handles.tree;
+model =jtree.getModel();
+root=model.getRoot();
+for i=0:root.getChildCount()-1
+    display(root.getChildAt(i).toString())
+end
+
+
 varargout={'new'};
 delete(handles.figure1);
 
@@ -165,25 +173,15 @@ if comma==1
 elseif line==1
     numTracks=getNumberFromRange(tracks, handles.maxTrack);
 else % single number
-    num = round(str2num(tracks));
+    num = round(str2double(tracks));
     if ~ isValidNumber(tracks,num, handles.maxTrack), return; end
     numTracks(1)=num;
     
 end
- % if we arrive here. 
-if ~isempty(numTracks)
-    str.id = handles.cNumber;
-    handles.cNumber = handles.cNumber+1;
-    str.tracks=numTracks;
-    str.name = groupName;
-    handles.groups{str.id}=str;
-    guidata(handles.figure1,handles);
-end
 setEditsFields('...', '...', handles);
-s = size(handles.groups);
-
-label =strcat(str.name, ': [');
-label =strcat(label, getTracks2Str(str.tracks), ']');
+% add to tree.
+label =strcat(groupName, ': [');
+label =strcat(label, getTracks2Str(numTracks), ']');
 import com.mathworks.mwswing.checkboxtree.*
 node =DefaultCheckBoxNode(label);
 jtree=handles.tree;
@@ -191,9 +189,6 @@ model =jtree.getModel();
 root=model.getRoot();
 model.insertNodeInto(node, root, root.getChildCount())
 model.reload(root);
-for i=0:root.getChildCount()
-    handles.tree.expandRow(i)
-end
 
 
 
