@@ -73,13 +73,12 @@ javacomponent(jScrollPane,[16,50,419,100],handles.figure1);
 handles.tree = jTree;
 menuItem1 = javax.swing.JMenuItem('delete Group');
 hf1=handle(menuItem1, 'CallbackProperties');
-set(hf1,'ActionPerformedCallback',{@deleteNode, jTree});
+set(hf1,'ActionPerformedCallback',{@deleteNode, jTree, handles.figure1});
 jmenu = javax.swing.JPopupMenu;
 jmenu.add(menuItem1);
 hf = handle(jTree,'CallbackProperties');
 set(hf, 'MousePressedCallback', {@mousePressedCallback,jmenu});
 jTree.getSelectionModel().setSelectionMode(jTree.getSelectionModel().SINGLE_TREE_SELECTION);
-%set(tree, 'NodeSelectedCallback', @(jRoot)SelectedCallBack(h,object,handles));
 if ~isempty(varargin), handles.maxTrack=varargin{1}; end
 guidata(handles.figure1,handles);
 % UIWAIT makes GroupMaking wait for user response (see UIRESUME)
@@ -365,10 +364,8 @@ function mousePressedCallback(hTree, eventData, jmenu)
       jtree = eventData.getSource;
       treePath = jtree.getPathForLocation(clickX, clickY);
       if strcmp(treePath.getLastPathComponent, 'Groups')==1, return; end % no context for root.
-      handles = guihandles(gca);
-      handles.lastNode=treePath.getLastPathComponent();
-      guidata(gca,handles);
-      % Display the (possibly-modified) context menu
+      global lastNode % i know how bad this is but handle did not work :/
+      lastNode=treePath.getLastPathComponent();
       jmenu.show(jtree, clickX, clickY);
       jmenu.repaint;
    end
@@ -376,10 +373,10 @@ function mousePressedCallback(hTree, eventData, jmenu)
 
 
 
-function deleteNode(hObject, eventData, data1)
-handles = guihandles(gca);
-jtree= handles.tree;
+function deleteNode(hObject, eventData, jtree, figure1)
+global lastNode
+if isempty(lastNode),return; end
 model =jtree.getModel();
-model.removeNodeFromParent(node); % the node we remember from showing context menu.
+model.removeNodeFromParent(lastNode); % the node we remember from showing context menu.
 root=model.getRoot();
 model.reload(root);
