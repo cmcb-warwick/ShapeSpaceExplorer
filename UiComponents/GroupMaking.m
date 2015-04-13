@@ -72,6 +72,12 @@ jScrollPane = com.mathworks.mwswing.MJScrollPane(jTree);
 javacomponent(jScrollPane,[16,50,419,100],handles.figure1);
 handles.tree = jTree;
 handles.root = jRoot;
+
+menuItem1 = javax.swing.JMenuItem('delete Group');
+set(menuItem1,'ActionPerformedCallback',@myFunc1);
+jmenu = javax.swing.JPopupMenu;
+jmenu.add(menuItem1);
+set(jTree, 'MousePressedCallback', {@mousePressedCallback,jmenu});
 jTree.getSelectionModel().setSelectionMode(jTree.getSelectionModel().SINGLE_TREE_SELECTION);
 %set(tree, 'NodeSelectedCallback', @(jRoot)SelectedCallBack(h,object,handles));
 if ~isempty(varargin), handles.maxTrack=varargin{1}; end
@@ -176,18 +182,11 @@ if ~isempty(numTracks)
 end
 setEditsFields('...', '...', handles);
 s = size(handles.groups);
-import com.mathworks.mwswing.checkboxtree.*
-handles.root.removeAllChildren();
-for i=1:s(2)
-    str = handles.groups{i};
-    if ~isempty(str)
-        label =strcat(str.name, ': [');
-        label =strcat(label, getTracks2Str(str.tracks), ']');
-        n =DefaultCheckBoxNode(label);
-        handles.root.add(n);
-     
-    end
-end
+import com.mathworks.mwswing.checkboxtree.* % add item.
+label =strcat(str.name, ': [');
+label =strcat(label, getTracks2Str(str.tracks), ']');
+n =DefaultCheckBoxNode(label);
+handles.root.add(n);
 handles.tree.updateUI()
 for i=0:(s(2)-1)
     handles.tree.expandRow(i)
@@ -359,3 +358,41 @@ function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
 %     index=handles.root.getIndex(node);
 %     if index==-1, return, end
 %  end
+
+
+function mousePressedCallback(hTree, eventData, jmenu)
+   if eventData.isMetaDown  % right-click is like a Meta-button
+      % Get the clicked node
+      clickX = eventData.getX;
+      clickY = eventData.getY;
+      jtree = eventData.getSource;
+      treePath = jtree.getPathForLocation(clickX, clickY);
+      if strcmp(treePath.getLastPathComponent, 'Groups')==1, return; end % no context for root.
+      try
+         % Modify the context menu or some other element
+         % based on the clicked node. Here is an example:
+         node = treePath.getLastPathComponent;
+         nodeName = ['Current node: ' char(node.getName)];
+         item = jmenu.add(nodeName);
+
+         % remember to call jmenu.remove(item) in item callback
+         % or use the timer hack shown here to remove the item:
+         timerFcn = {@removeItem,jmenu,item};
+         start(timer('TimerFcn',timerFcn,'StartDelay',0.2));
+      catch
+         % clicked location is NOT on top of any node
+         % Note: can also be tested by isempty(treePath)
+      end
+
+      % Display the (possibly-modified) context menu
+      jmenu.show(jtree, clickX, clickY);
+      jmenu.repaint;
+   end
+   
+% Remove the extra context menu item after display
+function removeItem(hObj,eventData,jmenu,item)
+   jmenu.remove(item);
+
+
+function myFunc1(hObject, eventData)
+display('delete');
