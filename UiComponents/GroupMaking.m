@@ -63,7 +63,7 @@ imFile = fullfile(folder, 'img/', 'header.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes1);
 handles.maxTrack=999;
-
+handles.cancel=0;
 import com.mathworks.mwswing.checkboxtree.*
 jRoot = DefaultCheckBoxNode('Groups');
 jTree = com.mathworks.mwswing.MJTree(jRoot);
@@ -94,16 +94,30 @@ function varargout = GroupMaking_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-
+varargout={-1};
+if handles.cancel==1,   % if cancel
+    delete(handles.figure1);
+    return;
+end
 jtree=handles.tree;
 model =jtree.getModel();
 root=model.getRoot();
+items = {};
 for i=0:root.getChildCount()-1
-    display(root.getChildAt(i).toString())
+    s= root.getChildAt(i).toString();
+    C = strsplit(char(s),':');
+    item.name=strtrim(C(1));
+    
+    numbers = strsplit(char(C(2)),',');
+    array=zeros(length(numbers),1);
+    for j=1:length(numbers)
+        array(j)=str2double(numbers(j));
+    end
+    item.tracks=array;
+    items{end+1}=item;
 end
 
-
-varargout={'new'};
+varargout={items};
 delete(handles.figure1);
 
 function edit1_Callback(hObject, eventdata, handles)
@@ -181,8 +195,8 @@ end
 
 setEditsFields('', '', handles);
 % add to tree.
-label =strcat(groupName, ': [');
-label =strcat(label, getTracks2Str(numTracks), ']');
+label =strcat(groupName, ': ');
+label =strcat(label, getTracks2Str(numTracks), '');
 import com.mathworks.mwswing.checkboxtree.*
 node =DefaultCheckBoxNode(label);
 jtree=handles.tree;
@@ -295,6 +309,14 @@ function doAnalysis_Callback(hObject, eventdata, handles)
 % hObject    handle to doAnalysis (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+h= handles.figure1;
+handles.cancel=0;
+guidata(handles.figure1,handles);
+if isequal(get(h, 'waitstatus'), 'waiting')
+    uiresume(h)
+else
+    delete(h);
+end
 
 
 % --- Executes on button press in cancel.
@@ -302,7 +324,7 @@ function cancel_Callback(hObject, eventdata, handles)
 % hObject    handle to cancel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 % --- Executes when user attempts to close figure1.
 function figure1_CloseRequestFcn(hObject, eventdata, handles)
@@ -312,6 +334,8 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 % Hint: delete(hObject) closes the figure
 h= handles.figure1;
+handles.cancel=1;
+guidata(handles.figure1,handles);
 if isequal(get(h, 'waitstatus'), 'waiting')
     uiresume(h)
 else
