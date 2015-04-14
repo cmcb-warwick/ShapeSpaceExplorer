@@ -52,31 +52,6 @@ else
     end
 end
 
-
-%------------------
-s=size(items);
-groups={};
-avgSpeed=[];
-allSpeed=[];
-for i=1:s(2)
-    item =items{i};
-    d=getDistancesForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
-    groups{end+1}=char(item.name);
-    avgSpeed(end+1)=sum(d)/length(d);
-    allSpeed(end+1:end+length(d))=d;
-end
-groups{end+1}='All';
-avgSpeed(end+1)=sum(allSpeed)/length(allSpeed);
-tableFilename=fullfile(groupPath, 'AvgSpeedPerGroup.csv');
-T = table(groups', avgSpeed');
-T.Properties.VariableNames={'Groups', 'AvgSpeed'};
-writetable(T,tableFilename,'Delimiter',',');
-
-%------------------
-for i=1:N
-    NewCellArray{i}=CellShapeData.point(i).coords_comp;
-end
-
 % check cluster.
 figure('visible','off')
 [~,T]=dendrogram(linkagemat,number);
@@ -86,6 +61,14 @@ if max(T(:))<number
     errordlg(msg, 'Error', mode);
     return
 end
+
+% write avg speed per cluster to file.
+writeAverageSpeed2File(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
+
+
+writePersitanceEucledianPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
+
+
     
 
 classes={};
@@ -94,8 +77,7 @@ groupNames={};
 groupStacks={};
 for i =1: length(items)
     item = items{i};
-    [h, clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);
-    
+    [h, clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);   
     fPath=fullfile(groupPath, [char(item.name) '_ShapeSpace.fig']);
     ePath = fullfile(groupPath, [char(item.name) '_ShapeSpace.eps']);
     savefig(h,fPath);
@@ -312,4 +294,72 @@ for i=1:length(items)
     c = [c ';' num2str(items(i))];
     end
 end
+end
+
+
+function writeAverageSpeed2File(items,BigCellDataStruct,cell_indices,SCORE,groupPath)
+s=size(items);
+groups={};
+avgSpeed=[];
+allSpeed=[];
+for i=1:s(2)
+    item =items{i};
+    d=getDistancesForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
+    groups{end+1}=char(item.name);
+    avgSpeed(end+1)=sum(d)/length(d);
+    allSpeed(end+1:end+length(d))=d;
+end
+groups{end+1}='All';
+avgSpeed(end+1)=sum(allSpeed)/length(allSpeed);
+tableFilename=fullfile(groupPath, 'AvgSpeedPerGroup.csv');
+T = table(groups', avgSpeed');
+T.Properties.VariableNames={'Groups', 'AvgSpeed'};
+writetable(T,tableFilename,'Delimiter',',');
+end
+
+
+function writePersitanceEucledianPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath)
+s=size(items);
+allSpeed=[];
+for i=1:s(2)
+    item =items{i};
+    d=getDistancesEucRatioForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
+    
+    allSpeed(end+1:end+length(d))=d;
+    figure(21);
+    clf;
+    hist(d);
+    ePath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio.eps']);
+    fPath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio.fig']);
+    savefig(gcf,fPath);
+    saveas(gcf, ePath, 'epsc'); 
+end
+figure(21);
+clf;
+hist(d);
+ePath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.eps');
+fPath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.fig');
+savefig(gcf,fPath);
+saveas(gcf, ePath, 'epsc'); 
+
+
+end
+
+
+function allDist=getDistancesEucRatioForGroup(stacks, BigCellDataStruct, cell_indices, SCORE)
+
+
+allDist=[];
+stack_indices=getStackIndices(BigCellDataStruct);
+gIds =getAllIndicesFor(stack_indices, stacks);
+cIds = sort(unique(cell_indices.*gIds));
+cIds = cIds(2:end);
+for i=1:length(cIds)
+fId = cIds(i);
+d = getDistancesForId(fId, cell_indices, SCORE);
+cD = cumsum(d);
+d = d./cD;
+allDist(end+1:end+length(d))=d;
+end
+
 end
