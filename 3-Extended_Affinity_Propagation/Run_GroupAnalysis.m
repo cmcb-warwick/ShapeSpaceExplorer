@@ -1,15 +1,28 @@
 function   runGroupAnalysis()
 
 
-config1=ConstrainedClustering();
-if strcmp(config1.fpath, '...')==1, return; end
+% config1=ConstrainedClustering();
+% if strcmp(config1.fpath, '...')==1, return; end
 
 
-inputFolder =  config1.fpath;
-number=config1.classes;
+% inputFolder =  config1.fpath;
+% number=config1.classes;
+% 
+% maxStackNo = getMaxStackNumber(inputFolder);
+% items =GroupMaking(maxStackNo);
 
-maxStackNo = getMaxStackNumber(inputFolder);
-items =GroupMaking(maxStackNo);
+inputFolder='/Users/iasmam/Desktop/Analysis';
+number=4;
+item.name = 'Group1';
+item.tracks=[1,3];
+items={};
+items{1}=item;
+i.name='Group2';
+i.tracks=[2];
+items{2}=i;
+t.name='Group3';
+t.tracks=[3];
+items{3}=t;
 
 
 
@@ -24,13 +37,13 @@ load(fullfile(inputFolder, '/BigCellDataStruct.mat'));
 formatOut = 'yyyy-mm-dd_HHMMSS';
 fname = ['GroupAnalysis_' datestr(now,formatOut)];
 groupPath=fullfile(inputFolder, fname);
-
-
 if ~exist(groupPath,'dir'),mkdir(groupPath);end
 
 
-N=length(CellShapeData.point);
 
+
+
+N=length(CellShapeData.point);
 if isfield(CellShapeData.set,'SCORE')
     SCORE=CellShapeData.set.SCORE;
 else
@@ -40,6 +53,26 @@ else
 end
 
 
+%------------------
+s=size(items);
+groups={};
+avgSpeed=[];
+allSpeed=[];
+for i=1:s(2)
+    item =items{i};
+    d=getDistancesForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
+    groups{end+1}=char(item.name);
+    avgSpeed(end+1)=sum(d)/length(d);
+    allSpeed(end+1:end+length(d))=d;
+end
+groups{end+1}='All';
+avgSpeed(end+1)=sum(allSpeed)/length(allSpeed);
+tableFilename=fullfile(groupPath, 'AvgSpeedPerGroup.csv');
+T = table(groups', avgSpeed');
+T.Properties.VariableNames={'Groups', 'AvgSpeed'};
+writetable(T,tableFilename,'Delimiter',',');
+
+%------------------
 for i=1:N
     NewCellArray{i}=CellShapeData.point(i).coords_comp;
 end
@@ -81,13 +114,16 @@ for i =1: length(items)
         classes{clusters(j,1)}=c;   
     end
     groupNames{end+1}=char(item.name);
-    groupStacks{end+1}=item.tracks;
+    groupStacks{end+1}=getCharOf(item.tracks);
 end
 labels{end+1}='all';
 plotClusterBars(classes,labels, groupPath)
 tableFilename=fullfile(groupPath, 'GroupMapping.csv');
 T = table(groupNames', groupStacks');
+T.Properties.VariableNames={'GroupNames', 'MovieStacks'};
 writetable(T,tableFilename,'Delimiter',',');
+
+close all
 
 end
 
@@ -106,8 +142,8 @@ colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 for i =1:s(2)
     f=figure(12);
     clf;
-    ePath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot.eps']);
-    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot.eps']);
+    ePath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.eps']);
+    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.eps']);
     array = classes{i};
     array(end+1)=sum(array);
     h=bar(array);
@@ -116,6 +152,20 @@ for i =1:s(2)
     set(gca, 'XTick', 1:s(2), 'XTickLabel', labels);
     savefig(f,fPath);
     saveas(f, ePath, 'epsc'); 
+    
+    % percentual
+    
+    clf;
+    ePath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent.eps']);
+    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent.eps']);
+    array=array/array(end);
+    h=bar(array);
+    set(h,'FaceColor',colour(i,:))
+    hold on
+    set(gca, 'XTick', 1:s(2), 'XTickLabel', labels);
+    savefig(f,fPath);
+    saveas(f, ePath, 'epsc'); 
+    
 end
 end
 
@@ -186,6 +236,7 @@ grid on
     end
 % till here we plot all shapes. no group hightlighted.
 
+
 end
 
 
@@ -220,5 +271,45 @@ s=size(t);
 for i=1:s(1)
    idx= strfind(t(i).name, 'CurveData');
    if isempty(idx), counter=counter+1; end
+end
+end
+
+
+function d = getDistancesForId(fId, cell_indices, SCORE)
+idxes=find(cell_indices==fId);
+d=[];
+x=SCORE(idxes,1);
+y=SCORE(idxes,2);
+if length(x)<2, return; end
+d = ones(length(x)-1, 1);
+for i=2:length(x)
+    d(i-1)=pdist2([x(i-1) x(i)], [y(i-1), y(i)]);
+end
+end
+
+function allDist=getDistancesForGroup(stacks, BigCellDataStruct, cell_indices, SCORE)
+
+
+allDist=[];
+stack_indices=getStackIndices(BigCellDataStruct);
+gIds =getAllIndicesFor(stack_indices, stacks);
+cIds = sort(unique(cell_indices.*gIds));
+cIds = cIds(2:end);
+for i=1:length(cIds)
+fId = cIds(i);
+d = getDistancesForId(fId, cell_indices, SCORE);
+allDist(end+1:end+length(d))=d;
+end
+
+end
+
+
+function c =getCharOf(items)
+c='';
+for i=1:length(items)
+    if i==1, c = [num2str(items(i))]; 
+    else 
+    c = [c ';' num2str(items(i))];
+    end
 end
 end
