@@ -68,7 +68,7 @@ writeAverageSpeed2File(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
 
 writePersitanceEucledianPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
 
-
+writePersitanceAnglePerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
     
 
 classes={};
@@ -320,12 +320,12 @@ end
 
 function writePersitanceEucledianPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath)
 s=size(items);
-allSpeed=[];
+allPer=[];
 for i=1:s(2)
     item =items{i};
     d=getDistancesEucRatioForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
     
-    allSpeed(end+1:end+length(d))=d;
+    allPer(end+1:end+length(d))=d;
     figure(21);
     clf;
     hist(d);
@@ -336,7 +336,7 @@ for i=1:s(2)
 end
 figure(21);
 clf;
-hist(d);
+hist(allPer);
 ePath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.eps');
 fPath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.fig');
 savefig(gcf,fPath);
@@ -362,4 +362,68 @@ d = d./cD;
 allDist(end+1:end+length(d))=d;
 end
 
+end
+
+
+function writePersitanceAnglePerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath)
+s=size(items);
+allAngle=[];
+for i=1:s(2)
+    item =items{i};
+    d=getAngleForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
+    
+    allAngle(end+1:end+length(d))=d;
+    figure(22);
+    clf;
+    h=rose(d);
+    x = get(h,'Xdata');
+    y = get(h,'Ydata');
+    patch(x,y,'b');
+    ePath = fullfile(groupPath, [char(item.name) '_Persitence_Angle.eps']);
+    fPath = fullfile(groupPath, [char(item.name) '_Persitence_Angle.fig']);
+    savefig(gcf,fPath);
+    saveas(gcf, ePath, 'epsc'); 
+end
+figure(21);
+clf;
+h=rose(allAngle);
+x = get(h,'Xdata');
+y = get(h,'Ydata');
+patch(x,y,'b');
+ePath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.eps');
+fPath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.fig');
+savefig(gcf,fPath);
+saveas(gcf, ePath, 'epsc'); 
+
+
+end
+
+function allDist=getAngleForGroup(stacks, BigCellDataStruct, cell_indices, SCORE)
+
+
+allDist=[];
+stack_indices=getStackIndices(BigCellDataStruct);
+gIds =getAllIndicesFor(stack_indices, stacks);
+cIds = sort(unique(cell_indices.*gIds));
+cIds = cIds(2:end);
+for i=1:length(cIds)
+fId = cIds(i);
+d = getAnglesForId(fId, cell_indices, SCORE);
+allDist(end+1:end+length(d))=d;
+end
+
+end
+
+
+function d = getAnglesForId(fId, cell_indices, SCORE)
+idxes=find(cell_indices==fId);
+d=[];
+x=SCORE(idxes,1);
+y=SCORE(idxes,2);
+if length(x)<2, return; end
+d = ones(length(x)-1, 1);
+for i=2:length(x)
+    p= polyfit([x(i-1) x(i)], [y(i-1), y(i)],1);
+    d(i-1)=atand(p(1));
+end
 end
