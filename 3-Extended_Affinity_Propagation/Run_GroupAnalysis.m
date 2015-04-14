@@ -1,24 +1,17 @@
 function   runGroupAnalysis()
 
 
-inputFolder ='/Users/iasmam/Desktop/Analysis';
-number=4;
-items={};
-str.name = 'Group1';
-str.tracks=[1];
-str.id=1;
-items{1}=str;
+config1=ConstrainedClustering();
+if strcmp(config1.fpath, '...')==1, return; end
 
 
-s.name = 'Group2';
-s.tracks=[2];
-s.id=2;
-items{2}=s;
+inputFolder =  config1.fpath;
+number=config1.classes;
 
-t.name = 'Group3';
-t.tracks=[3];
-t.id=3;
-items{3}=t;
+maxStackNo = getMaxStackNumber(inputFolder);
+items =GroupMaking(maxStackNo);
+
+
 
 %----------------------%
 load(fullfile(inputFolder, '/APclusterOutput.mat'));
@@ -28,7 +21,9 @@ load(fullfile(inputFolder, '/CellShapeData.mat'));
 load(fullfile(inputFolder, '/Bigcellarrayandindex.mat'));
 load(fullfile(inputFolder, '/BigCellDataStruct.mat'));
 
-groupPath=fullfile(inputFolder, 'GroupAnalysis');
+formatOut = 'yyyy-mm-dd_HHMMSS';
+fname = ['GroupAnalysis_' datestr(now,formatOut)];
+groupPath=fullfile(inputFolder, fname);
 
 
 if ~exist(groupPath,'dir'),mkdir(groupPath);end
@@ -66,17 +61,18 @@ groupNames={};
 groupStacks={};
 for i =1: length(items)
     item = items{i};
-    [h, clusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);
-    fPath=fullfile(groupPath, [item.name '_ShapeSpace.fig']);
-    ePath = fullfile(groupPath, [item.name '_ShapeSpace.eps']);
+    [h, clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);
+    
+    fPath=fullfile(groupPath, [char(item.name) '_ShapeSpace.fig']);
+    ePath = fullfile(groupPath, [char(item.name) '_ShapeSpace.eps']);
     savefig(h,fPath);
     saveas(h, ePath, 'epsc');
-    h = plotBars(clusters,number);
-    fPath=fullfile(groupPath, [item.name '_barplot.fig']);
-    ePath = fullfile(groupPath, [item.name '_barplot.eps']);
+    h = plotBars(clusters,number, mClusters);
+    fPath=fullfile(groupPath, [char(item.name) '_barplot.fig']);
+    ePath = fullfile(groupPath, [char(item.name) '_barplot.eps']);
     savefig(h,fPath);
     saveas(h, ePath, 'epsc');  
-    labels{end+1}=item.name;
+    labels{end+1}=char(item.name);
     for j =1:length(clusters(:,1))
         if isempty(classes) || isempty(classes{clusters(j,1)})
             classes{clusters(j,1)}=[]; end
@@ -84,7 +80,7 @@ for i =1: length(items)
         c(end+1)=clusters(j,2);
         classes{clusters(j,1)}=c;   
     end
-    groupNames{end+1}=item.name;
+    groupNames{end+1}=char(item.name);
     groupStacks{end+1}=item.tracks;
 end
 labels{end+1}='all';
@@ -124,7 +120,7 @@ end
 end
 
 
-function f = plotBars(clusters,number)
+function f = plotBars(clusters,number, mClusters)
 f=figure(11);
 clf;
 
@@ -134,7 +130,8 @@ colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 mMax = max(clusters(:,2));
 ylim([0, mMax * 1.2]);  %# The 1.2 factor is just an example
 for i=1:number
-    h=bar(i,clusters(i,2));
+    barNum=1/mClusters(i,2)*clusters(i,2);
+    h=bar(i,barNum);
     set(h,'FaceColor',colour(clusters(i,1),:))
     hold on
 end
@@ -144,11 +141,12 @@ end
 
 
 
-function [h, clusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx,T, stacks)
+function [h, clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx,T, stacks)
 colour=jet(number);
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 clusters= zeros(number,2);
+mClusters= zeros(number,2);
 % prepare T2;
 n_exems=length(wish_list);
 exem_list=sort(wish_list);  
@@ -161,12 +159,15 @@ clust_order=T2(logical(d));
 
 h=figure(10);
 clf;
+
 for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
     plot(SCORE(points,1),SCORE(points,2),'o','Color',colour(clust_idx,:), 'MarkerSize', 5)
     hold on
+    mClusters(i,1)=clust_idx;
+    mClusters(i,2)=sum(points);
 end
 axis tight
 axis equal
@@ -210,4 +211,14 @@ for i =1:s(2)
     idx=idx+shapes(2);
 end
 stack_indices=stack_indices';
+end
+
+function counter = getMaxStackNumber(folder)
+t=dir([folder '/ImageStack*.mat']);
+counter=0;
+s=size(t);
+for i=1:s(1)
+   idx= strfind(t(i).name, 'CurveData');
+   if isempty(idx), counter=counter+1; end
+end
 end

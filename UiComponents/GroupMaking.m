@@ -192,6 +192,7 @@ else % single number
     numTracks(1)=num;
     
 end
+if isempty(numTracks), return; end
 
 setEditsFields('', '', handles);
 % add to tree.
