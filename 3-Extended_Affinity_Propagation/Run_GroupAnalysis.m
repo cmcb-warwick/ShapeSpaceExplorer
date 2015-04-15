@@ -1,26 +1,26 @@
 function   runGroupAnalysis()
 
 
-config1=ConstrainedClustering();
-if strcmp(config1.fpath, '...')==1, return; end
-inputFolder =  config1.fpath;
-number=config1.classes;
+% config1=ConstrainedClustering();
+% if strcmp(config1.fpath, '...')==1, return; end
+% inputFolder =  config1.fpath;
+% number=config1.classes;
+% 
+% maxStackNo = getMaxStackNumber(inputFolder);
+% items =GroupMaking(maxStackNo);
 
-maxStackNo = getMaxStackNumber(inputFolder);
-items =GroupMaking(maxStackNo);
-
-% inputFolder='/Users/iasmam/Desktop/Analysis';
-% number=4;
-% item.name = 'Group1';
-% item.tracks=[1,3];
-% items={};
-% items{1}=item;
-% i.name='Group2';
-% i.tracks=[2];
-% items{2}=i;
-% t.name='Group3';
-% t.tracks=[3];
-% items{3}=t;
+inputFolder='/Users/iasmam/Desktop/Analysis';
+number=4;
+item.name = 'Group1';
+item.tracks=[1,3];
+items={};
+items{1}=item;
+i.name='Group2';
+i.tracks=[2];
+items{2}=i;
+t.name='Group3';
+t.tracks=[3];
+items{3}=t;
 
 
 
@@ -268,6 +268,25 @@ for i=2:length(x)
 end
 end
 
+
+function d = getAllDistancesForId(fId, cell_indices, SCORE)
+distances= getDistancesForId(fId, cell_indices, SCORE);
+idxes=find(cell_indices==fId);
+x=SCORE(idxes,1);
+y=SCORE(idxes,2);
+d =[];
+if length(x)<2, return; end
+
+for i=1:length(x)-1
+    for j=i+1:length(x)
+        d1=pdist2([x(i) x(j)], [y(i), y(j)]);  %direct distance
+        ac=distances(i:j-1); % accumulated as cell walked in space.
+        d(end+1)=d1/sum(ac); % ratio
+    end
+end
+end
+
+
 function allDist=getDistancesForGroup(stacks, BigCellDataStruct, cell_indices, SCORE)
 
 
@@ -327,7 +346,7 @@ for i=1:s(2)
     allPer(end+1:end+length(d))=d;
     figure(21);
     clf;
-    hist(d);
+    hist(d,100);
     ePath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio.eps']);
     fPath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio.fig']);
     savefig(gcf,fPath);
@@ -355,9 +374,7 @@ cIds = sort(unique(cell_indices.*gIds));
 cIds = cIds(2:end);
 for i=1:length(cIds)
 fId = cIds(i);
-d = getDistancesForId(fId, cell_indices, SCORE);
-cD = cumsum(d);
-d = d./cD;
+d=getAllDistancesForId(fId, cell_indices, SCORE);
 allDist(end+1:end+length(d))=d;
 end
 
