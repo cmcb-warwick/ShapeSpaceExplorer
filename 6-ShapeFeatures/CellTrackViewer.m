@@ -185,7 +185,7 @@ set(handles.text1, 'String', msg);
 
 
 function trackLength=plotShapeSpaceOnAxes(axes, handles)
-cla(axes);
+cla(axes); trackLength=0;
 axis(axes, 'auto');
 plot(axes, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
 
@@ -193,6 +193,7 @@ track = handles.tracks{handles.CurrentTrackId};
 idxes = find(handles.indices==track.AbsIdx);
 x = handles.score(idxes,1);
 y = handles.score(idxes,2);
+if isempty(x), return; end
 trackLength=length(x);
 hold on
 orangeCol=[237/255 94/255 48/255];
@@ -212,6 +213,8 @@ orangeCol=[237/255 94/255 48/255];
 blueCol=[156/255,187/255,229/255];
 
 track = handles.tracks{handles.CurrentTrackId};
+if isempty(handles.com), 
+    return; end
 plot(ax, handles.com(:,1), handles.com(:,2), '.', 'color', blueCol, 'MarkerSize',20);
 hold(ax, 'on');
 plot(ax, handles.com(:,1), handles.com(:,2), '-', 'color', blueCol, 'LineWidth',3);
@@ -322,10 +325,11 @@ end
 s =size(bigStructure);
 for i=1:s(2)
     tmp = bigStructure(i);
+    if isempty(tmp.Contours), continue; end
     if tmp.Stack_number==stackNumber
        tmp.AbsIdx=i;
        tracks{end+1}=tmp;
-       labels{end+1}=sprintf('Image Stack %03d : Cell Id %02d',stackNumber, tmp.Cell_number);
+       labels{end+1}=sprintf('Image Stack %03d : Cell Id %d',stackNumber, tmp.Cell_number);
     end
 end
 
