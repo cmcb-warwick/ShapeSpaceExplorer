@@ -86,9 +86,10 @@ for i =1: length(items)
     savefig(h,fPath);
     saveas(h, ePath, 'epsc');  
     labels{end+1}=char(item.name);
-    for j =1:length(clusters(:,1))
+    s=size(clusters);
+    for j =1:s(1)
         if isempty(classes) || isempty(classes{clusters(j,1)})
-            classes{clusters(j,1)}=[]; end
+            classes{s(1)}=[]; end
         c=classes{clusters(j,1)};
         c(end+1)=clusters(j,2);
         classes{clusters(j,1)}=c;   
