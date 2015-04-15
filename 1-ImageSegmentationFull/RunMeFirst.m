@@ -61,7 +61,9 @@ delete(h)
 close all force
 
 tableFilename=fullfile(savefolderpath, 'FileMapping.csv');
+
 T = table(originFileName, stackFileName);
+T.Properties.VariableNames={'originalName', 'ConvertedName'};
 writetable(T,tableFilename,'Delimiter',',');
 end
 

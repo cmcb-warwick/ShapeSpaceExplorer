@@ -1,28 +1,26 @@
 function   runGroupAnalysis()
 
 
-% config1=ConstrainedClustering();
-% if strcmp(config1.fpath, '...')==1, return; end
+config1=ConstrainedClustering();
+if strcmp(config1.fpath, '...')==1, return; end
+inputFolder =  config1.fpath;
+number=config1.classes;
 
+maxStackNo = getMaxStackNumber(inputFolder);
+items =GroupMaking(maxStackNo);
 
-% inputFolder =  config1.fpath;
-% number=config1.classes;
-% 
-% maxStackNo = getMaxStackNumber(inputFolder);
-% items =GroupMaking(maxStackNo);
-
-inputFolder='/Users/iasmam/Desktop/Analysis';
-number=4;
-item.name = 'Group1';
-item.tracks=[1,3];
-items={};
-items{1}=item;
-i.name='Group2';
-i.tracks=[2];
-items{2}=i;
-t.name='Group3';
-t.tracks=[3];
-items{3}=t;
+% inputFolder='/Users/iasmam/Desktop/Analysis';
+% number=4;
+% item.name = 'Group1';
+% item.tracks=[1,3];
+% items={};
+% items{1}=item;
+% i.name='Group2';
+% i.tracks=[2];
+% items{2}=i;
+% t.name='Group3';
+% t.tracks=[3];
+% items{3}=t;
 
 
 
@@ -379,10 +377,17 @@ for i=1:s(2)
     x = get(h,'Xdata');
     y = get(h,'Ydata');
     patch(x,y,'b');
-    ePath = fullfile(groupPath, [char(item.name) '_Persitence_Angle.eps']);
-    fPath = fullfile(groupPath, [char(item.name) '_Persitence_Angle.fig']);
+    ePath = fullfile(groupPath, [char(item.name) '_Persistence_Angle.eps']);
+    fPath = fullfile(groupPath, [char(item.name) '_Persistence_Angle.fig']);
     savefig(gcf,fPath);
     saveas(gcf, ePath, 'epsc'); 
+    
+    ePath = fullfile(groupPath, [char(item.name) '_Persistence_Angle_Autocorrelation.eps']);
+    fPath = fullfile(groupPath, [char(item.name) '_Persistence_Angle_Autocorrelation.fig']);
+    clf;
+    autocorr(d);
+    savefig(gcf,fPath);
+    saveas(gcf, ePath, 'epsc');
 end
 figure(21);
 clf;
@@ -394,7 +399,12 @@ ePath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.eps');
 fPath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.fig');
 savefig(gcf,fPath);
 saveas(gcf, ePath, 'epsc'); 
-
+ePath = fullfile(groupPath, ['AllGroups' '_Persitence_Angle_Autocorrelation.eps']);
+fPath = fullfile(groupPath, ['AllGroups' '_Persitence_Angle_Autocorrelation.fig']);
+clf;
+autocorr(d);
+savefig(gcf,fPath);
+saveas(gcf, ePath, 'epsc');
 
 end
 
