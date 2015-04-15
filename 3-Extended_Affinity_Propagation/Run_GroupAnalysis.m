@@ -319,6 +319,8 @@ function writeAverageSpeed2File(items,BigCellDataStruct,cell_indices,SCORE,group
 s=size(items);
 groups={};
 avgSpeed=[];
+speedStd=[];
+speedStE=[];
 allSpeed=[];
 for i=1:s(2)
     item =items{i};
@@ -326,12 +328,16 @@ for i=1:s(2)
     groups{end+1}=char(item.name);
     avgSpeed(end+1)=sum(d)/length(d);
     allSpeed(end+1:end+length(d))=d;
+    speedStd(end+1)=std(d);
+    speedStE(end+1)=std(d)/sqrt(length(d));
 end
 groups{end+1}='All';
 avgSpeed(end+1)=sum(allSpeed)/length(allSpeed);
+speedStd(end+1)=std(allSpeed);
+speedStE(end+1)=std(allSpeed)/sqrt(length(allSpeed));
 tableFilename=fullfile(groupPath, 'AvgSpeedPerGroup.csv');
-T = table(groups', avgSpeed');
-T.Properties.VariableNames={'Groups', 'AvgSpeed'};
+T = table(groups', avgSpeed', speedStd', speedStE');
+T.Properties.VariableNames={'Groups', 'AvgSpeed', 'Std', 'StandErr'};
 writetable(T,tableFilename,'Delimiter',',');
 end
 
