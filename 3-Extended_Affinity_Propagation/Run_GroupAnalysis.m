@@ -54,7 +54,8 @@ writeAverageSpeed2File(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
 
 writePersitanceEucledianPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
 
-writeSpatialAutorrelationPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
+% did not work as expected.
+%writeSpatialAutorrelationPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
     
 
 classes={};
@@ -401,84 +402,84 @@ end
 
 
 
-function d = getAnglesForId(fId, cell_indices, SCORE)
-idxes=find(cell_indices==fId);
-d=[];
-x=SCORE(idxes,1);
-y=SCORE(idxes,2);
-if length(x)<2, return; end
-d = ones(length(x)-1, 1);
-for i=2:length(x)
-    p= polyfit([x(i-1) x(i)], [y(i-1), y(i)],1);
-    d(i-1)=atan(p(1));
-end
-end
+% function d = getAnglesForId(fId, cell_indices, SCORE)
+% idxes=find(cell_indices==fId);
+% d=[];
+% x=SCORE(idxes,1);
+% y=SCORE(idxes,2);
+% if length(x)<2, return; end
+% d = ones(length(x)-1, 1);
+% for i=2:length(x)
+%     p= polyfit([x(i-1) x(i)], [y(i-1), y(i)],1);
+%     d(i-1)=atan(p(1));
+% end
+% end
 
 
-function d = getAllAnglesForId(fId, cell_indices, SCORE)
-angles= getAnglesForId(fId, cell_indices, SCORE);
-d ={};
-if length(angles)<2, return; end
-d {length(angles)}=[];
-for i=1:length(angles)-1
-    for j=i:length(angles)
-        y= angles(j);
-        x= angles(i);
-        a=atan2(sin(x-y), cos(x-y));
-        d{j-i+1}(end+1) = abs(cos(a));
-    end
-end
-end
+% function d = getAllAnglesForId(fId, cell_indices, SCORE)
+% angles= getAnglesForId(fId, cell_indices, SCORE);
+% d ={};
+% if length(angles)<2, return; end
+% d {length(angles)}=[];
+% for i=1:length(angles)-1
+%     for j=i:length(angles)
+%         y= angles(j);
+%         x= angles(i);
+%         a=atan2(sin(x-y), cos(x-y));
+%         d{j-i+1}(end+1) = abs(cos(a));
+%     end
+% end
+% end
+
+% 
+% function allAngles=getSpatialAutocorrelationForGroup(stacks, BigCellDataStruct, cell_indices, SCORE)
+% allAngles={};
+% stack_indices=getStackIndices(BigCellDataStruct);
+% gIds =getAllIndicesFor(stack_indices, stacks);
+% cIds = sort(unique(cell_indices.*gIds));
+% cIds = cIds(2:end);
+% for i=1:length(cIds)
+%     fId = cIds(i);
+%     d=getAllAnglesForId(fId, cell_indices, SCORE);
+%     s1=size(d);
+%     s2=size(allAngles);
+%     if s2(2)<s1(2), 
+%         allAngles=resize(allAngles, s1(2)); end
+%     for j=1:s1(2)
+%         tmp=d{j};
+%         allAngles{j}(end+1:end+length(tmp))=tmp;
+%     end
+% end
+% 
+% end
 
 
-function allAngles=getSpatialAutocorrelationForGroup(stacks, BigCellDataStruct, cell_indices, SCORE)
-allAngles={};
-stack_indices=getStackIndices(BigCellDataStruct);
-gIds =getAllIndicesFor(stack_indices, stacks);
-cIds = sort(unique(cell_indices.*gIds));
-cIds = cIds(2:end);
-for i=1:length(cIds)
-    fId = cIds(i);
-    d=getAllAnglesForId(fId, cell_indices, SCORE);
-    s1=size(d);
-    s2=size(allAngles);
-    if s2(2)<s1(2), 
-        allAngles=resize(allAngles, s1(2)); end
-    for j=1:s1(2)
-        tmp=d{j};
-        allAngles{j}(end+1:end+length(tmp))=tmp;
-    end
-end
 
-end
-
-
-
-function writeSpatialAutorrelationPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath)
-s=size(items);
-for i=1:s(2)
-    item =items{i};
-    pers=getSpatialAutocorrelationForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
-    s=size(pers);
-    pM=ones(s(2),1);
-    pSt=ones(s(2),1);
-    for j=1:s(2)
-        tmp = pers{j};
-        pM(j)=mean(tmp);
-        pSt(j)=std(tmp);
-    end
-    figure(25);
-    clf;
-    x = 1:s(2);
-    errorbar(x,pM,pSt, 'Color', [156/255,187/255,229/255]);
-    hold on
-    plot(x,pM, 'Color', [237/255 94/255 48/255], 'LineWidth', 1.5);
-    
-    ePath = fullfile(groupPath, [char(item.name) '_Persitence_SpatialAutocorrelation.eps']);
-    fPath = fullfile(groupPath, [char(item.name) '_Persitence_SpatialAutocorrelation.fig']);
-    savefig(gcf,fPath);
-    saveas(gcf, ePath, 'epsc'); 
-end 
-
-
-end
+% function writeSpatialAutorrelationPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath)
+% s=size(items);
+% for i=1:s(2)
+%     item =items{i};
+%     pers=getSpatialAutocorrelationForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
+%     s=size(pers);
+%     pM=ones(s(2),1);
+%     pSt=ones(s(2),1);
+%     for j=1:s(2)
+%         tmp = pers{j};
+%         pM(j)=mean(tmp);
+%         pSt(j)=std(tmp);
+%     end
+%     figure(25);
+%     clf;
+%     x = 1:s(2);
+%     errorbar(x,pM,pSt, 'Color', [156/255,187/255,229/255]);
+%     hold on
+%     plot(x,pM, 'Color', [237/255 94/255 48/255], 'LineWidth', 1.5);
+%     
+%     ePath = fullfile(groupPath, [char(item.name) '_Persitence_SpatialAutocorrelation.eps']);
+%     fPath = fullfile(groupPath, [char(item.name) '_Persitence_SpatialAutocorrelation.fig']);
+%     savefig(gcf,fPath);
+%     saveas(gcf, ePath, 'epsc'); 
+% end 
+% 
+% 
+% end
