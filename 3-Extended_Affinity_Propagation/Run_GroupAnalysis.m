@@ -274,14 +274,14 @@ distances= getDistancesForId(fId, cell_indices, SCORE);
 idxes=find(cell_indices==fId);
 x=SCORE(idxes,1);
 y=SCORE(idxes,2);
-d =[];
+d ={};
 if length(x)<2, return; end
-
+d {length(distances)}=[];
 for i=1:length(x)-1
     for j=i+1:length(x)
         d1=pdist2([x(i) x(j)], [y(i), y(j)]);  %direct distance
         ac=distances(i:j-1); % accumulated as cell walked in space.
-        d(end+1)=d1/sum(ac); % ratio
+        d{j-i}(end+1)=d1/sum(ac); % ratio
     end
 end
 end
@@ -344,27 +344,30 @@ end
 
 function writePersitanceEucledianPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath)
 s=size(items);
-allPer=[];
 for i=1:s(2)
     item =items{i};
-    d=getDistancesEucRatioForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
-    
-    allPer(end+1:end+length(d))=d;
+    pers=getDistancesEucRatioForGroup(item.tracks, BigCellDataStruct, cell_indices, SCORE);
+    s=size(pers);
+    pM=ones(s(2),1);
+    pSt=ones(s(2),1);
+    for j=1:s(2)
+        tmp = pers{j};
+        pM(j)=mean(tmp);
+        pSt(j)=std(tmp);
+    end
     figure(21);
     clf;
-    hist(d,100);
+    x = 1:s(2);
+    
+    errorbar(x,pM,pSt, 'Color', [156/255,187/255,229/255]);
+    hold on
+    plot(x,pM, 'Color', [237/255 94/255 48/255], 'LineWidth', 1.5);
+    
     ePath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio.eps']);
     fPath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio.fig']);
     savefig(gcf,fPath);
     saveas(gcf, ePath, 'epsc'); 
-end
-figure(21);
-clf;
-hist(allPer);
-ePath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.eps');
-fPath = fullfile(groupPath,  'AllGroups_Persistence_EucledianRatio.fig');
-savefig(gcf,fPath);
-saveas(gcf, ePath, 'epsc'); 
+end 
 
 
 end
@@ -373,19 +376,35 @@ end
 function allDist=getDistancesEucRatioForGroup(stacks, BigCellDataStruct, cell_indices, SCORE)
 
 
-allDist=[];
+allDist={};
 stack_indices=getStackIndices(BigCellDataStruct);
 gIds =getAllIndicesFor(stack_indices, stacks);
 cIds = sort(unique(cell_indices.*gIds));
 cIds = cIds(2:end);
 for i=1:length(cIds)
-fId = cIds(i);
-d=getAllDistancesForId(fId, cell_indices, SCORE);
-allDist(end+1:end+length(d))=d;
+    fId = cIds(i);
+    d=getAllDistancesForId(fId, cell_indices, SCORE);
+    s1=size(d);
+    s2=size(allDist);
+    if s2(2)<s1(2), 
+        allDist=resize(allDist, s1(2)); end
+    for j=1:s1(2)
+        tmp=d{j};
+        allDist{j}(end+1:end+length(tmp))=tmp;
+    end
 end
 
 end
 
+
+function r = resize(d, num)
+r={};
+r{num}=[];
+s=size(d);
+for i=1:s(2)
+    r{i}=d{i};
+end
+end
 
 function writePersitanceAnglePerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath)
 s=size(items);
