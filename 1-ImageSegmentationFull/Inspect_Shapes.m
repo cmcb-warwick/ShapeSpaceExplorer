@@ -331,6 +331,7 @@ end
 
 
 % adding legend
+if isempty(lgd), return; end
 state=get(handles.uitoggletool9, 'State');
 legend(handles.axes1,lines, lgd);
 if strcmp('off', state),legend(handles.axes1,'off'); end
