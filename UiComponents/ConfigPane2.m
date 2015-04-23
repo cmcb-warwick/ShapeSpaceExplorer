@@ -86,6 +86,12 @@ function varargout = ConfigPane2_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
+
+varargout={-1};
+if handles.cancel==1,   % if cancel
+    delete(handles.figure1);
+    return;
+end
 struc.firstFrame=1;
 struc.lastFrame=Inf;
 struc.subSet =get(handles.radiobutton2, 'Value');
@@ -154,7 +160,14 @@ if frstFrame>lastFrame
     msg = DialogMessages(4);
     errordlg(msg, 'Error', mode);
 else
-    figure1_CloseRequestFcn(hObject, eventdata, handles);
+    handles.cancel=0;
+    guidata(handles.figure1,handles);
+    if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+        uiresume(handles.figure1)
+    else
+        h= handles.figure1;
+        delete(h);
+    end
 end
 
 
@@ -180,6 +193,8 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: delete(hObject) closes the figure
+handles.cancel=1;
+guidata(handles.figure1,handles);
 h= handles.figure1;
 if isequal(get(h, 'waitstatus'), 'waiting')
     uiresume(h)

@@ -60,6 +60,7 @@ cPath=mfilename('fullpath');
 imFile = fullfile(folder, 'img/', 'header.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
+axis('off')
 set(handles.edit1, 'String','...') 
 
 % Update handles structure
@@ -77,6 +78,11 @@ function varargout = ConfigPane1_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
+varargout={-1};
+if handles.cancel==1,   % if cancel
+    delete(handles.figure1);
+    return;
+end
 struc.folder = get(handles.edit1, 'String');
 global jCBList;
 struc.files= getValuesFromArrayList(jCBList.getCheckedValues());
@@ -148,7 +154,13 @@ if length(files)<1 % empty lenth is one.
     msg = DialogMessages(3);
     errordlg(msg, 'Error', mode);
 else
-    figure1_CloseRequestFcn(hObject, eventdata, handles)
+    handles.cancel=0;
+    guidata(handles.figure1,handles);
+    if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+        uiresume(handles.figure1)
+    else
+        delete(handles.figure1);
+    end
 end
 
 
@@ -179,6 +191,8 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: delete(hObject) closes the figure
+handles.cancel=1;
+guidata(handles.figure1,handles);
 h= handles.figure1;
 if isequal(get(h, 'waitstatus'), 'waiting')
     uiresume(h)
