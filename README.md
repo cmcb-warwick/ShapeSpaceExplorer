@@ -10,5 +10,4 @@ We know it is not working on MatlabR22014b. Others have not been tested. Please
 Install the recommended matlab version. 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* For any technical details, you can contact rose: r.gostner@gmail.com. NOTE, answer might be slow, as this is no longer her main project. 
