@@ -6,7 +6,7 @@ The repository allows you to see Sam's original code, and all the packaging done
 
 
 Note the program is tested on MatlabR20013b on Mac OSX 10.8.5 and 10.9
-It is not working on MatlabR22014. We recommand to install MatlabR20013b.
+It is not working on MatlabR22014. We recommand to install MatlabR20013b. Detailed instruction on how to install earlier matlab versions are in the tutorial. 
  
 ### Who do I talk to? ###
 
