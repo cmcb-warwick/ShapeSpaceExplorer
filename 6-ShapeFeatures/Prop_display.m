@@ -33,7 +33,7 @@ if ~exist('cell_numbers','var')
 end
 figPath = fullfile( folder, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
-figure
+h=figure(100);
 L=length(cell_numbers);
 col_res=512;
 colourmap=jet(col_res);
@@ -108,7 +108,7 @@ set(gca,'Xtick',ax([1 end]));
 name = ['6_ShapeFeature_' propname '.eps'];
 path = fullfile(figPath, name);
 saveas(gca, path,'epsc');
-
+close(h);
 
 end
 
