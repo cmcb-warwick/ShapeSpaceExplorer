@@ -25,7 +25,7 @@ set(gcf,'color','w');
 [b1, xShapes]=slicey_magoo( CellShapeData,SCORE, [1 0], x_slices, true, blueCol);
 fPath=fullfile(figPath, '4_ShapeSlicer_x_axis_shapes.fig');
 savefig(fPath);
-
+mk = getMarkerSize(N);
 figure % y figure---------------------
 set(gcf,'color','w');
 [b2, yShapes]=slicey_magoo( CellShapeData,SCORE, [0 1], y_slices, true, greenCol);
@@ -34,13 +34,15 @@ savefig(fPath);
 
 figure % content figure---------------------
 set(gcf,'color','w');
-plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol, 'MarkerSize', 10)
+plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol, 'MarkerSize', mk)
 if axes_equal, axis equal; axis tight; end
 hold on
 xlim([b1(1) b1(end)]);
 ylim([b2(1) b2(end)]);
 xm =xlim;
 ym =ylim;
+
+
 
 
 for i=2:x_slices
@@ -51,7 +53,7 @@ end
 for i=2:y_slices
    plot(xm,[b2(i) b2(i)],'color',[.5,.5,.5]);
 end
-plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol, 'MarkerSize', 5)
+plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol, 'MarkerSize', mk)
 fPath=fullfile(figPath, '4_ShapeSlicer_content_only.fig');
 savefig(fPath);
 %----------------------------------------------------
@@ -86,7 +88,7 @@ end
 
 
 subplot(y_slices+1, x_slices+1,p);
-plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol,'MarkerSize', 5)
+plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol,'MarkerSize', mk)
 if axes_equal, axis equal; end
 hold on
 xlim([b1(1) b1(end)]);
@@ -156,4 +158,10 @@ if plotshapes
     axis xy off
 end
 
+end
+
+function mk = getMarkerSize(N)
+mk = 10;
+if N>10000, mk =7; end
+if N>20000, mk =3; end
 end
