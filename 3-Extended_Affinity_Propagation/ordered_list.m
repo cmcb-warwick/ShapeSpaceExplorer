@@ -70,12 +70,13 @@ end
 d=diff([0 T2]);
 clust_order=T2(logical(d));
 
+mk = getMarkerSize(N);
 figure
 for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
-    plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(i,:), 'MarkerSize', 10)
+    plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(i,:), 'MarkerSize', mk)
     hold on
 end
 axis tight
@@ -129,4 +130,12 @@ if~isempty(APe_output_foldername)
 end
 
 end
+
+
+function mk = getMarkerSize(N)
+mk = 10;
+if N>10000, mk =7; end
+if N>20000, mk =3; end
+end
+
 
