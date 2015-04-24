@@ -1,7 +1,7 @@
 function  Run_CellSegmentation(  )
 out= ConfigPane1;
-try if out==-1, display('canceled');return; end 
-end
+if ~isfield(out,'files')  
+        display('canceled');return; end 
 folder = out.folder;
 fls = out.files;
 maxFrame=inf;
@@ -19,13 +19,14 @@ end
 delete(h)
 close all force
 framesConfig=ConfigPane2(maxFrame);
-try if framesConfig==-1, display('canceled');return; end 
+if ~isfield(framesConfig,'firstFrame')  
+        display('canceled');return; 
 end
 
  
  out=ConfigPane3();
- try if out==-1, display('canceled');return; end
- end
+ if ~isfield(out,'folder')  
+        display('canceled');return; end 
  display('--> start cell segmentation');
  saveFoler=out.folder;
  msConfig.spatialBdw=out.spatialBdw;
