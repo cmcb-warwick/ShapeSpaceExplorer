@@ -60,8 +60,21 @@ cPath=mfilename('fullpath');
 imFile = fullfile(folder, 'img/', 'header.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
-set(handles.edit1, 'String','...') 
-
+set(handles.edit1, 'String','...')
+features={'Area', 'Circularity', 'ConvexArea' ,'Dist_max', 'Dist_min', ...
+              'Dist_ratio','Eccentricity' 'EquivDiameter', 'Extent', 'Irregularity',...
+              'Irregularity2', 'MajorAxisLength', 'MinorAxisLength', 'Orientation',...
+              'Perimeter', 'Solidity', 'Symmetry'};
+jList = java.util.ArrayList;% any java.util.List will be ok
+for i =1:length(features)
+    jList.add(i-1, char(features(i)));
+end
+jCBList = com.mathworks.mwswing.checkboxlist.CheckBoxList(jList);
+jScrollPane = com.mathworks.mwswing.MJScrollPane(jCBList);
+javacomponent(jScrollPane,[16,70,335,80],gcf);
+jCBModel= jCBList.getCheckModel;
+jCBModel.checkAll;
+handles.jCBList=jCBList;
 % Update handles structure
 guidata(hObject, handles);
 
@@ -77,10 +90,15 @@ function varargout = ShapeFeatures_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
+varargout={-1};
+if handles.cancel==1,   % if cancel
+    delete(handles.figure1);
+    return;
+end
 struc.anaFolder = get(handles.edit1, 'String');
-array=get(handles.popupmenu3,'String');
-idx= get(handles.popupmenu3,'Value');
-struc.Prop=array{round(idx)};
+
+jCBList=handles.jCBList;
+struc.props= getValuesFromArrayList(jCBList.getCheckedValues());
 varargout{1}=struc;
 delete(handles.figure1);
 
@@ -136,9 +154,13 @@ if  ~exist(folderAna, 'dir')
     errordlg(msg, 'Error', mode);
     return;
 end
-
-    
-figure1_CloseRequestFcn(hObject, eventdata, handles)
+handles.cancel=0;
+guidata(handles.figure1,handles);
+if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+    uiresume(handles.figure1)
+else
+    delete(handles.figure1);
+end
 
 
 
@@ -153,7 +175,8 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: delete(hObject) closes the figure
+handles.cancel=1;
+guidata(handles.figure1,handles);
 h= handles.figure1;
 if isequal(get(h, 'waitstatus'), 'waiting')
     uiresume(h)
@@ -217,3 +240,14 @@ function popupmenu3_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+function array =getValuesFromArrayList(arrayList)
+array ={};
+i=1;
+iter=arrayList.iterator();
+    while (iter.hasNext())
+        tmp = iter.next();
+        array{i}=tmp;
+        i=i+1;
+    end

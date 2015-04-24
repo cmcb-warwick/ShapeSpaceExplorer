@@ -33,7 +33,7 @@ if ~exist('cell_numbers','var')
 end
 figPath = fullfile( folder, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
-
+figure
 L=length(cell_numbers);
 col_res=512;
 colourmap=jet(col_res);
@@ -76,7 +76,7 @@ for i=1:L
     hold on
 end
 axis equal
-title( ['Display Shape Feature:' propname]);
+title( ['Display Shape Feature: ' propname]);
 %sb=6;
 set(gca,'FontSize',12);
 subplot(sb1,sb2+2,(sb2+1):(sb2+2):(sb1*(sb2+2)-1));
@@ -105,9 +105,9 @@ set(gca,'Xtick',ax([1 end]));
 
 
 
-name = ['6_ShapeFeature_' propname '.fig'];
+name = ['6_ShapeFeature_' propname '.eps'];
 path = fullfile(figPath, name);
-savefig(path);
+saveas(gca, path,'epsc');
 
 
 end
