@@ -23,19 +23,25 @@ for i=unique(over_clusters)
     plot(OoSE_emb(over_clusters==i,1),OoSE_emb(over_clusters==i,2),'.','color',colour(i,:), 'MarkerSize', 10);
     if i==1; hold on; end
 end
-fPath=fullfile(figPath,'5_OsSE_dots.fig');
-savefig(fPath);
+fPath=fullfile(figPath,'5_OsSE_dots');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
 
 num=size(colour,1);
+array=[]
 figure
 for i=1:num
-    h=bar(i,sum(over_clusters==i));
+    n = sum(over_clusters==i);
+    h=bar(i,n);
     set(h,'FaceColor',colour(i,:))
      if i == 1, hold on, end
+    array(end+1)=n;
 end
-fPath=fullfile(figPath, '5_OsSE_bargraph.fig');
-savefig(fPath);
-
+fPath=fullfile(figPath, '5_OsSE_bargraph');
+tPath=fullfile(figPath, '5_OsSE_bargraph.txt');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
+ dlmwrite(tPath ,array, '\t');
 end
 
 function [T2,colour]=ordered_list_edit(number,CellShapeData,APe_output_foldername)
