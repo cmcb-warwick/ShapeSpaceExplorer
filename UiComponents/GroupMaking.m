@@ -105,10 +105,10 @@ root=model.getRoot();
 items = {};
 for i=0:root.getChildCount()-1
     s= root.getChildAt(i).toString();
-    C = strsplit(char(s),':');
+    C=regexp(char(s),':','split');
     item.name=strtrim(C(1));
     
-    numbers = strsplit(char(C(2)),',');
+    numbers = regexp(char(C(2)),',','split');
     array=zeros(length(numbers),1);
     for j=1:length(numbers)
         array(j)=str2double(numbers(j));
@@ -212,6 +212,7 @@ function str =getTracks2Str(array)
 str='';
 for i=1:length(array)
     if (i==1)
+       
        str=strcat(str, num2str(array(i)));
     else
        str=strcat(str,', ', num2str(array(i)));

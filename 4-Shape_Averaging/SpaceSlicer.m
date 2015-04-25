@@ -23,14 +23,17 @@ if ~exist(figPath,'dir'),mkdir(figPath);end
 figure % x figure---------------------
 set(gcf,'color','w');
 [b1, xShapes]=slicey_magoo( CellShapeData,SCORE, [1 0], x_slices, true, blueCol);
-fPath=fullfile(figPath, '4_ShapeSlicer_x_axis_shapes.fig');
+fPath=fullfile(figPath, '4_ShapeSlicer_x_axis_shapes');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
 savefig(fPath);
 mk = getMarkerSize(N);
 figure % y figure---------------------
 set(gcf,'color','w');
 [b2, yShapes]=slicey_magoo( CellShapeData,SCORE, [0 1], y_slices, true, greenCol);
-fPath=fullfile(figPath, '4_ShapeSlicer_y_axis_shapes.fig');
-savefig(fPath);
+fPath=fullfile(figPath, '4_ShapeSlicer_y_axis_shapes');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
 
 figure % content figure---------------------
 set(gcf,'color','w');
@@ -54,8 +57,9 @@ for i=2:y_slices
    plot(xm,[b2(i) b2(i)],'color',[.5,.5,.5]);
 end
 plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol, 'MarkerSize', mk)
-fPath=fullfile(figPath, '4_ShapeSlicer_content_only.fig');
-savefig(fPath);
+fPath=fullfile(figPath, '4_ShapeSlicer_content_only');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
 %----------------------------------------------------
 
 
@@ -105,8 +109,9 @@ for i=2:y_slices
    plot(xm,[b2(i) b2(i)],'color',greenCol);
 end
 plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol)
-fPath=fullfile(figPath, '4_ShapeSlicer_combined.fig');
-savefig(fPath);
+fPath=fullfile(figPath, '4_ShapeSlicer_combined');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
 
 end
 
