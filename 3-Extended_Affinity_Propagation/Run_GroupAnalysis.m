@@ -62,10 +62,13 @@ groupNames={};
 groupStacks={};
 for i =1: length(items)
     item = items{i};
-    [h, clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);   
+    [h, h2, clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks, N);   
     fPath=fullfile(groupPath, [char(item.name) '_ShapeSpace']);
     saveas(h, fPath, 'fig');
     saveas(h, fPath, 'epsc');
+    fPath=fullfile(groupPath, [char(item.name) '_ShapeSpace_mono']);
+    saveas(h2, fPath, 'fig');
+    saveas(h2, fPath, 'epsc');
     [h, array] = plotBars(clusters,number, mClusters);
     fPath=fullfile(groupPath, [char(item.name) '_barplot']);
     tPath = fullfile(groupPath, [char(item.name) '_barplot.txt']);
@@ -175,7 +178,7 @@ end
 
 
 
-function [h, clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx,T, stacks)
+function [h, h2,clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx,T, stacks, N)
 colour=jet(number);
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
@@ -193,7 +196,7 @@ clust_order=T2(logical(d));
 
 h=figure(10);
 clf;
-
+mk = getMarkerSize(N);
 for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
@@ -218,7 +221,38 @@ grid on
         clusters(i,2)=sum(points);
         plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(clust_idx,:), 'MarkerSize', 14)
     end
-% till here we plot all shapes. no group hightlighted.
+    
+    
+    
+% image in grey
+h2=figure(11);
+clf;
+mk = getMarkerSize(N);
+for i=1:number
+    clust_idx=clust_order(i);
+    exems=wish_list(T2==clust_idx);
+    points=ismember(idx,exems);
+    plot(SCORE(points,1),SCORE(points,2),'.','Color',[0.5,.5,.5], 'MarkerSize', mk)
+    hold on
+    mClusters(i,1)=clust_idx;
+    mClusters(i,2)=sum(points);
+end
+axis tight
+axis equal
+grid on
+%now plot the group
+    stack_indices=getStackIndices(BigCellDataStruct);
+    gIds =getAllIndicesFor(stack_indices, stacks);
+    for i=1:number
+        clust_idx=clust_order(i);
+        exems=wish_list(T2==clust_idx);
+        points=ismember(idx.*gIds,exems);
+        clusters(i,1)=clust_idx;
+        clusters(i,2)=sum(points);
+        plot(SCORE(points,1),SCORE(points,2),'.','Color',colour(clust_idx,:), 'MarkerSize', mk)
+    end
+
+
 
 
 end
@@ -233,6 +267,11 @@ indices =zeros(size(stack_indices));
 end
 
 
+function mk = getMarkerSize(N)
+mk = 5;
+if N>10000, mk =3; end
+if N>20000, mk =1; end
+end
 
 
 function stack_indices=getStackIndices(BigCellDataStruct)
