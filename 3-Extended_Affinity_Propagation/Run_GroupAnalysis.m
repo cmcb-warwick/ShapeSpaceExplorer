@@ -63,16 +63,14 @@ groupStacks={};
 for i =1: length(items)
     item = items{i};
     [h, clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks);   
-    fPath=fullfile(groupPath, [char(item.name) '_ShapeSpace.fig']);
-    ePath = fullfile(groupPath, [char(item.name) '_ShapeSpace.eps']);
-    savefig(h,fPath);
-    saveas(h, ePath, 'epsc');
+    fPath=fullfile(groupPath, [char(item.name) '_ShapeSpace']);
+    saveas(h, fPath, 'fig');
+    saveas(h, fPath, 'epsc');
     [h, array] = plotBars(clusters,number, mClusters);
-    fPath=fullfile(groupPath, [char(item.name) '_barplot.fig']);
-    ePath = fullfile(groupPath, [char(item.name) '_barplot.eps']);
+    fPath=fullfile(groupPath, [char(item.name) '_barplot']);
     tPath = fullfile(groupPath, [char(item.name) '_barplot.txt']);
-    savefig(h,fPath);
-    saveas(h, ePath, 'epsc'); 
+    saveas(h, fPath, 'fig');
+    saveas(h, fPath, 'epsc'); 
     dlmwrite(tPath ,array, '\t');
     labels{end+1}=char(item.name);
     s=size(clusters);
@@ -123,8 +121,7 @@ colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 for i =1:s(2)
     f=figure(12);
     clf;
-    ePath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.eps']);
-    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.eps']);
+    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count']);
     tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.txt']);
     array = classes{i};
     array(end+1)=sum(array);
@@ -133,14 +130,14 @@ for i =1:s(2)
     set(h,'FaceColor',colour(i,:))
     hold on
     set(gca, 'XTick', 1:s(2), 'XTickLabel', labels);
-    savefig(f,fPath);
-    saveas(f, ePath, 'epsc'); 
+    saveas(h, fPath, 'fig');
+    saveas(h, fPath, 'epsc');
     
     % percentual
     
     clf;
-    ePath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent.eps']);
-    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent.eps']);
+    
+    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent']);
     tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent.txt']);
     array=array/array(end);
     h=bar(array);
@@ -148,8 +145,8 @@ for i =1:s(2)
     set(h,'FaceColor',colour(i,:))
     hold on
     set(gca, 'XTick', 1:s(2), 'XTickLabel', labels);
-    savefig(f,fPath);
-    saveas(f, ePath, 'epsc'); 
+    saveas(h, fPath, 'fig');
+    saveas(h, fPath, 'epsc'); 
     
 end
 end
@@ -342,9 +339,16 @@ avgSpeed(end+1)=sum(allSpeed)/length(allSpeed);
 speedStd(end+1)=std(allSpeed);
 speedStE(end+1)=std(allSpeed)/sqrt(length(allSpeed));
 tableFilename=fullfile(groupPath, 'AvgSpeedPerGroup.csv');
-T = table(groups', avgSpeed', speedStd', speedStE');
-T.Properties.VariableNames={'Groups', 'AvgSpeed', 'Std', 'StandErr'};
-writetable(T,tableFilename,'Delimiter',',');
+%T = table(groups', avgSpeed', speedStd', speedStE');
+
+s=size(avgSpeed);
+header ={'Groups, AvgSpeed, Std, StandErr'};
+dlmwrite(tableFilename,header,'delimiter','');
+for i=1:s(2)
+    txt = [groups{i} ', ' num2str(avgSpeed(i),'%10.15e') ', ' num2str(speedStd(i), '%10.15e') ...
+            ', ' num2str(speedStE(i), '%10.15e')];
+    dlmwrite(tableFilename,txt,'delimiter','', '-append');
+end
 end
 
 
@@ -368,11 +372,10 @@ for i=1:s(2)
     errorbar(x,pM,pSt, 'Color', [156/255,187/255,229/255]);
     hold on
     plot(x,pM, 'Color', [237/255 94/255 48/255], 'LineWidth', 1.5);
+    fPath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio']);
+    saveas(gcf, fPath, 'fig');
+    saveas(gcf, fPath, 'epsc');
     
-    ePath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio.eps']);
-    fPath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio.fig']);
-    savefig(gcf,fPath);
-    saveas(gcf, ePath, 'epsc'); 
 end 
 
 
