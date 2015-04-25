@@ -77,8 +77,9 @@ for j=1:Nbins(2);
     end
 end
 set(gcf, 'Color', 'w');
-name = ['7_SlicedSpacedShape_Dynamics_' num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices.fig'];
+name = ['7_SlicedSpacedShape_Dynamics_' num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices'];
 path = fullfile(figPath, name);
-savefig(path);
+saveas(gcf, path, 'fig');
+saveas(gcf, path, 'epsc');
 
 end

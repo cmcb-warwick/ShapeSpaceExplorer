@@ -85,9 +85,10 @@ end
 axis equal
 linkaxes
 
-name = ['7_ClusteredSpaceShape_Dynamics_' num2str(number) '_clusters.fig'];
+name = ['7_ClusteredSpaceShape_Dynamics_' num2str(number) '_clusters'];
 path = fullfile(figPath, name);
-savefig(path);
+saveas(gcf, path, 'fig');
+saveas(gcf, path, 'epsc');
 end
 
 
