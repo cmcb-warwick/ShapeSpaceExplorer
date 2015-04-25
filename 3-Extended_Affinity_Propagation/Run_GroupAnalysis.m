@@ -50,8 +50,6 @@ end
 
 % write avg speed per cluster to file.
 writeAverageSpeed2File(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
-
-
 writePersitanceEucledianPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
 
 % did not work as expected.
@@ -69,11 +67,13 @@ for i =1: length(items)
     ePath = fullfile(groupPath, [char(item.name) '_ShapeSpace.eps']);
     savefig(h,fPath);
     saveas(h, ePath, 'epsc');
-    h = plotBars(clusters,number, mClusters);
+    [h, array] = plotBars(clusters,number, mClusters);
     fPath=fullfile(groupPath, [char(item.name) '_barplot.fig']);
     ePath = fullfile(groupPath, [char(item.name) '_barplot.eps']);
+    tPath = fullfile(groupPath, [char(item.name) '_barplot.txt']);
     savefig(h,fPath);
-    saveas(h, ePath, 'epsc');  
+    saveas(h, ePath, 'epsc'); 
+    dlmwrite(tPath ,array, '\t');
     labels{end+1}=char(item.name);
     s=size(clusters);
     for j =1:s(1)
@@ -89,11 +89,22 @@ end
 labels{end+1}='all';
 plotClusterBars(classes,labels, groupPath)
 tableFilename=fullfile(groupPath, 'GroupMapping.csv');
-T = table(groupNames', groupStacks');
-T.Properties.VariableNames={'GroupNames', 'MovieStacks'};
-writetable(T,tableFilename,'Delimiter',',');
+writeGroups2Table(tableFilename, groupNames, groupStacks);
 
 close all
+
+end
+
+
+%hack for dml so that it works for Matlab2012.
+function writeGroups2Table(path,groupnames,groupstacks)
+header='GroupNames,MovieStacks'; 
+dlmwrite(path,header,'delimiter','');
+s=size(groupnames);
+for i=1:s(2)
+    txt = [groupnames{i} ',' groupstacks(i)];
+    dlmwrite(path,txt,'delimiter','', '-append');
+end
 
 end
 
@@ -114,9 +125,11 @@ for i =1:s(2)
     clf;
     ePath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.eps']);
     fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.eps']);
+    tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.txt']);
     array = classes{i};
     array(end+1)=sum(array);
     h=bar(array);
+    dlmwrite(tPath ,array, '\t');
     set(h,'FaceColor',colour(i,:))
     hold on
     set(gca, 'XTick', 1:s(2), 'XTickLabel', labels);
@@ -128,8 +141,10 @@ for i =1:s(2)
     clf;
     ePath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent.eps']);
     fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent.eps']);
+    tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent.txt']);
     array=array/array(end);
     h=bar(array);
+    dlmwrite(tPath ,array, '\t');
     set(h,'FaceColor',colour(i,:))
     hold on
     set(gca, 'XTick', 1:s(2), 'XTickLabel', labels);
@@ -140,7 +155,7 @@ end
 end
 
 
-function f = plotBars(clusters,number, mClusters)
+function [f,array] = plotBars(clusters,number, mClusters)
 f=figure(11);
 clf;
 
@@ -149,9 +164,11 @@ colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 mMax = max(clusters(:,2));
 ylim([0, mMax * 1.2]);  %# The 1.2 factor is just an example
+array =[];
 for i=1:number
     barNum=1/mClusters(i,2)*clusters(i,2);
     h=bar(i,barNum);
+    array(end+1)=barNum;
     set(h,'FaceColor',colour(clusters(i,1),:))
     hold on
 end

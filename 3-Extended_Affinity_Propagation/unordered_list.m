@@ -66,8 +66,9 @@ for i=1:clust_num
         axis xy off
     end
 end
-fPath=fullfile(figPath, '3_AllShapes_10_Examples_foreach_Cluster.fig');
-savefig(fPath);
+fPath=fullfile(figPath, '3_AllShapes_10_Examples_foreach_Cluster');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
 
 % --------------------
 % create axes in a grid
@@ -99,8 +100,9 @@ for i=1:(a*b)
     end
     axis(h(i), 'xy','off')
 end
-fPath=fullfile(figPath, '3_AllShapes_Example_foreach_Cluster.fig');
-savefig(fPath);
+fPath=fullfile(figPath, '3_AllShapes_Example_foreach_Cluster');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
 end
 
 

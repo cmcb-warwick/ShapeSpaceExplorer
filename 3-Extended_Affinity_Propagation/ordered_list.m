@@ -48,9 +48,11 @@ exem_list=sort(wish_list);
 if number==0
     figure
     dendrogram(linkagemat,number);
-    fPath=fullfile(figPath, '3_Dendrogram_of_Shapes.fig');
+    fPath=fullfile(figPath, '3_Dendrogram_of_Shapes');
     if ~isempty(APe_output_foldername)
-        savefig(fPath); end
+        saveas(gcf, fPath, 'fig');
+        saveas(gcf, fPath, 'epsc');
+    end
     return
 end
 figure('visible','off')
@@ -83,8 +85,9 @@ axis tight
 axis equal
 grid on
 if ~isempty(APe_output_foldername)
-    fPath=fullfile(figPath, '3_Coloured_Shape_in_ShapeSpace.fig');
-    savefig(fPath);
+    fPath=fullfile(figPath, '3_Coloured_Shape_in_ShapeSpace');
+    saveas(gcf, fPath, 'fig');
+    saveas(gcf, fPath, 'epsc');
 end
 
 L=length(wish_list);
@@ -125,8 +128,9 @@ while c<=a*b
     c=c+1;
 end
 if~isempty(APe_output_foldername)
-    fPath=fullfile(figPath, '3_Avg_Shape_for_Clusters.fig');
-    savefig(fPath);
+    fPath=fullfile(figPath, '3_Avg_Shape_for_Clusters');
+    saveas(gcf, fPath, 'fig');
+    saveas(gcf, fPath, 'epsc');
 end
 
 end
