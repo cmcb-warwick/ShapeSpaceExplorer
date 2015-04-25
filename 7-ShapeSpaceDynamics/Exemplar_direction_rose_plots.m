@@ -79,7 +79,7 @@ subplot(2,1,1)
 for i=1:exL
     v=SCORE(exemplars(i),[1 2]);
     c=scale_fac;
-    plot(c*CellShapeData.point(exemplars(i)).coords_comp+v(1)+1i*v(2),'Color',colours(colour_idx(i),:),'LineWidth',2)
+    plot(c*CellShapeData.point(exemplars(i)).coords_comp+v(1)+1i*v(2),'Color',colours(colour_idx(i),:),'LineWidth',1)
     hold on
 end
 axis equal
