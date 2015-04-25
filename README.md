@@ -5,8 +5,7 @@ There is a detailed tutorial with images in the "Tutorial" Folder, to set up the
 The repository allows you to see Sam's original code, and all the packaging done by R. Gostner later on.
 
 
-Note the program is tested on MatlabR20013b on Mac OSX 10.8.5 and 10.9
-It is not working on MatlabR22014. We recommand to install MatlabR20013b. Detailed instruction on how to install earlier matlab versions are in the tutorial. 
+Note the program is tested on MatlabR2012a on Mac OSX 10.8.5 and OSX 10.6. We recommand to install MatlabR2012a. Detailed instruction on how to install earlier Matlab versions are in the tutorial. 
  
 ### Who do I talk to? ###
 
