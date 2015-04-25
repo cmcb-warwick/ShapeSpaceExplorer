@@ -26,7 +26,6 @@ set(gcf,'color','w');
 fPath=fullfile(figPath, '4_ShapeSlicer_x_axis_shapes');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
-savefig(fPath);
 mk = getMarkerSize(N);
 figure % y figure---------------------
 set(gcf,'color','w');
