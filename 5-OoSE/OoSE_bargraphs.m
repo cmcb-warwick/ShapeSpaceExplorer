@@ -9,7 +9,9 @@ load(fullfile(APe_output_foldername, '/wish_list.mat'))
 figPath = fullfile( APe_output_foldername, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
 
-[T2,colour]=ordered_list_edit(number,trainingCellShapeData,APe_output_foldername);
+figure(12)
+clf;
+[T2,colour]=ordered_list_edit(number,trainingCellShapeData,APe_output_foldername,0);
 if number==0
     return
 end
@@ -27,9 +29,37 @@ fPath=fullfile(figPath,'5_OsSE_dots');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
 
+
+
+%---- mono
+figure(12)
+clf;
+N=length(trainingCellShapeData.point);
+mk=getMarkerSize(N);
+[T2,colour]=ordered_list_edit(number,trainingCellShapeData,APe_output_foldername,1);
+if number==0
+    return
+end
+hold on
+exem_D=D(wish_list,:);
+[~,wish_idx]=min(exem_D);
+
+over_clusters=T2(wish_idx);
+
+for i=unique(over_clusters)
+    plot(OoSE_emb(over_clusters==i,1),OoSE_emb(over_clusters==i,2),'.','color',colour(i,:), 'MarkerSize', mk);
+    if i==1; hold on; end
+end
+fPath=fullfile(figPath,'5_OsSE_dots_mono');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
+
+
+figure(12)
+clf;
+
 num=size(colour,1);
-array=[]
-figure
+array=[];
 for i=1:num
     n = sum(over_clusters==i);
     h=bar(i,n);
@@ -41,10 +71,11 @@ fPath=fullfile(figPath, '5_OsSE_bargraph');
 tPath=fullfile(figPath, '5_OsSE_bargraph.txt');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
- dlmwrite(tPath ,array, '\t');
+dlmwrite(tPath ,array, '\t');
+close all
 end
 
-function [T2,colour]=ordered_list_edit(number,CellShapeData,APe_output_foldername)
+function [T2,colour]=ordered_list_edit(number,CellShapeData,APe_output_foldername, gray)
 %ORDERED_LIST generates a number of figures bringing together BAM DM and
 %APe. APe is a hierarchical clustering extension to Affinity Propagation
 %using Wishart Seriation, this should have been executed using
@@ -67,7 +98,7 @@ T2=[];
 
 
 N=length(CellShapeData.point);
-
+mk = getMarkerSize(N);
 if isfield(CellShapeData.set,'SCORE')
     SCORE=CellShapeData.set.SCORE;
 else
@@ -109,13 +140,16 @@ end
 d=diff([0 T2]);
 clust_order=T2(logical(d));
 %subplot(2,number,1:number)
-figure
 for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
     alpha(0.9);
-    plot(SCORE(points,1),SCORE(points,2),'o','Color',colour(clust_order(i),:), 'MarkerSize', 5)
+    if ~gray
+        plot(SCORE(points,1),SCORE(points,2),'o','Color',colour(clust_order(i),:), 'MarkerSize', 5)
+    else
+        plot(SCORE(points,1),SCORE(points,2),'.','Color',[0.5 0.5 0.5], 'MarkerSize', mk);
+    end
     hold on
 end
  alpha(1.0);
@@ -126,5 +160,13 @@ grid on
 
 
 
+end
+
+
+
+function mk = getMarkerSize(N)
+mk = 10;
+if N>10000, mk =7; end
+if N>20000, mk =3; end
 end
 
