@@ -109,11 +109,13 @@ handles.CSD=cellShapeData;
 guidata(handles.figure1,handles); 
 
 
-function plotScore(SCORE, axes1, fig1)
+function plotScore(SCORE, axes1)
 %set(0, 'currentfigure', fig);  %# for figures
 %set(f, 'currentaxes', axs);  %# for axes with handle axs on figure f
 if isempty(SCORE), return; end
-plot(axes1,SCORE(:,1),SCORE(:,2),'*', 'color',[0.5,.5,.5]);
+N = length(SCORE);
+mk = getMarkerSize(N);
+plot(axes1,SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', mk);
 axis equal; axis tight; box on
 hold on
 
@@ -217,9 +219,20 @@ if isempty(mIdx) || ~isempty(find(selectedIdx==0, 1)), return; end
 avshape=shapemean(csd,selectedIdx,mIdx,0);
 
 figure(10)
+clf;
 orangeCol=[237/255 94/255 48/255];
 plot(avshape, 'color', orangeCol,'LineWidth',3)
 axis equal
+
+h=figure(11);
+clf;
+set(0, 'currentfigure', h);  %# for figures
+N = length(handles.score);
+mk = getMarkerSize(N);
+plotScore(handles.score, gca);
+plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
+
+
 
 
 
@@ -265,10 +278,11 @@ function save_ClickedCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 [filename, pathname, filterindex]=uiputfile({'*.eps'; '*.fig'},'Save Average Shape Files');
 [~,name,ext] = fileparts(filename);
+if ~(ishandle(11) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
 if filterindex==1
-   saveas(handles.figure1, fullfile(pathname, filename), 'epsc');   
+   saveas(11, fullfile(pathname, filename), 'epsc');   
 elseif filterindex==2
-    savefig(handles.figure1,fullfile(pathname, filename))
+    saveas(11, fullfile(pathname, filename), 'fig');  
 end
 % if avergage fig does not exist, we are done.
 if ~(ishandle(10) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
@@ -276,7 +290,12 @@ avgPath =[name '_Avg_Shape' ext];
 if filterindex==1
    saveas(10, fullfile(pathname, avgPath), 'epsc');   
 elseif filterindex==2
-    savefig(10,fullfile(pathname, avgPath))
+   saveas(handles.figure1, fullfile(pathname, filename), 'fig');  
 end    
 
+
+function mk = getMarkerSize(N)
+mk = 10;
+if N>10000, mk =7; end
+if N>20000, mk =3; end
 
