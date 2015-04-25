@@ -29,7 +29,7 @@ if exist(dataFile, 'file')
         prop = props{i};
         Prop_display( data.CellShapeData,mData.morphframe, prop, folder);
     end
-    close all
+    close(h)
     display('Shape Feature Processing finished successfully');
     display('-------');
 else 
