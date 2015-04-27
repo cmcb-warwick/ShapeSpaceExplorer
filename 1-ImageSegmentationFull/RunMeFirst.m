@@ -60,18 +60,26 @@ end
 delete(h)
 close all force
 
-ver = version();
-ver=strtok(ver, '.');
-if str2double(ver)>7 % table exists
-    tableFilename=fullfile(savefolderpath, 'FileMapping.csv');
-    T = table(originFileName, stackFileName);
-    T.Properties.VariableNames={'OriginalName', 'ConvertedName'};
-    writetable(T,tableFilename,'Delimiter',',');
-else
-    filename =fullfile(savefolderpath, 'FileMapping.mat');
-    save(filename,'originFileName','stackFileName');
+
+tableFilename=fullfile(savefolderpath, 'FileMapping.csv');
+writeGroups2Table(tableFilename,originFileName,stackFileName)
+
+
 end
+
+
+%hack for dml so that it works for Matlab2012.
+function writeGroups2Table(path,originFileName,stackFileName)
+header='OriginalName,  ConvertedName';
+dlmwrite(path,header,'delimiter','');
+s=size(originFileName);
+for i=1:s(1)
+    txt = [originFileName{i,1} ',' stackFileName{i,1}];
+    dlmwrite(path,txt,'delimiter','', '-append');
 end
+
+end
+
 
 
 function cFrame = StackCellSeg( ImageStack,Stacknumber,savefolderpath,sbw,rbw, currentFrame, allFramNum, h)
