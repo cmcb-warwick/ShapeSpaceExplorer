@@ -74,7 +74,8 @@ function updateSliderSteps(numSteps, handles)
 set(handles.slider1, 'Min', 1);
 set(handles.slider1, 'Max', numSteps);
 set(handles.slider1, 'Value', 1);
-set(handles.slider1, 'SliderStep', [1/(numSteps-1) , 1/(numSteps-1) ]);
+denominator = max(numSteps-1,1);
+set(handles.slider1, 'SliderStep', [1/denominator , 1/denominator ]);
 
 % --- Outputs from this function are returned to the command line.
 function varargout = Inspect_Shapes_OutputFcn(hObject, eventdata, handles) 
