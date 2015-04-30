@@ -2,6 +2,7 @@ function   Inspect_Shapes()
 folder = uigetdir(matlabroot,'Select Analysis Folder');
 dataFile = fullfile(folder, 'CellShapeData.mat');
 if exist(dataFile, 'file')
+    display('File is loading ... ');
     data = load(dataFile);
     CellShapeData= data.CellShapeData;
     unordered_list(CellShapeData, folder)

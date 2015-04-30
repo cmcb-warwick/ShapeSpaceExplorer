@@ -2,6 +2,7 @@ function  Run_Affinity_Propagation( )
 folder = uigetdir(matlabroot,'Select Analysis Folder');
 dataFile = fullfile(folder, 'CellShapeData.mat');
 if exist(dataFile, 'file')
+    display('File is loading ... ');
     data = load(dataFile);
     AP_Seriation_analysis_finaledit(data.CellShapeData.set.Long_D, 1, folder)
 else 

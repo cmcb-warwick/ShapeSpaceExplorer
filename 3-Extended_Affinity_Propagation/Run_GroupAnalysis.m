@@ -14,6 +14,7 @@ items =GroupMaking(maxStackNo);
 
 
 %----------------------%
+display('Files are loading ... ');
 load(fullfile(inputFolder, '/APclusterOutput.mat'));
 load(fullfile(inputFolder, '/wish_list.mat'));
 load(fullfile(inputFolder, '/linkagemat.mat'));
@@ -289,7 +290,7 @@ stack_indices=stack_indices';
 end
 
 function counter = getMaxStackNumber(folder)
-counter=-1
+counter=-1;
 file = fullfile(folder,'BigCellDataStruct.mat');
 if ~exist(file, 'file')
     display(['The file "BigCellDataStruct" is not present in your Analysis folder"'\n ...
