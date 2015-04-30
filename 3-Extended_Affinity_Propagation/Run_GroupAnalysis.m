@@ -7,6 +7,7 @@ inputFolder =  config1.fpath;
 number=config1.classes;
 
 maxStackNo = getMaxStackNumber(inputFolder);
+if maxStackNo <0, exit(0); end
 items =GroupMaking(maxStackNo);
 
 
@@ -288,14 +289,23 @@ stack_indices=stack_indices';
 end
 
 function counter = getMaxStackNumber(folder)
-t=dir([folder '/ImageStack*.mat']);
-counter=0;
-s=size(t);
-for i=1:s(1)
-   idx= strfind(t(i).name, 'CurveData');
-   if isempty(idx), counter=counter+1; end
+counter=-1
+file = fullfile(folder,'BigCellDataStruct.mat');
+if ~exist(file, 'file')
+    display(['The file "BigCellDataStruct" is not present in your Analysis folder"'\n ...
+             'Please check whether you followed all steps as described in the tutorial.'] );
+    return
+end
+data = load(file);
+s = size(data.BigCellDataStruct);
+for i = 1:s(2)
+    tmp = data.BigCellDataStruct(i);
+    if tmp.Stack_number>counter
+        counter=tmp.Stack_number;
+    end
 end
 end
+
 
 
 function d = getDistancesForId(fId, cell_indices, SCORE)
