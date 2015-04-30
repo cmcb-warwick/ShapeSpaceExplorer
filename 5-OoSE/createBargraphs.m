@@ -11,6 +11,7 @@ catch
 end
 
 cPath=fullfile(path.anaFolder, 'CellShapeData.mat');
+display('File is loading ... ');
 cData= load(cPath);
 classes= path.classes;
 OoSE_bargraphs(classes,cData.CellShapeData,path.anaFolder,path.OosFolder );

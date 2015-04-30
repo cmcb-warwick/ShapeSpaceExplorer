@@ -7,6 +7,7 @@ function  Run_Clustered_Dynamics()
     classes = out.classes;    
 cellShapePath = fullfile(folder, 'CellShapeData.mat');
 if exist(cellShapePath, 'file')
+    display('File is loading ... ');
     try data = load(cellShapePath);
         cellShapeData=data.CellShapeData;
     catch

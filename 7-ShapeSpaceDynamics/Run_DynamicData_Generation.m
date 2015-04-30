@@ -3,6 +3,7 @@ folder = uigetdir(matlabroot,'Select Analysis Folder');
 if folder==0, return; end
 cellShapePath = fullfile(folder, 'CellShapeData.mat');
 if exist(cellShapePath, 'file')
+    display('File is loading ... ');
     try data = load(cellShapePath);
         cellShapeData=data.CellShapeData;
     catch

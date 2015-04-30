@@ -8,7 +8,7 @@ s= size(props);
 
 dataFile = fullfile(folder, 'CellShapeData.mat');
 if exist(dataFile, 'file')
-    display('Files loading...')
+    display('File is loading...')
     data = load(dataFile);
 else 
     display('-------');

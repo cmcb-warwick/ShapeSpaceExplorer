@@ -89,6 +89,7 @@ path = uigetdir();
 if path==0, return; end
 cellShapePath = fullfile(path, 'CellShapeData.mat');
 if exist(cellShapePath, 'file')
+    display('File is loading ... ');
     try data = load(cellShapePath);
         cellShapeData=data.CellShapeData;
     catch

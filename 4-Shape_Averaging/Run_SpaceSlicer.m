@@ -5,6 +5,7 @@ function  Run_SpaceSlicer( )
     if ~isempty(out.handle), delete(out.handle); end
     cellShapePath = fullfile(out.path, 'CellShapeData.mat');
     if exist(cellShapePath, 'file')
+        display('File is loading ... ');
         try data = load(cellShapePath);
             cellShapeData=data.CellShapeData;
         catch

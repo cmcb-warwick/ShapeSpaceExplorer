@@ -12,6 +12,7 @@ catch
 end
 % now path does exist.
 cellShapePath=fullfile(path.anaFolder, 'CellShapeData.mat');
+display('File is loading ... ');
 data= load(cellShapePath);
 LP_OoSE_train(data.CellShapeData, path.OosFolder);
 display('Oose training completed sucessfully');
