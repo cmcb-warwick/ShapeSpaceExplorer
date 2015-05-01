@@ -287,7 +287,7 @@ handles.frmId=1;
 guidata(handles.figure1,handles); % we store this data in the gui.
 set(handles.popupmenu1, 'Value', 1); % set first as default value.
 set(handles.stackpopup, 'Value', 1); % set first as default value.
-
+popupmenu1_Callback(hObject, eventdata, handles);
 
 %popupmenu1_Callback(hObject, eventdata, handles);
 
@@ -577,7 +577,7 @@ handles.CurrentStack=stackid;
 handles.CurrentCellId=1;
 set(handles.popupmenu1, 'Value', 1); % set first as default value.
 guidata(handles.figure1,handles); % we store this data in the gui.
-
+popupmenu1_Callback(hObject, eventdata, handles);
 
 
 
