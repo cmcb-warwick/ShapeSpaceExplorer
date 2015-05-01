@@ -79,6 +79,7 @@ CellShapeData=BAM_DM_frame(CellShapeData, new_d,h,nodes);
 
  waitbar((1)/(1),h,sprintf('Complete'));
 save([savedestination '/CellShapeData.mat'], 'CellShapeData', '-v7.3')
+close(h);
 end
 
 function [ snakemat,lengthvec ] = Interpolate_and_rescale(stack ,h, varargin)

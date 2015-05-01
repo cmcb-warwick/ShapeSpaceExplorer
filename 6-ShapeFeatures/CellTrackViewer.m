@@ -22,7 +22,7 @@ function varargout = CellTrackViewer(varargin)
 
 % Edit the above text to modify the response to help CellTrackViewer
 
-% Last Modified by GUIDE v2.5 01-Apr-2015 10:21:49
+% Last Modified by GUIDE v2.5 30-Apr-2015 15:11:10
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,6 @@ handles.output = hObject;
 guidata(hObject, handles);
 figObj=handles.figure1;
 addlistener(handles.slider1,'ContinuousValueChange',@(figObj, handles)slider1_ValueChanged(figObj, handles));
-
 resetGUI(hObject, eventdata, handles);
 % UIWAIT makes CellTrackViewer wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -121,21 +120,29 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
 %contents{get(hObject,'Value')} returns selected item from popupmenu1
 %update slider.
-trackId=get(handles.popupmenu1,'Value');
-sl=handles.tracks{trackId};
-frames=length(sl.Contours);
+handles.CurrentCellId=get(handles.popupmenu1,'Value');
+handles.struc = getHandlesStruc(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
+frames=length(handles.struc.Contours);
 updateSliderSteps(handles.slider1, frames);
-
-handles.CurrentTrackId=trackId;
 handles.com = calculateGravityTrackFrom(handles);
+handles.frmId=1;
 guidata(handles.figure1,handles); % we store this data in the gui
-
 plotFig(hObject, eventdata, handles);
 
 
+function struc =getHandlesStruc(currentStackId, currentCellId, bigStructure)
+s =size(bigStructure);
+struc={};
+for i=1:s(2)
+    tmp = bigStructure(i);
+    if tmp.Stack_number==currentStackId && tmp.Cell_number==currentCellId
+       struc = tmp;
+       break
+    end
+end
 % calculate center of mass
 function com = calculateGravityTrackFrom(handles)
-track = handles.tracks{handles.CurrentTrackId};
+track = handles.struc;
 com = zeros(length(track.Contours),2);
 h=waitbar(0, 'prepare shape track');
 N=length(track.Contours);
@@ -188,8 +195,7 @@ function trackLength=plotShapeSpaceOnAxes(axes, handles)
 cla(axes); trackLength=0;
 axis(axes, 'auto');
 plot(axes, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
-
-track = handles.tracks{handles.CurrentTrackId};
+track=getStackCellTracks(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
 idxes = find(handles.indices==track.AbsIdx);
 x = handles.score(idxes,1);
 y = handles.score(idxes,2);
@@ -249,24 +255,91 @@ function open_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to open (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[fileName,pathName] = uigetfile('*.mat','Select a processed Matlab file');
-if fileName==0, return; end
-[handles.stack, handles.stackNumber] = loadStackFromFile(pathName, fileName);
-set(handles.text1, 'String', handles.stackNumber);
-[handles.tracks, lbls]= loadTrackInfo(pathName,handles.stackNumber);
-if isempty(handles.tracks), resetGUI(hObject, eventdata, handles), return; end
-set(handles.popupmenu1, 'string', lbls);
+
+folderpath = uigetdir();
+if folderpath==0, return; end
+handles.csd =loadCellShapeData(folderpath);
+bigCellDataStruc=loadbigCellDataStruct(folderpath);
+if  isempty(bigCellDataStruc), resetGUI(hObject, eventdata, handles); return; end
+[handles.indices, handles.contours]=loadBigcellarrayandindex(folderpath);
+handles.bigCellDataStruc=bigCellDataStruc;
+stackLabels= getStackNumbers(folderpath, handles);
+if isempty(stackLabels), resetGUI(hObject, eventdata, handles); return; end
+idLabels =getLabelsForStack(1, handles.bigCellDataStruc);
+if isempty(idLabels), 
+    set(handles.popupmenu1, 'string', 'No Tracks');
+    set(handles.popupmenu1, 'Enable', 'off');
+    return; 
+end
+set(handles.stackpopup, 'string', stackLabels);
+set(handles.stackpopup, 'Enable', 'on');
+set(handles.popupmenu1, 'string', idLabels);
 set(handles.popupmenu1, 'Enable', 'on');
-handles.csd = loadCellShapeData(pathName);
-if isempty(handles.csd),resetGUI(hObject, eventdata, handles), return; end 
 handles.score = getScoreFrom(handles.csd);
-[handles.indices, handles.contours]=loadBigcellarrayandindex(pathName);
-if isempty(handles.indices)  || isempty(handles.contours), return; end
-handles.CurrentTrackId=1;
+handles.CurrentStack=1;
+handles.CurrentCellId=1;
 handles.frmId=1;
+handles.struc = getHandlesStruc(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
 guidata(handles.figure1,handles); % we store this data in the gui.
 set(handles.popupmenu1, 'Value', 1); % set first as default value.
-popupmenu1_Callback(hObject, eventdata, handles);
+set(handles.stackpopup, 'Value', 1); % set first as default value.
+
+
+%popupmenu1_Callback(hObject, eventdata, handles);
+
+% handles.frmId=1;
+ %[handles.stack, handles.stackNumber] = loadStackFromFile(folderpath, 'ImageStack001.mat');
+
+%set(handles.text1, 'String', handles.stackNumber);
+
+% set(handles.popupmenu1, 'Enable', 'on');
+% if isempty(handles.tracks), resetGUI(hObject, eventdata, handles), return; end
+% set(handles.popupmenu1, 'string', lbls);
+% set(handles.popupmenu1, 'Enable', 'on');
+% handles.csd = loadCellShapeData(pathName);
+% if isempty(handles.csd),resetGUI(hObject, eventdata, handles), return; end 
+% handles.score = getScoreFrom(handles.csd);
+% [handles.indices, handles.contours]=loadBigcellarrayandindex(pathName);
+% if isempty(handles.indices)  || isempty(handles.contours), return; end
+% handles.CurrentTrackId=1;
+% handles.frmId=1;
+% guidata(handles.figure1,handles); % we store this data in the gui.
+% set(handles.popupmenu1, 'Value', 1); % set first as default value.
+% popupmenu1_Callback(hObject, eventdata, handles);
+
+function labels = getStackNumbers(folder, handles)
+maxStack = getMaxStackNumber(folder);
+if maxStack <0, resetPopups(handles); return; end 
+labels ={};
+for i =1: maxStack
+    labels{end+1}=sprintf('Image Stack %03d ',i);
+end
+
+
+
+
+
+
+
+
+
+function counter = getMaxStackNumber(folder)
+counter=-1;
+file = fullfile(folder,'BigCellDataStruct.mat');
+if ~exist(file, 'file')
+    display(['The file "BigCellDataStruct" is not present in your Analysis folder"'\n ...
+             'Please check whether you followed all steps as described in the tutorial.'] );
+    return
+end
+data = load(file);
+s = size(data.BigCellDataStruct);
+for i = 1:s(2)
+    tmp = data.BigCellDataStruct(i);
+    if tmp.Stack_number>counter
+        counter=tmp.Stack_number;
+    end
+end
+
 
 
 function [indices, contours]=loadBigcellarrayandindex(folderPath)
@@ -305,11 +378,13 @@ catch
 end
 
 function resetGUI(hObject, eventdata, handles)
-set(handles.popupmenu1, 'string', {'No Cell Tracks found.  '});
-set(handles.popupmenu1, 'Enable', 'off');
+set(handles.stackpopup, 'Enable', 'off');
+set(handles.stackpopup, 'string', {'No Cell Tracks found.  '});
 cla(handles.axes2);
 cla(handles.axes4);
 set(handles.text1, 'String', ' ');
+set(handles.popupmenu1, 'Enable', 'off');
+set(handles.popupmenu1, 'String', 'No cell ids found');
 
 %extract the relevant tracks and abs id from big structure.
 function [tracks, labels]= loadTrackInfo(pathName,stackNumber)
@@ -334,8 +409,42 @@ for i=1:s(2)
 end
 
 
+function track = getStackCellTracks(stackNumber, cellId, bigStructure)
+s =size(bigStructure);
+track={};
+for i=1:s(2)
+    tmp = bigStructure(i);
+    if tmp.Stack_number==stackNumber && tmp.Cell_number==cellId
+       tmp.AbsIdx=i;
+       track=tmp;
+       break;
+    end
+end
 
-    
+
+function [labels] =getLabelsForStack(stackNumber, bigStructure)
+s =size(bigStructure);
+labels={};
+for i=1:s(2)
+    tmp = bigStructure(i);
+    if isempty(tmp.Contours), continue; end
+    if tmp.Stack_number==stackNumber
+       labels{end+1}=sprintf('Cell Id %d', tmp.Cell_number);
+    end
+end
+
+function bigCellDataStruct = loadbigCellDataStruct(folder)
+bigCellDataStruct={};
+bPath = fullfile(folder, 'BigCellDataStruct.mat');
+if ~exist(bPath, 'file'),filleDoesNotexist(bPath); return; end
+try data = load(bPath);
+bigCellDataStruct=data.BigCellDataStruct;
+catch
+    fileHasWrongStructure(cellShapePath);
+    return;
+end
+
+
 function filleDoesNotexist(filename)
 display('-------');
 display(['The file "' filename '" does not exist in your Analysis folder.']);
@@ -454,3 +563,42 @@ for i =1:tlen
     A = getframe(f);
     imwrite(A.cdata, movieFileName, 'WriteMode', 'append',  'Compression','none');
 end
+
+
+% --- Executes on selection change in stackpopup.
+function stackpopup_Callback(hObject, eventdata, handles)
+% hObject    handle to stackpopup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+stackid=get(handles.stackpopup,'Value');
+[idLabels, struc] =getLabelsForStack(stackid, handles.bigCellDataStruc);
+if isempty(idLabels), 
+    set(handles.popupmenu1, 'string', 'No Tracks');
+    set(handles.popupmenu1, 'Enable', 'off');
+    return; 
+end
+set(handles.popupmenu1, 'string', idLabels);
+set(handles.popupmenu1, 'Enable', 'on');
+handles.CurrentStack=stackid;
+handles.CurrentCellId=1;
+handles.struc = struc;
+set(handles.popupmenu1, 'Value', 1); % set first as default value.
+guidata(handles.figure1,handles); % we store this data in the gui.
+
+
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function stackpopup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to stackpopup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
