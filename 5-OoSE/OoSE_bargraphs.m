@@ -6,7 +6,7 @@ function [ output_args ] = OoSE_bargraphs( number,trainingCellShapeData,APe_outp
 load(fullfile(OoSE_experiment_folder, '/OoSE_embedding.mat'));
 load(fullfile(OoSE_experiment_folder, '/Dist_mat.mat'))
 load(fullfile(APe_output_foldername, '/wish_list.mat'))
-figPath = fullfile( APe_output_foldername, 'Figures');
+figPath = fullfile( OoSE_experiment_folder, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
 
 figure(12)
