@@ -120,7 +120,11 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
 %contents{get(hObject,'Value')} returns selected item from popupmenu1
 %update slider.
-handles.CurrentCellId=get(handles.popupmenu1,'Value');
+labels=get(handles.popupmenu1,'String');
+val=get(handles.popupmenu1,'Value');
+str=labels{val};
+lbs=regexp(str, ' ', 'split');
+handles.CurrentCellId=round(str2double(lbs(end)));
 handles.struc = getHandlesStruc(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
 frames=length(handles.struc.Contours);
 updateSliderSteps(handles.slider1, frames);
@@ -218,7 +222,7 @@ cla(ax);
 orangeCol=[237/255 94/255 48/255];
 blueCol=[156/255,187/255,229/255];
 
-track = handles.tracks{handles.CurrentTrackId};
+track=getStackCellTracks(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
 if isempty(handles.com), 
     return; end
 plot(ax, handles.com(:,1), handles.com(:,2), '.', 'color', blueCol, 'MarkerSize',20);
