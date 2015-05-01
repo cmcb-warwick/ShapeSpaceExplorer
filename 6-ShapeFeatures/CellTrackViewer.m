@@ -125,8 +125,8 @@ val=get(handles.popupmenu1,'Value');
 str=labels{val};
 lbs=regexp(str, ' ', 'split');
 handles.CurrentCellId=round(str2double(lbs(end)));
-handles.struc = getHandlesStruc(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
-frames=length(handles.struc.Contours);
+handles.track =getHandlesStruc(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
+frames=length(handles.track.Contours);
 updateSliderSteps(handles.slider1, frames);
 handles.com = calculateGravityTrackFrom(handles);
 handles.frmId=1;
@@ -140,13 +140,14 @@ struc={};
 for i=1:s(2)
     tmp = bigStructure(i);
     if tmp.Stack_number==currentStackId && tmp.Cell_number==currentCellId
+       tmp.AbsIdx=i;
        struc = tmp;
        break
     end
 end
 % calculate center of mass
 function com = calculateGravityTrackFrom(handles)
-track = handles.struc;
+track = handles.track;
 com = zeros(length(track.Contours),2);
 h=waitbar(0, 'prepare shape track');
 N=length(track.Contours);
@@ -199,7 +200,7 @@ function trackLength=plotShapeSpaceOnAxes(axes, handles)
 cla(axes); trackLength=0;
 axis(axes, 'auto');
 plot(axes, handles.score(:,1), handles.score(:,2), '.', 'color',[0.5,.5,.5], 'MarkerSize', 10);
-track=getStackCellTracks(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
+track=handles.track;
 idxes = find(handles.indices==track.AbsIdx);
 x = handles.score(idxes,1);
 y = handles.score(idxes,2);
@@ -222,7 +223,7 @@ cla(ax);
 orangeCol=[237/255 94/255 48/255];
 blueCol=[156/255,187/255,229/255];
 
-track=getStackCellTracks(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
+track=handles.track;
 if isempty(handles.com), 
     return; end
 plot(ax, handles.com(:,1), handles.com(:,2), '.', 'color', blueCol, 'MarkerSize',20);
@@ -283,7 +284,6 @@ handles.score = getScoreFrom(handles.csd);
 handles.CurrentStack=1;
 handles.CurrentCellId=1;
 handles.frmId=1;
-handles.struc = getHandlesStruc(handles.CurrentStack, handles.CurrentCellId, handles.bigCellDataStruc);
 guidata(handles.figure1,handles); % we store this data in the gui.
 set(handles.popupmenu1, 'Value', 1); % set first as default value.
 set(handles.stackpopup, 'Value', 1); % set first as default value.
@@ -413,17 +413,7 @@ for i=1:s(2)
 end
 
 
-function track = getStackCellTracks(stackNumber, cellId, bigStructure)
-s =size(bigStructure);
-track={};
-for i=1:s(2)
-    tmp = bigStructure(i);
-    if tmp.Stack_number==stackNumber && tmp.Cell_number==cellId
-       tmp.AbsIdx=i;
-       track=tmp;
-       break;
-    end
-end
+
 
 
 function [labels] =getLabelsForStack(stackNumber, bigStructure)
@@ -575,7 +565,7 @@ function stackpopup_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 stackid=get(handles.stackpopup,'Value');
-[idLabels, struc] =getLabelsForStack(stackid, handles.bigCellDataStruc);
+idLabels =getLabelsForStack(stackid, handles.bigCellDataStruc);
 if isempty(idLabels), 
     set(handles.popupmenu1, 'string', 'No Tracks');
     set(handles.popupmenu1, 'Enable', 'off');
@@ -585,7 +575,6 @@ set(handles.popupmenu1, 'string', idLabels);
 set(handles.popupmenu1, 'Enable', 'on');
 handles.CurrentStack=stackid;
 handles.CurrentCellId=1;
-handles.struc = struc;
 set(handles.popupmenu1, 'Value', 1); % set first as default value.
 guidata(handles.figure1,handles); % we store this data in the gui.
 
