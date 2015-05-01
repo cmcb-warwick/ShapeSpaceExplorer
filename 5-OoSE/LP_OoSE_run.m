@@ -97,7 +97,9 @@ for n=1:N
             D2=-D2;
             D2=exp(D2);
             for j=1:train_nobs
-                k(j)=D2(j)/q{m}{i}(j);
+                %if j==1 && m==3 && i==19
+                   % display([num2str(j) ' m=' num2str(m) ' i=' num2str(i) ]); end
+                k(j)=D2(j)/q{m}{i}(j);          
             end
             sum_sk(n,m)=sum_sk(n,m)+k*d{m}{i}';
         end
