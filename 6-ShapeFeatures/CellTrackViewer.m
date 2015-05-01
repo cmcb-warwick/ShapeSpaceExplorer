@@ -289,27 +289,7 @@ set(handles.popupmenu1, 'Value', 1); % set first as default value.
 set(handles.stackpopup, 'Value', 1); % set first as default value.
 popupmenu1_Callback(hObject, eventdata, handles);
 
-%popupmenu1_Callback(hObject, eventdata, handles);
 
-% handles.frmId=1;
- %[handles.stack, handles.stackNumber] = loadStackFromFile(folderpath, 'ImageStack001.mat');
-
-%set(handles.text1, 'String', handles.stackNumber);
-
-% set(handles.popupmenu1, 'Enable', 'on');
-% if isempty(handles.tracks), resetGUI(hObject, eventdata, handles), return; end
-% set(handles.popupmenu1, 'string', lbls);
-% set(handles.popupmenu1, 'Enable', 'on');
-% handles.csd = loadCellShapeData(pathName);
-% if isempty(handles.csd),resetGUI(hObject, eventdata, handles), return; end 
-% handles.score = getScoreFrom(handles.csd);
-% [handles.indices, handles.contours]=loadBigcellarrayandindex(pathName);
-% if isempty(handles.indices)  || isempty(handles.contours), return; end
-% handles.CurrentTrackId=1;
-% handles.frmId=1;
-% guidata(handles.figure1,handles); % we store this data in the gui.
-% set(handles.popupmenu1, 'Value', 1); % set first as default value.
-% popupmenu1_Callback(hObject, eventdata, handles);
 
 function labels = getStackNumbers(folder, handles)
 maxStack = getMaxStackNumber(folder);
@@ -318,10 +298,6 @@ labels ={};
 for i =1: maxStack
     labels{end+1}=sprintf('Image Stack %03d ',i);
 end
-
-
-
-
 
 
 
@@ -390,27 +366,6 @@ set(handles.text1, 'String', ' ');
 set(handles.popupmenu1, 'Enable', 'off');
 set(handles.popupmenu1, 'String', 'No cell ids found');
 
-%extract the relevant tracks and abs id from big structure.
-function [tracks, labels]= loadTrackInfo(pathName,stackNumber)
-tracks={}; labels={};
-bPath = fullfile(pathName, 'BigCellDataStruct.mat');
-if ~exist(bPath, 'file'),filleDoesNotexist(bPath); return; end
-try data = load(bPath);
-bigStructure=data.BigCellDataStruct;
-catch
-    fileHasWrongStructure(cellShapePath);
-    return;
-end
-s =size(bigStructure);
-for i=1:s(2)
-    tmp = bigStructure(i);
-    if isempty(tmp.Contours), continue; end
-    if tmp.Stack_number==stackNumber
-       tmp.AbsIdx=i;
-       tracks{end+1}=tmp;
-       labels{end+1}=sprintf('Image Stack %03d : Cell Id %d',stackNumber, tmp.Cell_number);
-    end
-end
 
 
 
@@ -454,24 +409,7 @@ display('-------');
    
 
 
-function [stack, stackNum] = loadStackFromFile(pathName, fileName)
-path = fullfile(pathName, fileName);
-tmp = load(path);
-stack=[];
-try 
-    stack=tmp.stack;
-catch % means we have some old data from first implementation.
-    try 
-    [~,fName,~] = fileparts(fileName);
-    str =['tmp.' fName];
-    stack = eval(['tmp.' fName]);
-    end
-end
-[~,fName,~] = fileparts(fileName); 
-if length(fName)>3
-   num = fName(end-2:end);
-   try stackNum= str2num(num); end
-end
+
 
 
 % --------------------------------------------------------------------
