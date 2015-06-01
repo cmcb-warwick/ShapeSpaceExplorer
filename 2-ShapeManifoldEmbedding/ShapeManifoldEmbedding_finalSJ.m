@@ -84,6 +84,12 @@ CellShapeData_slim  = slimCellShapeData( CellShapeData );
 clear CellShapeData;
 CellShapeData =CellShapeData_slim;
 save([savedestination '/CellShapeData_slim.mat'], 'CellShapeData', '-v7.3');
+
+CellShapeData_slim  = slimCellShapeData( CellShapeData, 1 );
+clear CellShapeData;
+CellShapeData =CellShapeData_slim;
+save([savedestination '/CellShapeData_med.mat'], 'CellShapeData', '-v7.3');
+
 close(h);
 end
 

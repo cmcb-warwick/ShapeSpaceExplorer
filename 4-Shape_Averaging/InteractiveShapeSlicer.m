@@ -87,7 +87,7 @@ function open_ClickedCallback(hObject, eventdata, handles)
 resetAxes(handles);
 path = uigetdir();
 if path==0, return; end
-cellShapePath = fullfile(path, 'CellShapeData_slim.mat');
+cellShapePath = fullfile(path, 'CellShapeData_med.mat');
 if exist(cellShapePath, 'file')
     display('File is loading ... ');
     try data = load(cellShapePath);
