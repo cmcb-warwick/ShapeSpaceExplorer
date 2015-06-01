@@ -1044,6 +1044,7 @@ uitoggletool2_OnCallback(hObject, eventdata, handles) %set other commands of
 global currFrame; 
 
 [~, xi, yi] =roipoly(handles.axes1);
+xi=round(xi); yi=round(yi);
 if isempty(xi)|| isempty(yi), return; end
 markeMergedShapes(xi,yi, currFrame);
 addManualShapeToFrame(xi, yi, currFrame);
