@@ -3,7 +3,7 @@
 function  Run_SpaceSlicer( )
     out=guiShapeSlicer();
     if ~isempty(out.handle), delete(out.handle); end
-    cellShapePath = fullfile(out.path, 'CellShapeData.mat');
+    cellShapePath = fullfile(out.path, 'CellShapeData_slim.mat');
     if exist(cellShapePath, 'file')
         display('File is loading ... ');
         try data = load(cellShapePath);

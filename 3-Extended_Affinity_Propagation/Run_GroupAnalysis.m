@@ -18,7 +18,7 @@ display('Files are loading ... ');
 load(fullfile(inputFolder, '/APclusterOutput.mat'));
 load(fullfile(inputFolder, '/wish_list.mat'));
 load(fullfile(inputFolder, '/linkagemat.mat'));
-load(fullfile(inputFolder, '/CellShapeData.mat'));
+load(fullfile(inputFolder, '/CellShapeData_slim.mat'));
 load(fullfile(inputFolder, '/Bigcellarrayandindex.mat'));
 load(fullfile(inputFolder, '/BigCellDataStruct.mat'));
 

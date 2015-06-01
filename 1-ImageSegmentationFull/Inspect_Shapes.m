@@ -1051,26 +1051,10 @@ xi=round(xi); yi=round(yi);
 mask = poly2mask(xi, yi, ylen, xlen);
 [B ~] = bwboundaries(mask,'noholes');
 C=B{1};
-%markeMergedShapes(xi,yi, currFrame);
 xi=C(:,2); yi=C(:,1);
 addManualShapeToFrame(xi, yi, currFrame);
 loadCurrFrame(currFrame, 1,handles);
 
-
-
-function markeMergedShapes(xi,yi, currFrame)
-global frameCurves;
-global cellNumbers;
-curves=frameCurves{currFrame};
-cellAc=cellNumbers{currFrame,2};
-for i =1:length(curves)
-    curve = curves{i};
-    [in,on] = inpolygon(curve(:,2), curve(:,1),xi,yi);
-    if sum(in(:))+sum(on(:))>0
-        cellAc(i)=0; %merge
-    end
-end
-cellNumbers{currFrame,2}=cellAc;
 
 function addManualShapeToFrame(xi, yi, currFrame)
 if isempty(xi)|| isempty (yi), return; end;

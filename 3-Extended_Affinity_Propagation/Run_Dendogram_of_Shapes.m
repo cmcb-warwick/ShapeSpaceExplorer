@@ -1,6 +1,6 @@
 function  Run_Dendogram_of_Shapes( )
 folder = uigetdir(matlabroot,'Select Analysis Folder');
-dataFile = fullfile(folder, 'CellShapeData.mat');
+dataFile = fullfile(folder, 'CellShapeData_slim.mat');
 if exist(dataFile, 'file')
      display('File is loading ... ');
     data = load(dataFile);
