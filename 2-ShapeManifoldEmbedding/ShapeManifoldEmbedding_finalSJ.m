@@ -80,24 +80,10 @@ CellShapeData=BAM_DM_frame(CellShapeData, new_d,h,nodes);
  waitbar((1)/(1),h,sprintf('Complete'));
 save([savedestination '/CellShapeData.mat'], 'CellShapeData', '-v7.3');
 
-CellShapeData_small.set={};
-CellShapeData_small.point={};
-CellShapeData_slim.set.SCORE=CellShapeData.set.SCORE;
-CellShapeData_slim.set.Long_D=CellShapeData.set.Long_D;
-N = length(CellShapeData.point);
-
-for i =1:N
-    CellShapeData_slim.point(i).SCORE =CellShapeData.point(i).SCORE;
-    CellShapeData_slim.point(i).coords_comp= CellShapeData.point(i).coords_comp;
-    CellShapeData_slim.point(i).sum_curve= CellShapeData.point(i).sum_curve;
-    CellShapeData_slim.point(i).fft_flip= CellShapeData.point(i).fft_flip;
-    CellShapeData_slim.point(i).fft_conj= CellShapeData.point(i).fft_conj;
-    
-end
+CellShapeData_slim  = slimCellShapeData( CellShapeData );
 clear CellShapeData;
 CellShapeData =CellShapeData_slim;
 save([savedestination '/CellShapeData_slim.mat'], 'CellShapeData', '-v7.3');
-
 close(h);
 end
 

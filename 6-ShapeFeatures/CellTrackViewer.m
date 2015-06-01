@@ -264,7 +264,9 @@ function open_ClickedCallback(hObject, eventdata, handles)
 folderpath = uigetdir();
 if folderpath==0, return; end
 handles.csd =loadCellShapeData(folderpath);
+if isempty(handles.csd), return; end
 bigCellDataStruc=loadbigCellDataStruct(folderpath);
+if isempty(bigCellDataStruc), return; end
 if  isempty(bigCellDataStruc), resetGUI(hObject, eventdata, handles); return; end
 [handles.indices, handles.contours]=loadBigcellarrayandindex(folderpath);
 handles.bigCellDataStruc=bigCellDataStruc;
@@ -307,7 +309,7 @@ function counter = getMaxStackNumber(folder)
 counter=-1;
 file = fullfile(folder,'BigCellDataStruct.mat');
 if ~exist(file, 'file')
-    display(['The file "BigCellDataStruct" is not present in your Analysis folder"'\n ...
+    display(['The file "BigCellDataStruct"  is not present in your Analysis folder"\n' ...
              'Please check whether you followed all steps as described in the tutorial.'] );
     return
 end
@@ -348,7 +350,7 @@ end
 
 function csd = loadCellShapeData(folderPath)
 csd=[];
-bPath = fullfile(folderPath, 'CellShapeData.mat');
+bPath = fullfile(folderPath, 'CellShapeData_slim.mat');
 if ~exist(bPath, 'file'),filleDoesNotexist(bPath); return; end
 try data = load(bPath);
 csd=data.CellShapeData;

@@ -5,7 +5,7 @@ function  Run_Clustered_Dynamics()
     end
     folder =out.fpath;
     classes = out.classes;    
-cellShapePath = fullfile(folder, 'CellShapeData.mat');
+cellShapePath = fullfile(folder, 'CellShapeData_slim.mat');
 if exist(cellShapePath, 'file')
     display('File is loading ... ');
     try data = load(cellShapePath);
