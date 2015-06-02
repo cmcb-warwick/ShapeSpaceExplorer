@@ -9,6 +9,8 @@ number=config1.classes;
 maxStackNo = getMaxStackNumber(inputFolder);
 if maxStackNo <0, exit(0); end
 items =GroupMaking(maxStackNo);
+try if items==-1, return; end 
+end
 
 
 
@@ -21,13 +23,17 @@ load(fullfile(inputFolder, '/linkagemat.mat'));
 load(fullfile(inputFolder, '/CellShapeData_slim.mat'));
 load(fullfile(inputFolder, '/Bigcellarrayandindex.mat'));
 load(fullfile(inputFolder, '/BigCellDataStruct.mat'));
+display('Files loaded ');
 
 formatOut = 'yyyy-mm-dd_HHMMSS';
 fname = ['GroupAnalysis_' datestr(now,formatOut)];
 groupPath=fullfile(inputFolder, fname);
 if ~exist(groupPath,'dir'),mkdir(groupPath);end
 
-
+%save group config in matlab file format
+groups=items;
+save(fullfile(groupPath, 'groups.mat'), 'groups','-v7.3');
+clear groups;
 
 
 
