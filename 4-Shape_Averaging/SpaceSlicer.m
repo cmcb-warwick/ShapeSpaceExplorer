@@ -1,4 +1,4 @@
-function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, path, axes_equal)
+function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, path, axes_equal, groups)
 %SPACESLICER Summary of this function goes here
 %   Detailed explanation goes here
 %

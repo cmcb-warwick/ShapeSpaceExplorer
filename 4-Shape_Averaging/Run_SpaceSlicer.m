@@ -2,7 +2,20 @@
 % on Editor-->Run
 function  Run_SpaceSlicer( )
     out=guiShapeSlicer();
-    if ~isempty(out.handle), delete(out.handle); end
+    try if strcmp(out.path,'...'), return; end
+    end
+    groups={};
+    if out.Group
+       o =SelectFolder(out.path);
+       try if o==-1,return; end 
+       end
+       gfile = fullfile(o.folder, 'groups.mat');
+       if ~exist(gfile, 'file')
+           filleDoesNotexist(gfile);
+           return;
+       end
+    end
+    
     cellShapePath = fullfile(out.path, 'CellShapeData_med.mat');
     if exist(cellShapePath, 'file')
         display('File is loading ... ');
@@ -17,7 +30,7 @@ function  Run_SpaceSlicer( )
         return;
     end
 
-    SpaceSlicer(cellShapeData, out.xSlice,out.ySlice, out.path, out.axesEqual);
+    SpaceSlicer(cellShapeData, out.xSlice,out.ySlice, out.path, out.axesEqual, gfile);
     display('Cell Slicer run successfully');
     display('-------');
 end
