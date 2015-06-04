@@ -15,7 +15,7 @@ else
     return;
 end
 
-
+display('File loading complete.')
 bigMatrixPath = fullfile(folder, 'Bigcellarrayandindex.mat');
 if exist(bigMatrixPath, 'file')
     try bigMatrixData = load(bigMatrixPath);

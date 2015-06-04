@@ -1,9 +1,10 @@
 % to run the shape slice program, click
 % on Editor-->Run
 function  Run_Sliced_Dynamics( )
-    out=guiShapeSlicer();
-    if ~isempty(out.handle), delete(out.handle); end
+    out=guiDynamicData();
+    close all force
     dPath = fullfile(out.path, 'DynamicData.mat');
+    
     if exist(dPath, 'file')
         try data = load(dPath);
             dynamicData=data.DynamicData;
