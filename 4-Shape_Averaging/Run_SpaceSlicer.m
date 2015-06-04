@@ -4,7 +4,7 @@ function  Run_SpaceSlicer( )
     out=guiShapeSlicer();
     try if strcmp(out.path,'...'), return; end
     end
-    groups={};
+    gfile={};
     if out.Group
        o =SelectFolder(out.path);
        try if o==-1,return; end 

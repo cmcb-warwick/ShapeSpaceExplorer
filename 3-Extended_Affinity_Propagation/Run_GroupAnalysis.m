@@ -275,11 +275,6 @@ indices =zeros(size(stack_indices));
 end
 
 
-function mk = getMarkerSize(N)
-mk = 5;
-if N>10000, mk =3; end
-if N>20000, mk =1; end
-end
 
 
 function stack_indices=getStackIndices(BigCellDataStruct)
@@ -350,13 +345,14 @@ function allDist=getDistancesForGroup(stacks, BigCellDataStruct, cell_indices, S
 
 
 allDist=[];
-stack_indices=getStackIndices(BigCellDataStruct);
-gIds =getAllIndicesFor(stack_indices, stacks);
-cIds = sort(unique(cell_indices.*gIds));
+cIds=getIndicesForGroup(BigCellDataStruct, stacks);
+%stack_indices=getStackIndices(BigCellDataStruct);
+%gIds =getAllIndicesFor(stack_indices, stacks);
+%cIds = sort(unique(cell_indices.*gIds));
 cIds = cIds(2:end);
 for i=1:length(cIds)
-fId = cIds(i);
-d = getDistancesForId(fId, cell_indices, SCORE);
+    fId = cIds(i);
+    d = getDistancesForId(fId, cell_indices, SCORE);
 allDist(end+1:end+length(d))=d;
 end
 
@@ -442,9 +438,10 @@ function allDist=getDistancesEucRatioForGroup(stacks, BigCellDataStruct, cell_in
 
 
 allDist={};
-stack_indices=getStackIndices(BigCellDataStruct);
-gIds =getAllIndicesFor(stack_indices, stacks);
-cIds = sort(unique(cell_indices.*gIds));
+%stack_indices=getStackIndices(BigCellDataStruct);
+%gIds =getAllIndicesFor(stack_indices, stacks);
+%cIds = sort(unique(cell_indices.*gIds));
+cIds=getIndicesForGroup(BigCellDataStruct, stacks);
 cIds = cIds(2:end);
 for i=1:length(cIds)
     fId = cIds(i);

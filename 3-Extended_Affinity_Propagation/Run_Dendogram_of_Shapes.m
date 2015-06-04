@@ -4,6 +4,7 @@ dataFile = fullfile(folder, 'CellShapeData_slim.mat');
 if exist(dataFile, 'file')
      display('File is loading ... ');
     data = load(dataFile);
+    display('File loading complete. ');
     ordered_list(0,data.CellShapeData, folder, folder);
 else 
     display('-------')
