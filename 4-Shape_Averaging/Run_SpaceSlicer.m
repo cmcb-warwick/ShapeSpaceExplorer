@@ -7,11 +7,13 @@ function  Run_SpaceSlicer( )
     gfile={};
     if out.Group
        o =SelectFolder(out.path);
+       close all force
        try if o==-1,return; end 
        end
        gfile = fullfile(o.folder, 'groups.mat');
        if ~exist(gfile, 'file')
            filleDoesNotexist(gfile);
+           
            return;
        end
     end
@@ -31,6 +33,7 @@ function  Run_SpaceSlicer( )
     end
 
     SpaceSlicer(cellShapeData, out.xSlice,out.ySlice, out.path, out.axesEqual, gfile);
+    close all force
     display('Cell Slicer run successfully');
     display('-------');
 end
