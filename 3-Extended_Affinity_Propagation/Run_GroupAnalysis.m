@@ -240,7 +240,7 @@ for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
-    plot(SCORE(points,1),SCORE(points,2),'.','Color',[0.5,.5,.5], 'MarkerSize', mk)
+    plot(SCORE(points,1),SCORE(points,2),'.','Color',[0.5,.5,.5])
     hold on
     mClusters(i,1)=clust_idx;
     mClusters(i,2)=sum(points);
@@ -294,7 +294,7 @@ function counter = getMaxStackNumber(folder)
 counter=-1;
 file = fullfile(folder,'BigCellDataStruct.mat');
 if ~exist(file, 'file')
-    display(['The file "BigCellDataStruct" is not present in your Analysis folder"'\n ...
+    display(['The file "BigCellDataStruct" is not present in your Analysis folder\n' ...
              'Please check whether you followed all steps as described in the tutorial.'] );
     return
 end
@@ -345,10 +345,10 @@ function allDist=getDistancesForGroup(stacks, BigCellDataStruct, cell_indices, S
 
 
 allDist=[];
-cIds=getIndicesForGroup(BigCellDataStruct, stacks);
+gIds=getIndicesForGroup(BigCellDataStruct, stacks);
 %stack_indices=getStackIndices(BigCellDataStruct);
 %gIds =getAllIndicesFor(stack_indices, stacks);
-%cIds = sort(unique(cell_indices.*gIds));
+cIds = sort(unique(cell_indices.*gIds));
 cIds = cIds(2:end);
 for i=1:length(cIds)
     fId = cIds(i);
@@ -438,10 +438,10 @@ function allDist=getDistancesEucRatioForGroup(stacks, BigCellDataStruct, cell_in
 
 
 allDist={};
+gIds=getIndicesForGroup(BigCellDataStruct, stacks);
 %stack_indices=getStackIndices(BigCellDataStruct);
 %gIds =getAllIndicesFor(stack_indices, stacks);
-%cIds = sort(unique(cell_indices.*gIds));
-cIds=getIndicesForGroup(BigCellDataStruct, stacks);
+cIds = sort(unique(cell_indices.*gIds));
 cIds = cIds(2:end);
 for i=1:length(cIds)
     fId = cIds(i);

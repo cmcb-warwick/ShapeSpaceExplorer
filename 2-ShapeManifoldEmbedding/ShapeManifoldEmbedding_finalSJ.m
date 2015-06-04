@@ -77,18 +77,18 @@ end
 new_d=5; %Increase this to generate more new dimensions
 CellShapeData=BAM_DM_frame(CellShapeData, new_d,h,nodes);
 
- waitbar((1)/(1),h,sprintf('Complete'));
+waitbar((1)/(1),h,sprintf('Complete'));
 save([savedestination '/CellShapeData.mat'], 'CellShapeData', '-v7.3');
 
 CellShapeData_slim  = slimCellShapeData( CellShapeData );
 clear CellShapeData;
 CellShapeData =CellShapeData_slim;
-save([savedestination '/CellShapeData_slim.mat'], 'CellShapeData', '-v7.3');
+save([savedestination '/CellShapeData_med.mat'], 'CellShapeData', '-v7.3');
 
 CellShapeData_slim  = slimCellShapeData( CellShapeData, 1 );
 clear CellShapeData;
 CellShapeData =CellShapeData_slim;
-save([savedestination '/CellShapeData_med.mat'], 'CellShapeData', '-v7.3');
+save([savedestination '/CellShapeData_slim.mat'], 'CellShapeData', '-v7.3');
 
 close(h);
 end
