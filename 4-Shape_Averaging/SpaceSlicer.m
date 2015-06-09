@@ -1,4 +1,4 @@
-function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, path, axes_equal)
+function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, path, axes_equal, gfile)
 %SPACESLICER Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -43,10 +43,6 @@ xlim([b1(1) b1(end)]);
 ylim([b2(1) b2(end)]);
 xm =xlim;
 ym =ylim;
-
-
-
-
 for i=2:x_slices
    plot([b1(i) b1(i)],ym,'color',[0.5,.5,.5]);
 end
@@ -59,13 +55,8 @@ plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol, 'MarkerSize', mk)
 fPath=fullfile(figPath, '4_ShapeSlicer_content_only');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
+
 %----------------------------------------------------
-
-
-
-
-
-
 figure % combined figure
 set(gcf,'color','w');
 for i=1:x_slices
@@ -112,8 +103,87 @@ fPath=fullfile(figPath, '4_ShapeSlicer_combined');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
 
+close all
+
+
+
+%----------------------------------------------------
+if isempty(gfile), return; end
+figure % combined figure with group
+set(gcf,'color','w');
+for i=1:x_slices
+    subplot(y_slices+1, x_slices+1,i)
+    s=xShapes{i};
+    if ~isempty(s)
+        plot(s, 'color',blueCol);
+    end
+    set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
 end
 
+
+for i=1:y_slices
+    subplot(y_slices+1, x_slices+1,(i+1)*(x_slices+1));
+    idx = y_slices-i+1;
+    s=yShapes{idx};
+    if ~isempty(s)
+        plot(s, 'color', greenCol);
+    end
+    set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
+end
+
+
+subplot(y_slices+1, x_slices+1,p);
+data=load(gfile);
+items = data.groups;
+s=size(items);
+st=load(fullfile(path, 'BigCellDataStruct.mat'));
+lgd={};lines=[];
+colour=jet(s(2));
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+mk = getMarkerSize(N);
+painted=zeros(size(SCORE(:,1)));
+for i=1:s(2)
+    item =items{i};
+    gIds=getIndicesForGroup(st.BigCellDataStruct, item.tracks);
+    painted = painted +gIds;
+    idx =find(gIds);
+    if isempty(idx), continue; end
+    lines(end+1)=plot(SCORE(idx,1),SCORE(idx,2),'.','color',colour(i,:), 'MarkerSize', mk);
+    lgd{end+1}=char(item.name);
+    hold on
+end
+painted=logical(painted); % just to be sure;
+idx =find(gIds);
+if ~isempty(idx)
+    lines(end+1)=plot(SCORE(idx,1),SCORE(idx,2),'.','color',[0.5,.5,.5], 'MarkerSize', mk);
+    lgd{end+1}='no group';
+end
+if axes_equal, axis equal; end
+
+xlim([b1(1) b1(end)]);
+ylim([b2(1) b2(end)]);
+xm =xlim;
+ym =ylim;
+
+for i=2:x_slices
+   plot([b1(i) b1(i)],ym,'color',blueCol);
+end
+for i=2:y_slices
+   plot(xm,[b2(i) b2(i)],'color',greenCol);
+end
+legend(gca,lines, lgd);
+fPath=fullfile(figPath, '4_ShapeSlicer_combined_withGroups');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
+
+
+end
+
+
+
+
+%---------------------------------------------------------------
 function [bounds, avshapes]=slicey_magoo( CSD,SCORE, vect, num, plotshapes, color )
 avshapes={};
 N=length(CSD.point);
@@ -164,8 +234,9 @@ end
 
 end
 
-function mk = getMarkerSize(N)
-mk = 10;
-if N>10000, mk =7; end
-if N>20000, mk =3; end
-end
+
+
+
+
+
+

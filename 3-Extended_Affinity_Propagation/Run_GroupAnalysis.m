@@ -9,6 +9,8 @@ number=config1.classes;
 maxStackNo = getMaxStackNumber(inputFolder);
 if maxStackNo <0, exit(0); end
 items =GroupMaking(maxStackNo);
+try if items==-1, return; end 
+end
 
 
 
@@ -18,16 +20,20 @@ display('Files are loading ... ');
 load(fullfile(inputFolder, '/APclusterOutput.mat'));
 load(fullfile(inputFolder, '/wish_list.mat'));
 load(fullfile(inputFolder, '/linkagemat.mat'));
-load(fullfile(inputFolder, '/CellShapeData.mat'));
+load(fullfile(inputFolder, '/CellShapeData_slim.mat'));
 load(fullfile(inputFolder, '/Bigcellarrayandindex.mat'));
 load(fullfile(inputFolder, '/BigCellDataStruct.mat'));
+display('Files loaded ');
 
 formatOut = 'yyyy-mm-dd_HHMMSS';
 fname = ['GroupAnalysis_' datestr(now,formatOut)];
 groupPath=fullfile(inputFolder, fname);
 if ~exist(groupPath,'dir'),mkdir(groupPath);end
 
-
+%save group config in matlab file format
+groups=items;
+save(fullfile(groupPath, 'groups.mat'), 'groups','-v7.3');
+clear groups;
 
 
 
@@ -234,7 +240,7 @@ for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
-    plot(SCORE(points,1),SCORE(points,2),'.','Color',[0.5,.5,.5], 'MarkerSize', mk)
+    plot(SCORE(points,1),SCORE(points,2),'.','Color',[0.5,.5,.5])
     hold on
     mClusters(i,1)=clust_idx;
     mClusters(i,2)=sum(points);
@@ -269,11 +275,6 @@ indices =zeros(size(stack_indices));
 end
 
 
-function mk = getMarkerSize(N)
-mk = 5;
-if N>10000, mk =3; end
-if N>20000, mk =1; end
-end
 
 
 function stack_indices=getStackIndices(BigCellDataStruct)
@@ -293,7 +294,7 @@ function counter = getMaxStackNumber(folder)
 counter=-1;
 file = fullfile(folder,'BigCellDataStruct.mat');
 if ~exist(file, 'file')
-    display(['The file "BigCellDataStruct" is not present in your Analysis folder"'\n ...
+    display(['The file "BigCellDataStruct" is not present in your Analysis folder\n' ...
              'Please check whether you followed all steps as described in the tutorial.'] );
     return
 end
@@ -344,13 +345,14 @@ function allDist=getDistancesForGroup(stacks, BigCellDataStruct, cell_indices, S
 
 
 allDist=[];
-stack_indices=getStackIndices(BigCellDataStruct);
-gIds =getAllIndicesFor(stack_indices, stacks);
+gIds=getIndicesForGroup(BigCellDataStruct, stacks);
+%stack_indices=getStackIndices(BigCellDataStruct);
+%gIds =getAllIndicesFor(stack_indices, stacks);
 cIds = sort(unique(cell_indices.*gIds));
 cIds = cIds(2:end);
 for i=1:length(cIds)
-fId = cIds(i);
-d = getDistancesForId(fId, cell_indices, SCORE);
+    fId = cIds(i);
+    d = getDistancesForId(fId, cell_indices, SCORE);
 allDist(end+1:end+length(d))=d;
 end
 
@@ -436,8 +438,9 @@ function allDist=getDistancesEucRatioForGroup(stacks, BigCellDataStruct, cell_in
 
 
 allDist={};
-stack_indices=getStackIndices(BigCellDataStruct);
-gIds =getAllIndicesFor(stack_indices, stacks);
+gIds=getIndicesForGroup(BigCellDataStruct, stacks);
+%stack_indices=getStackIndices(BigCellDataStruct);
+%gIds =getAllIndicesFor(stack_indices, stacks);
 cIds = sort(unique(cell_indices.*gIds));
 cIds = cIds(2:end);
 for i=1:length(cIds)

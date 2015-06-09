@@ -77,8 +77,19 @@ end
 new_d=5; %Increase this to generate more new dimensions
 CellShapeData=BAM_DM_frame(CellShapeData, new_d,h,nodes);
 
- waitbar((1)/(1),h,sprintf('Complete'));
-save([savedestination '/CellShapeData.mat'], 'CellShapeData', '-v7.3')
+waitbar((1)/(1),h,sprintf('Complete'));
+save([savedestination '/CellShapeData.mat'], 'CellShapeData', '-v7.3');
+
+CellShapeData_slim  = slimCellShapeData( CellShapeData );
+clear CellShapeData;
+CellShapeData =CellShapeData_slim;
+save([savedestination '/CellShapeData_med.mat'], 'CellShapeData', '-v7.3');
+
+CellShapeData_slim  = slimCellShapeData( CellShapeData, 1 );
+clear CellShapeData;
+CellShapeData =CellShapeData_slim;
+save([savedestination '/CellShapeData_slim.mat'], 'CellShapeData', '-v7.3');
+
 close(h);
 end
 
@@ -184,8 +195,8 @@ end
 
 
 %Find eigenvectors (V) and values (D)
-[Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
-%[Vect,Val]=eigs(D,(no_dims+1));
+%[Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
+[Vect,Val]=eigs(D,(no_dims+1));
 
 Frame.set.Vect=Vect; %With large matrices you might want to suppress this as it will take a lot of RAM
 Frame.set.Val=diag(Val);  %ditto

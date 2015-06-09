@@ -22,7 +22,7 @@ function varargout = guiShapeSlicer(varargin)
 
 % Edit the above text to modify the response to help guiShapeSlicer
 
-% Last Modified by GUIDE v2.5 12-Mar-2015 09:28:16
+% Last Modified by GUIDE v2.5 02-Jun-2015 16:39:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -86,8 +86,11 @@ struc.path= get(handles.edit1, 'String');
 struc.xSlice=get(handles.popupmenu2,'Value');
 struc.ySlice=get(handles.popupmenu3,'Value');
 struc.axesEqual=get(handles.checkbox1,'Value');
+struc.Group=get(handles.checkbox2,'Value');
 struc.handle = handles.figure1;
 varargout{1} = struc;
+h= handles.figure1;
+delete(h);
 
 
 
@@ -230,3 +233,12 @@ else
     h= handles.figure1;
     delete(h);
 end
+
+
+% --- Executes on button press in checkbox2.
+function checkbox2_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox2
