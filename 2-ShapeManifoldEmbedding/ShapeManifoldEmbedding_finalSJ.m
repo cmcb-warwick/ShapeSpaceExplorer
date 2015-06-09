@@ -195,8 +195,8 @@ end
 
 
 %Find eigenvectors (V) and values (D)
-[Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
-%[Vect,Val]=eigs(D,(no_dims+1));
+%[Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
+[Vect,Val]=eigs(D,(no_dims+1));
 
 Frame.set.Vect=Vect; %With large matrices you might want to suppress this as it will take a lot of RAM
 Frame.set.Val=diag(Val);  %ditto
