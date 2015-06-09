@@ -154,7 +154,7 @@ for i=1:s(2)
     hold on
 end
 painted=logical(painted); % just to be sure;
-idx =find(gIds);
+idx =find(painted==0);
 if ~isempty(idx)
     lines(end+1)=plot(SCORE(idx,1),SCORE(idx,2),'.','color',[0.5,.5,.5], 'MarkerSize', mk);
     lgd{end+1}='no group';
@@ -178,6 +178,19 @@ saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
 
 
+
+%----------------------------------------------------
+figure % group and histogram
+[idx, ~]=compSliceGrouping( CellShapeData,SCORE, [1 0], x_slices); % compute x slices.
+s=size(items);
+for i=1:s(2)
+    item =items{i};
+    gIds=getIndicesForGroup(st.BigCellDataStruct, item.tracks);
+end
+
+
+
+
 end
 
 
@@ -186,18 +199,11 @@ end
 %---------------------------------------------------------------
 function [bounds, avshapes]=slicey_magoo( CSD,SCORE, vect, num, plotshapes, color )
 avshapes={};
-N=length(CSD.point);
-d=length(vect);
+d=length(vect); 
 Score=SCORE(:,1:d);
 vect=vect(:)/norm(vect(:));
 proj=Score*vect;
-M=max(proj);
-m=min(proj);
-bounds=linspace(m,M,num+1);
-idx=ones(N,1);
-for i=2:num
-    idx(proj>bounds(i))=i;
-end
+[idx, bounds]=compSliceGrouping(CSD,SCORE, vect, num);
 
 normproj=Score-proj*vect';
 normproj_d=sqrt(diag(normproj*normproj'));
@@ -235,7 +241,20 @@ end
 end
 
 
-
+function  [idx, bounds]=compSliceGrouping( CSD,SCORE, vect, num)
+N=length(CSD.point);
+d=length(vect); 
+Score=SCORE(:,1:d);
+vect=vect(:)/norm(vect(:));
+proj=Score*vect;
+M=max(proj);
+m=min(proj);
+bounds=linspace(m,M,num+1);
+idx=ones(N,1);
+for i=2:num
+    idx(proj>bounds(i))=i;
+end
+end
 
 
 
