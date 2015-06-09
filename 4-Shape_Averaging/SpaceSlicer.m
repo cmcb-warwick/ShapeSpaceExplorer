@@ -180,18 +180,7 @@ saveas(gcf, fPath, 'epsc');
 
 
 %----------------------------------------------------
-figure % group and histogram
-[idx, ~]=compSliceGrouping( CellShapeData,SCORE, [1 0], x_slices); % compute x slices.
-s=size(items);
-for i=1:s(2)
-    item =items{i};
-    gIds=getIndicesForGroup(st.BigCellDataStruct, item.tracks);
-end
 
-
-
-
-end
 
 
 
