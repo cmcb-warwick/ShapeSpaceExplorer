@@ -44,14 +44,14 @@ ylim([b2(1) b2(end)]);
 xm =xlim;
 ym =ylim;
 for i=2:x_slices
-   plot([b1(i) b1(i)],ym,'color',[0.5,.5,.5]);
+   plot([b1(i) b1(i)],ym,'color',[0.5,0.5,0.5]);
 end
 
 
 for i=2:y_slices
-   plot(xm,[b2(i) b2(i)],'color',[.5,.5,.5]);
+   plot(xm,[b2(i) b2(i)],'color',[0.5,0.5,0.5]);
 end
-plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol, 'MarkerSize', mk)
+
 fPath=fullfile(figPath, '4_ShapeSlicer_content_only');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
@@ -176,7 +176,7 @@ legend(gca,lines, lgd);
 fPath=fullfile(figPath, '4_ShapeSlicer_combined_withGroups');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
-
+end
 
 
 %----------------------------------------------------
