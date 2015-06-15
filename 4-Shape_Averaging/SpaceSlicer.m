@@ -180,9 +180,111 @@ saveas(gcf, fPath, 'epsc');
 
 
 %----------------------------------------------------
+%figure % group and histogram
+%[idx, ~]=compSliceGrouping( CellShapeData,SCORE, [1 0], x_slices); % compute x slices.
+[rows, colums, matrix]=calculateHistos(CellShapeData,SCORE, [1,0], x_slices, items, 'x_', st);
+writeToFile(rows, colums, matrix, 'x_', figPath);
+write2Histo(colums, matrix, 'x_', figPath);
+
+[rows, colums, matrix]=calculateHistos(CellShapeData,SCORE, [0,1], y_slices, items, 'y_', st);
+writeToFile(rows, colums, matrix, 'y_', figPath);
+write2Histo(colums, matrix, 'y_', figPath);
+
+%display(all);
+
+end
 
 
 
+
+function write2Histo(colums, matrix, sliceName, folder)
+s=size(matrix);
+sumGroup = calculateSumOfGroups(matrix);
+colour=jet(s(1));
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+
+figure
+for i=1:s(1)
+    y=[];
+    for j=1:s(2)
+        num = matrix(i,j)/sumGroup(j);
+        h=bar(j,num);
+        set(h,'FaceColor',colour(j,:));
+        hold on
+    end
+    set(gca, 'XTick', 1:s(2), 'XTickLabel', colums);
+    name = char(['4_Histo_' sliceName num2str(i) '_slice']);
+    fPath = fullfile(folder, name);
+    saveas(h, fPath, 'fig');
+    saveas(h, fPath, 'epsc');
+end
+close all
+
+end
+
+
+
+% matlab 2012 hack for cvs with strings;
+function writeToFile(rows, colums, matrix, sliceName, folder)
+
+name =char(['4_Histogram_for_' sliceName 'axis.csv']);
+path = fullfile(folder, name);
+header= char(' , ');
+for i=1:length(colums)-1
+    header=char([header colums{i} ', ']);
+end
+header=char([header colums{i+1}]);
+dlmwrite(path,header,'delimiter','');
+s=size(matrix);
+for i=1:s(1)
+    txt = char([rows{i} ', ']);
+    for j=1:s(2)-1
+        txt = char([txt num2str(matrix(i,j)) ', ']); 
+    end
+    txt = char([txt num2str(matrix(i,j+1))]);
+    dlmwrite(path,txt,'delimiter','', '-append');
+end
+
+end
+
+
+
+function sumG = calculateSumOfGroups(matrix)
+s=size(matrix);
+sumG =[];
+for i=1:s(2)
+    sumG(1,i)=sum(matrix(:,i));
+end
+end
+
+
+
+function [rows, colums, matrix]=calculateHistos(CellShapeData,SCORE, vect, slices, items, sliceName, st)
+matrix=[];
+rows={};
+colums ={};
+[idx, ~]=compSliceGrouping( CellShapeData,SCORE,vect, slices); % compute x slices.
+s=size(items);
+for j =1:slices
+    ind=find(idx==j);
+    for i=1:s(2)
+        item =items{i};
+        gIds=getIndicesForGroup(st.BigCellDataStruct, item.tracks);
+        matrix(j,i)= sum(gIds(ind));
+        if j==1,colums{end+1}=char(item.name);end
+    end
+    rows{end+1}=char([sliceName num2str(j)]);
+end
+%all =[];
+%for i=1:s(2)
+ %   all(1,i)=sum(x_histo(:,i));
+%end
+
+
+
+
+end
 
 
 %---------------------------------------------------------------
