@@ -1,4 +1,4 @@
-function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, path, axes_equal, gfile)
+function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, path, axes_equal, gfile, doAP)
 %SPACESLICER Summary of this function goes here
 %   Detailed explanation goes here
 %

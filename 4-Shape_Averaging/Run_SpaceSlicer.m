@@ -2,37 +2,34 @@
 % on Editor-->Run
 function  Run_SpaceSlicer( )
     out=guiShapeSlicer();
-    try if strcmp(out.path,'...'), return; end
+    try if out==-1,return; end 
+       end
+    try if strcmp(out.pathAna,'...'), return; end
     end
-    gfile={};
-    if out.Group
-       o =SelectFolder(out.path);
-       close all force
-       try if o==-1,return; end 
-       end
-       gfile = fullfile(o.folder, 'groups.mat');
-       if ~exist(gfile, 'file')
-           filleDoesNotexist(gfile);
-           
-           return;
-       end
+    try if strcmp(out.pathGroup,'...'), return; end
     end
     
-    cellShapePath = fullfile(out.path, 'CellShapeData_med.mat');
-    if exist(cellShapePath, 'file')
-        display('File is loading ... ');
-        try data = load(cellShapePath);
-            cellShapeData=data.CellShapeData;
-        catch
-            fileHasWrongStructure(cellShapePath);
+    gfile = fullfile(out.pathGroup, 'groups.mat');
+       if ~exist(gfile, 'file')
+           filleDoesNotexist(gfile);
+           return;
+       end
+    if out.AP
+        cellShapePath = fullfile(out.pathAna, 'CellShapeData_med.mat');
+        if exist(cellShapePath, 'file')
+            display('File is loading ... ');
+            try data = load(cellShapePath);
+                cellShapeData=data.CellShapeData;
+            catch
+                fileHasWrongStructure(cellShapePath);
+                return;
+            end
+        else
+            filleDoesNotexist(cellShapePath);
             return;
         end
-    else
-        filleDoesNotexist(cellShapePath);
-        return;
     end
-
-    SpaceSlicer(cellShapeData, out.xSlice,out.ySlice, out.path, out.axesEqual, gfile);
+    SpaceSlicer(cellShapeData, out.xSlice,out.ySlice, out.pathAna, out.axesEqual, gfile, out.AP);
     close all force
     display('Cell Slicer run successfully');
     display('-------');
