@@ -181,7 +181,6 @@ saveas(gcf, fPath, 'epsc');
 
 %----------------------------------------------------
 %figure % group and histogram
-%[idx, ~]=compSliceGrouping( CellShapeData,SCORE, [1 0], x_slices); % compute x slices.
 [rows, colums, matrix]=calculateHistos(CellShapeData,SCORE, [1,0], x_slices, items, 'x_', st);
 writeToFile(rows, colums, matrix, 'x_', figPath);
 write2Histo(colums, matrix, 'x_', figPath);
@@ -200,13 +199,13 @@ end
 function write2Histo(colums, matrix, sliceName, folder)
 s=size(matrix);
 sumGroup = calculateSumOfGroups(matrix);
-colour=jet(s(1));
+colour=jet(s(2));
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 
-figure
 for i=1:s(1)
     y=[];
+    figure
     for j=1:s(2)
         num = matrix(i,j)/sumGroup(j);
         h=bar(j,num);
@@ -274,8 +273,10 @@ for j =1:slices
         matrix(j,i)= sum(gIds(ind));
         if j==1,colums{end+1}=char(item.name);end
     end
+    matrix(j, i+1)=length(ind)-sum(matrix(j, :));
     rows{end+1}=char([sliceName num2str(j)]);
 end
+colums{end+1}=char('no group');
 %all =[];
 %for i=1:s(2)
  %   all(1,i)=sum(x_histo(:,i));
