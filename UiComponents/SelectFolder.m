@@ -86,6 +86,7 @@ if handles.cancel==1,   % if cancel
 end
 struc.folder = get(handles.edit1, 'String');
 varargout{1}=struc;
+delete(handles.figure1);
 
 
 

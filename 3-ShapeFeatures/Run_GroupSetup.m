@@ -9,12 +9,13 @@ try if items==-1,
     end 
 end
 
-
 %save group config in matlab file format
 groups=items;
 save(fullfile(out.folder, 'groups.mat'), 'groups','-v7.3');
 clear groups;
+close all;
 display('Groups.mat was created successfully');
+
 
 end
 
@@ -37,4 +38,17 @@ for i = 1:s(2)
         counter=tmp.Stack_number;
     end
 end
+end
+
+
+%hack for dml so that it works for Matlab2012.
+function writeGroups2Table(path,groupnames,groupstacks)
+header='GroupNames,MovieStacks'; 
+dlmwrite(path,header,'delimiter','');
+s=size(groupnames);
+for i=1:s(2)
+    txt = [groupnames{i} ',' groupstacks(i)];
+    dlmwrite(path,txt,'delimiter','', '-append');
+end
+
 end
