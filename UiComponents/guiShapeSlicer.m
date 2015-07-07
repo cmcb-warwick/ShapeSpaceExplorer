@@ -22,7 +22,7 @@ function varargout = guiShapeSlicer(varargin)
 
 % Edit the above text to modify the response to help guiShapeSlicer
 
-% Last Modified by GUIDE v2.5 23-Jun-2015 21:22:20
+% Last Modified by GUIDE v2.5 07-Jul-2015 20:12:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -83,11 +83,11 @@ function varargout = guiShapeSlicer_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 struc.pathAna= get(handles.edit1, 'String');
-struc.pathGroup= get(handles.edit2, 'String');
 struc.xSlice=get(handles.popupmenu2,'Value');
 struc.ySlice=get(handles.popupmenu3,'Value');
 struc.axesEqual=get(handles.checkbox1,'Value');
-struc.AP=get(handles.checkbox2,'Value');
+struc.AP=get(handles.checkbox3,'Value');
+struc.Group=get(handles.checkbox2,'Value');
 struc.handle = handles.figure1;
 varargout{1} = struc;
 h= handles.figure1;
@@ -135,7 +135,6 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 fPath =uigetdir(matlabroot,'Select Group Directory');
-set(handles.edit2, 'String','...')
 if exist(fPath, 'dir')
   set(handles.edit2, 'String',fPath);  
 end
@@ -149,13 +148,6 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 path_ok =1;
 fpath= get(handles.edit1, 'String');
-if ~exist(fpath, 'dir'), 
-    mode = struct('WindowStyle','non-modal','Interpreter','tex');
-    msg = DialogMessages(5);
-    errordlg(msg, 'Error', mode);
-    path_ok=0;
-end
-fpath= get(handles.edit2, 'String');
 if ~exist(fpath, 'dir'), 
     mode = struct('WindowStyle','non-modal','Interpreter','tex');
     msg = DialogMessages(5);
@@ -273,3 +265,12 @@ function edit2_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in checkbox3.
+function checkbox3_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox3

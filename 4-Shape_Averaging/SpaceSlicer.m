@@ -108,7 +108,7 @@ close all
 
 
 %----------------------------------------------------
-if isempty(gfile), return; end
+if ~isempty(gfile)
 figure % combined figure with group
 set(gcf,'color','w');
 for i=1:x_slices
@@ -219,6 +219,13 @@ for i=1:s(1)
     saveas(h, fPath, 'epsc');
 end
 close all
+end % end of the if condition...
+
+if doAP
+    display('doAP');
+else
+    display('dont do AP');
+end
 
 end
 
