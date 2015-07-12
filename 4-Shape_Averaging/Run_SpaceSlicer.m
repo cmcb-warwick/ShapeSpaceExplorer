@@ -2,6 +2,8 @@
 % on Editor-->Run
 function  Run_SpaceSlicer( )
     out=guiShapeSlicer();
+    group.do=false;
+    cluster.do=false;
     try if out==-1,return; end 
        end
     try if strcmp(out.pathAna,'...'), 
@@ -9,13 +11,14 @@ function  Run_SpaceSlicer( )
             return; end
     end
     
-    gfile =''; % when group do this.
     if out.Group
     gfile = fullfile(out.pathAna, 'groups.mat');
        if ~exist(gfile, 'file')
            filleDoesNotexist(gfile);
            return;
        end
+       group.do=true;
+       group.path=gfile;
     end
     
     %when AP lodas those dataﬂ
@@ -34,7 +37,15 @@ function  Run_SpaceSlicer( )
         return;
     end
     
-    SpaceSlicer(cellShapeData, out.xSlice,out.ySlice, out.pathAna, out.axesEqual, gfile, out.AP);
+    default.csd=cellShapeData;
+    default.xSlices=out.xSlice;
+    default.ySlices=out.ySlice;
+    default.path=out.pathAna;
+    default.axesEqual=out.axesEqual;
+    
+   
+    
+    SpaceSlicer(default, group, cluster);
     close all force
     display('Cell Slicer run successfully');
     display('-------');

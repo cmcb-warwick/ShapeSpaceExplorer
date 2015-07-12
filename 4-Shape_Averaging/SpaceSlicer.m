@@ -1,4 +1,11 @@
-function [ idx ] = SpaceSlicer(CellShapeData, x_slices, y_slices, path, axes_equal, gfile, doAP)
+function [ idx ] = SpaceSlicer(default, group, cluster)
+% this comes from old structure
+CellShapeData =default.csd;
+x_slices=default.xSlices;
+y_slices=default.ySlices;
+path=default.path;
+axes_equal=default.axesEqual;
+
 %SPACESLICER Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -108,7 +115,9 @@ close all
 
 
 %----------------------------------------------------
-if ~isempty(gfile)
+if group.do
+data=load(group.path);
+items = data.groups;
 figure % combined figure with group
 set(gcf,'color','w');
 for i=1:x_slices
@@ -133,8 +142,7 @@ end
 
 
 subplot(y_slices+1, x_slices+1,p);
-data=load(gfile);
-items = data.groups;
+
 s=size(items);
 st=load(fullfile(path, 'BigCellDataStruct.mat'));
 lgd={};lines=[];
@@ -183,8 +191,10 @@ saveas(gcf, fPath, 'epsc');
 [squareNames, groupNames, matrix]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st);
 writeToFile(matrix, squareNames, groupNames,  figPath)
 write2Histo(matrix, squareNames, groupNames,  figPath); %TODO
+end % END OF GROUP ----------------------------------
 
-if doAP
+
+if cluster.do
     display('doAP');
 else
     display('dont do AP');
@@ -192,7 +202,7 @@ end
 
 end
 
-end
+
 
 
 
@@ -364,5 +374,65 @@ end
 end
 
 
+
+
+function [clusterIdx, success]=ordered_list_edit(number, wish_list, linkagemat,CellShapeData)
+%ORDERED_LIST generates a number of figures bringing together BAM DM and
+%APe. APe is a hierarchical clustering extension to Affinity Propagation
+%using Wishart Seriation, this should have been executed using
+%AP_Seriation_analysis_finaledit prior to running this code. 
+
+%number is the number of clusters you wish to view in your generated images,
+%if you haven't yet decided you can enter 0 to display the just the
+%dendrogram to aid your decision. 
+
+%CellShapeData should be the output of BAM DM through the
+%ShapeManifoldEmbedding code
+
+success=0;
+N=length(CellShapeData.point);
+
+if isfield(CellShapeData.set,'SCORE')
+    SCORE=CellShapeData.set.SCORE;
+else
+    for i=1:N
+       SCORE(i,:)= CellShapeData.point(i).SCORE;
+    end
+end
+clusterIdx=zeros(N,1);
+
+
+for i=1:N
+    NewCellArray{i}=CellShapeData.point(i).coords_comp;
+end
+
+
+
+n_exems=length(wish_list);
+exem_list=sort(wish_list);
+figure
+dendrogram(linkagemat,0);
+if number==0
+    return
+else
+    close
+end
+
+if number>n_exems
+    display('There are more desired cluster than maximal clusters available in data set.');
+    display('Please enter an appropriate number of clusters.');
+    return
+end
+
+figure
+[~,T]=dendrogram(linkagemat,number);
+close
+
+for i=1:n_exems
+clusterIdx(i)=T(exem_list==wish_list(i));
+end
+success=1;
+
+end
 
 
