@@ -31,6 +31,26 @@ else
 end
 
 
+dynamicPath = fullfile(folder, 'APclusterOutput.mat');
+if ~exist(dynamicPath, 'file')
+    filleDoesNotexist(dynamicPath);
+    return;
+end
+
+dynamicPath = fullfile(folder, 'wish_list.mat');
+if ~exist(dynamicPath, 'file')
+    filleDoesNotexist(dynamicPath);
+    return;
+end
+
+dynamicPath = fullfile(folder, 'linkagemat.mat');
+if ~exist(dynamicPath, 'file')
+    filleDoesNotexist(dynamicPath);
+    return;
+end
+
+
+
 Exemplar_direction_rose_plots(dynamicData, cellShapeData, classes, folder);
 display('Clustered Dynamic Data run successfully');
 display('-------');

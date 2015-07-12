@@ -8,8 +8,10 @@ function [ output_args ] = Exemplar_direction_rose_plots( DynamicData, CellShape
 %     Nbins=[100 50];
 % end
 
-load([APe_output_foldername '/APclusterOutput.mat'])
-load([APe_output_foldername '/wish_list.mat'])
+cw=load( fullfile(APe_output_foldername, 'wish_list.mat'));
+cl=load( fullfile(APe_output_foldername, 'linkagemat.mat'));
+ci=load([APe_output_foldername '/APclusterOutput.mat']);
+
 
 figPath = fullfile( APe_output_foldername, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
@@ -25,7 +27,7 @@ xm=m(1); ym=m(2);
 dx=xM-xm;
 dy=yM-ym;
 
-exemplars=wish_list;
+exemplars=cw.wish_list;
 exL=length(exemplars);
 
 vecs_in_cluster=cell(exL,1);
@@ -36,7 +38,7 @@ for j=1:N
     
     L=size(Cell_cell{j},1);
     for i=1:L
-        clust=exemplars==idx(k);
+        clust=exemplars==ci.idx(k);
         k=k+1;
         if L>1
             if i==1
@@ -71,11 +73,13 @@ for i=1:exL
 end
 axis equal
 subplot(2,1,1)
-%colours='rcybgm';
-%colours=[1 0 0; 0 0.75 0.75; 0.75 0.75 0; 0 0 1; 0 1 0; 1 0 1];
 
-[colour_idx,colours]=ordered_list_edit(number,CellShapeData,APe_output_foldername);
 
+colours=jet(number);
+colours=flipud(colours);
+colours=colours.*repmat((1-0.25*colours(:,2)),1,3);
+[colour_idx, success]=ordered_list_edit(number,cw.wish_list, cl.linkagemat, CellShapeData);
+if ~ success, return; end
 for i=1:exL
     v=SCORE(exemplars(i),[1 2]);
     c=scale_fac;
@@ -92,7 +96,7 @@ saveas(gcf, path, 'epsc');
 end
 
 
-function [T2,colour]=ordered_list_edit(number,CellShapeData,APe_output_foldername)
+function [clusterIdx, success]=ordered_list_edit(number, wish_list, linkagemat,CellShapeData)
 %ORDERED_LIST generates a number of figures bringing together BAM DM and
 %APe. APe is a hierarchical clustering extension to Affinity Propagation
 %using Wishart Seriation, this should have been executed using
@@ -105,15 +109,7 @@ function [T2,colour]=ordered_list_edit(number,CellShapeData,APe_output_foldernam
 %CellShapeData should be the output of BAM DM through the
 %ShapeManifoldEmbedding code
 
-%savedestination should be the same as for AP_Seriation_analysis_finaledit
-
-
-load([APe_output_foldername '/APclusterOutput.mat'])
-load([APe_output_foldername '/wish_list.mat'])
-load([APe_output_foldername '/linkagemat.mat'])
-T2=[];
-
-
+success=0;
 N=length(CellShapeData.point);
 
 if isfield(CellShapeData.set,'SCORE')
@@ -123,30 +119,15 @@ else
        SCORE(i,:)= CellShapeData.point(i).SCORE;
     end
 end
-
+clusterIdx=zeros(N,1);
 
 
 for i=1:N
     NewCellArray{i}=CellShapeData.point(i).coords_comp;
 end
 
-% colour_idx(colour_idx==5)=4;
-% colour_idx(colour_idx==6)=4;
-if number==4
-    colour=[1 0 0; 0 0.75 0.75; 0.75 0.75 0; 0 0 1];
-elseif number==6
-    colour=[1 0 0; 0 0.75 0.75; 0.75 0.75 0; 0 0 1; 0 0.5 0; 0.75 0 0.75];
-else
-    %     colour=hsv(number*6/5);
-    %     colour=colour(1:number,:);
-    %     %colour=flipud(colour);
-    %     colour_norm=colour*colour';
-    %     colour_norm2=repmat(sqrt(diag(colour_norm)),1,3);
-    %     colour=0.75*colour./(colour_norm2);
-    colour=jet(number);
-    colour=flipud(colour);
-    colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
-end
+
+
 n_exems=length(wish_list);
 exem_list=sort(wish_list);
 figure
@@ -157,13 +138,20 @@ else
     close
 end
 
+if number>n_exems
+    display('There are more desired cluster than maximal clusters available in data set.');
+    display('Please enter an appropriate number of clusters.');
+    return
+end
+
 figure
 [~,T]=dendrogram(linkagemat,number);
 close
 
 for i=1:n_exems
-T2(i)=T(exem_list==wish_list(i));
+clusterIdx(i)=T(exem_list==wish_list(i));
 end
+success=1;
 
 end
 
