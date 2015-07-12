@@ -115,7 +115,7 @@ for i=1:x_slices
     subplot(y_slices+1, x_slices+1,i)
     s=xShapes{i};
     if ~isempty(s)
-        plot(s, 'color',blueCol);
+        plot(s, 'color',blueCol); 
     end
     set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
 end
@@ -159,7 +159,7 @@ if ~isempty(idx)
     lines(end+1)=plot(SCORE(idx,1),SCORE(idx,2),'.','color',[0.5,.5,.5], 'MarkerSize', mk);
     lgd{end+1}='no group';
 end
-if axes_equal, axis equal; end
+if axes_equal, axis equal; end % 
 
 xlim([b1(1) b1(end)]);
 ylim([b2(1) b2(end)]);
@@ -177,49 +177,12 @@ fPath=fullfile(figPath, '4_ShapeSlicer_combined_withGroups');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
 
-
-
 %----------------------------------------------------
+
 %figure % group and histogram
-[rows, colums, matrix]=calculateHistos(CellShapeData,SCORE, [1,0], x_slices, items, 'x_', st);
-writeToFile(rows, colums, matrix, 'x_', figPath);
-write2Histo(colums, matrix, 'x_', figPath);
-
-[rows, colums, matrix]=calculateHistos(CellShapeData,SCORE, [0,1], y_slices, items, 'y_', st);
-writeToFile(rows, colums, matrix, 'y_', figPath);
-write2Histo(colums, matrix, 'y_', figPath);
-
-%display(all);
-
-end
-
-
-
-
-function write2Histo(colums, matrix, sliceName, folder)
-s=size(matrix);
-sumGroup = calculateSumOfGroups(matrix);
-colour=jet(s(2));
-colour=flipud(colour);
-colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
-
-for i=1:s(1)
-    y=[];
-    figure
-    for j=1:s(2)
-        num = matrix(i,j)/sumGroup(j);
-        h=bar(j,num);
-        set(h,'FaceColor',colour(j,:));
-        hold on
-    end
-    set(gca, 'XTick', 1:s(2), 'XTickLabel', colums);
-    name = char(['4_Histo_' sliceName num2str(i) '_slice']);
-    fPath = fullfile(folder, name);
-    saveas(h, fPath, 'fig');
-    saveas(h, fPath, 'epsc');
-end
-close all
-end % end of the if condition...
+[squareNames, groupNames, matrix]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st);
+writeToFile(matrix, squareNames, groupNames,  figPath)
+write2Histo(matrix, squareNames, groupNames,  figPath); %TODO
 
 if doAP
     display('doAP');
@@ -229,68 +192,112 @@ end
 
 end
 
+end
+
+
+
+
+function write2Histo(matrix, squareNames, groupNames,  folder)
+s=size(matrix);
+sumGroup = calculateSumOfGroups(matrix);
+colour=jet(s(3));
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+
+for j=1:s(1)
+    for i=1:s(2)
+        figure
+        for k=1:s(3)
+            if sumGroup(k)==0
+                num =0;
+            else
+                num =matrix(j,i, k)/sumGroup(k);
+            end
+            h=bar(k, num);
+            set(h,'FaceColor',colour(k,:));
+            hold on
+        end
+        title(squareNames{j}{i});
+        set(gca, 'XTick', 1:s(2), 'XTickLabel', groupNames);
+        ylim([0 1.2]);
+        name = char(['4_Histo_' squareNames{j}{i}  '_square']);
+        fPath = fullfile(folder, name);
+        saveas(h, fPath, 'fig');
+        saveas(h, fPath, 'epsc');
+        end
+end
+close all
+end % end of the if condition...
+
+
+
 
 
 % matlab 2012 hack for cvs with strings;
-function writeToFile(rows, colums, matrix, sliceName, folder)
+function writeToFile(matrix, squareNames, groupNames,  folder)
 
-name =char(['4_Histogram_for_' sliceName 'axis.csv']);
-path = fullfile(folder, name);
-header= char(' , ');
-for i=1:length(colums)-1
-    header=char([header colums{i} ', ']);
+path = fullfile(folder, '4_Histogram_for_squares.csv');
+header =char(' ');
+for i =1:length(groupNames)
+    header =char( [ header ', ' groupNames{i}]);
 end
-header=char([header colums{i+1}]);
 dlmwrite(path,header,'delimiter','');
 s=size(matrix);
-for i=1:s(1)
-    txt = char([rows{i} ', ']);
-    for j=1:s(2)-1
-        txt = char([txt num2str(matrix(i,j)) ', ']); 
+for j=1:s(1)
+    for i=1:s(2)
+        line =char([squareNames{j}{i} ',']);
+        for k=1:s(3)
+            line=char([line num2str(matrix(j,i,k)) ',']);
+        end
+        dlmwrite(path,line,'delimiter','', '-append');
     end
-    txt = char([txt num2str(matrix(i,j+1))]);
-    dlmwrite(path,txt,'delimiter','', '-append');
 end
-
 end
 
 
 
 function sumG = calculateSumOfGroups(matrix)
 s=size(matrix);
-sumG =[];
-for i=1:s(2)
-    sumG(1,i)=sum(matrix(:,i));
+sumG =zeros(s(3),1);
+for i=1:s(3)
+    tmp = matrix(:,:,i);
+    sumG(i)=sum(tmp(:));
 end
 end
 
 
+%-----------
+% we get a 3 dim matrix back
+% y,x plane defines the square of the sliciing
+% the z dimension lists the groups for the y_j,x_i square.
+function [squareNames, groupNames, matrix]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st)
 
-function [rows, colums, matrix]=calculateHistos(CellShapeData,SCORE, vect, slices, items, sliceName, st)
-matrix=[];
-rows={};
-colums ={};
-[idx, ~]=compSliceGrouping( CellShapeData,SCORE,vect, slices); % compute x slices.
+squareNames={};
+groupNames={};
+[xIds, ~]=compSliceGrouping( CellShapeData,SCORE,[1,0], x_slices); % compute x slices.
+[yIds, ~]=compSliceGrouping( CellShapeData,SCORE,[0,1], y_slices); % compute y slices.
 s=size(items);
-for j =1:slices
-    ind=find(idx==j);
+matrix=ones(y_slices,x_slices,s(2));
+%------- how the squares are sliced.
+% group2_1 group2_2 group2_3
+% group1_1 group1_2 group1_3
+%-----
+
+for k = 1:y_slices
+    yInd=find(yIds==k);
+for j =1:x_slices
+    xInd=find(xIds==j);
+    ind =intersect(yInd, xInd); % ids that are in both slices.
     for i=1:s(2)
         item =items{i};
         gIds=getIndicesForGroup(st.BigCellDataStruct, item.tracks);
-        matrix(j,i)= sum(gIds(ind));
-        if j==1,colums{end+1}=char(item.name);end
+        matrix(k,j,i)= sum(gIds(ind)); 
+        if (k==1 & j==1),groupNames{end+1}=char(item.name);end
     end
-    matrix(j, i+1)=length(ind)-sum(matrix(j, :));
-    rows{end+1}=char([sliceName num2str(j)]);
+    squareNames{k}{j}=char([ 'y_' num2str(k) '_x_' num2str(j)]);
 end
-colums{end+1}=char('no group');
-%all =[];
-%for i=1:s(2)
- %   all(1,i)=sum(x_histo(:,i));
-%end
 
-
-
+end
 
 end
 
