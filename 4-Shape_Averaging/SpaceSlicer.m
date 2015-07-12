@@ -206,7 +206,8 @@ colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 
 for j=1:s(1)
     for i=1:s(2)
-        figure
+        h=figure('visible','off');
+        clf;
         for k=1:s(3)
             if sumGroup(k)==0
                 num =0;
@@ -277,7 +278,7 @@ groupNames={};
 [xIds, ~]=compSliceGrouping( CellShapeData,SCORE,[1,0], x_slices); % compute x slices.
 [yIds, ~]=compSliceGrouping( CellShapeData,SCORE,[0,1], y_slices); % compute y slices.
 s=size(items);
-matrix=ones(y_slices,x_slices,s(2));
+matrix=zeros(y_slices,x_slices,s(2));
 %------- how the squares are sliced.
 % group2_1 group2_2 group2_3
 % group1_1 group1_2 group1_3
