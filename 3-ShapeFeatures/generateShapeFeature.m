@@ -30,7 +30,7 @@ if exist(dataFile, 'file')
         Prop_display( data.CellShapeData,mData.morphframe, prop, folder);
     end
     close(h)
-    display('Shape Feature Processing finished successfully');
+    display('Shape Feature Plot Generation finished successfully');
     display('-------');
 else 
     display('-------');
