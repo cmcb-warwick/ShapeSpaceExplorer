@@ -1,6 +1,15 @@
 function [ BigCellArray, cell_indices ] = Import_Manual_Segs
-%LOAD_MANUAL_SEGS Summary of this function goes here
-%   Detailed explanation goes here
+%LOAD_MANUAL_SEGS Summary
+%
+%Will generate BigCellArray.mat for further analysis in ShapeSpaceExplorer from
+%manually segmented data.
+
+%These data should be in numbered folders for each cell, i.e. Cell_001, Cell_002 etc
+%with numbered text files containing the x and y coordinates for each contour in different image frames.
+% Contour files should have the structure pointid /T x /T y as output by
+%ImageJ getSelectionCoordinates(x, y); and saved as individual textfiles
+%
+%
 
 Experiment_folder = uigetdir(pwd,'Select Data Folder');
 
