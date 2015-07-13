@@ -88,7 +88,9 @@ saveas(gcf, fPath, 'epsc');
 
 close all
 
-
+[squareNames, groupNames, matrix]=calculateAllHistos(CellShapeData,SCORE, x_slices, y_slices);
+writeToFile(matrix, squareNames, groupNames, 'Square_Histograms', figPath);
+%write2Histo(matrix, squareNames, groupNames,  'square', figPath); %TODO
 
 %----------------------------------------------------
 if group.do
@@ -194,13 +196,45 @@ end % end of clusers.do
 end
 
 
-
+function write2HistOverview(matrix, squareNames, groupNames, prefix, folder)
+s=size(matrix);
+if length(s)<3, s(3)=1; end
+sumGroup = calculateSumOfGroups(matrix);
+colour=jet(s(3));
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+h=figure();
+clf;
+for j=1:s(1)
+    for i=1:s(2)
+        if sumGroup(k)==0
+            num =0;
+        else
+            num =matrix(j,i, 1)/sumGroup(1);
+        end
+        h=bar(k, num);
+        set(h,'FaceColor',colour(k,:));
+        hold on
+        
+        
+        end
+end
+name = char(['4_Histo_' prefix '_' squareNames{j}{i}  '_square']);
+title('Distribution across squares');
+set(gca, 'XTick', 1:s(2), 'XTickLabel', groupNames);
+ylim([0 1.2]);
+fPath = fullfile(folder, name);
+saveas(h, fPath, 'fig');
+saveas(h, fPath, 'epsc');
+        
+close all
+end % end of the if condition...
 
 
 
 function write2Histo(matrix, squareNames, groupNames, prefix, folder)
 s=size(matrix);
-sumGroup = calculateSumOfGroups(matrix);
+sumGroup = sum(matrix(:));  % for all 
 colour=jet(s(3));
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
@@ -245,6 +279,8 @@ for i =1:length(groupNames)
 end
 dlmwrite(path,header,'delimiter','');
 s=size(matrix);
+if length(s)<3, s(3)=1; end % if there is only one group.
+    
 for j=1:s(1)
     for i=1:s(2)
         line =char([squareNames{j}{i} ',']);
@@ -260,6 +296,7 @@ end
 
 function sumG = calculateSumOfGroups(matrix)
 s=size(matrix);
+if s<3, s(3)=1; end % for single group.
 sumG =zeros(s(3),1);
 for i=1:s(3)
     tmp = matrix(:,:,i);
@@ -341,6 +378,27 @@ end
 
 end
 
+
+function [squareNames, groupNames, matrix]=calculateAllHistos(CellShapeData,SCORE, x_slices, y_slices)
+squareNames={};
+groupNames={};
+
+[xIds, ~]=compSliceGrouping( CellShapeData,SCORE,[1,0], x_slices); % compute x slices.
+[yIds, ~]=compSliceGrouping( CellShapeData,SCORE,[0,1], y_slices); % compute y slices.
+matrix=zeros(y_slices,x_slices,1);
+
+for k = 1:y_slices
+    yInd=find(yIds==k);
+for j =1:x_slices
+    xInd=find(xIds==j);
+    ind =intersect(yInd, xInd); % ids that are in both slices.
+    matrix(k,j,1)= length(ind); 
+    groupNames{end+1}=char([ 'y_' num2str(k) '_x_' num2str(j)]);  
+    squareNames{k}{j}=char([ 'y_' num2str(k) '_x_' num2str(j)]);
+end
+
+end
+end
 
 
 
