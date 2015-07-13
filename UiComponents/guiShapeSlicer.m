@@ -22,7 +22,7 @@ function varargout = guiShapeSlicer(varargin)
 
 % Edit the above text to modify the response to help guiShapeSlicer
 
-% Last Modified by GUIDE v2.5 07-Jul-2015 20:12:22
+% Last Modified by GUIDE v2.5 12-Jul-2015 17:52:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -88,6 +88,7 @@ struc.ySlice=get(handles.popupmenu3,'Value');
 struc.axesEqual=get(handles.checkbox1,'Value');
 struc.AP=get(handles.checkbox3,'Value');
 struc.Group=get(handles.checkbox2,'Value');
+struc.classes=get(handles.popupmenu4,'Value');
 struc.handle = handles.figure1;
 varargout{1} = struc;
 h= handles.figure1;
@@ -274,3 +275,26 @@ function checkbox3_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox3
+
+
+% --- Executes on selection change in popupmenu4.
+function popupmenu4_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu4 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu4
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

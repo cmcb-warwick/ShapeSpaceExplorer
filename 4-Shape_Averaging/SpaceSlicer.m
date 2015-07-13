@@ -22,9 +22,7 @@ else
 end
 
 
-p=x_slices+1:(x_slices+1)*(y_slices+1);
-idx=find(mod(p,x_slices+1)==0);
-p(idx)=[];
+
 figPath = fullfile(path, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end
 figure % x figure---------------------
@@ -65,29 +63,7 @@ saveas(gcf, fPath, 'epsc');
 
 %----------------------------------------------------
 figure % combined figure
-set(gcf,'color','w');
-for i=1:x_slices
-    subplot(y_slices+1, x_slices+1,i)
-    s=xShapes{i};
-    if ~isempty(s)
-        plot(s, 'color',blueCol);
-    end
-    set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
-end
-
-
-for i=1:y_slices
-    subplot(y_slices+1, x_slices+1,(i+1)*(x_slices+1));
-    idx = y_slices-i+1;
-    s=yShapes{idx};
-    if ~isempty(s)
-        plot(s, 'color', greenCol);
-    end
-    set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
-end
-
-
-
+[h,p]=plotFigureGrid(x_slices, y_slices, xShapes,yShapes, blueCol, greenCol);
 subplot(y_slices+1, x_slices+1,p);
 plot(SCORE(:,1),SCORE(:,2),'.', 'color', orangeCol,'MarkerSize', mk)
 if axes_equal, axis equal; end
@@ -118,29 +94,7 @@ close all
 if group.do
 data=load(group.path);
 items = data.groups;
-figure % combined figure with group
-set(gcf,'color','w');
-for i=1:x_slices
-    subplot(y_slices+1, x_slices+1,i)
-    s=xShapes{i};
-    if ~isempty(s)
-        plot(s, 'color',blueCol); 
-    end
-    set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
-end
-
-
-for i=1:y_slices
-    subplot(y_slices+1, x_slices+1,(i+1)*(x_slices+1));
-    idx = y_slices-i+1;
-    s=yShapes{idx};
-    if ~isempty(s)
-        plot(s, 'color', greenCol);
-    end
-    set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
-end
-
-
+plotFigureGrid(x_slices, y_slices, xShapes,yShapes, blueCol, greenCol);
 subplot(y_slices+1, x_slices+1,p);
 
 s=size(items);
@@ -189,25 +143,62 @@ saveas(gcf, fPath, 'epsc');
 
 %figure % group and histogram
 [squareNames, groupNames, matrix]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st);
-writeToFile(matrix, squareNames, groupNames,  figPath)
-write2Histo(matrix, squareNames, groupNames,  figPath); %TODO
+writeToFile(matrix, squareNames, groupNames, 'Group_Histograms', figPath);
+write2Histo(matrix, squareNames, groupNames,  'Group', figPath); %TODO
 end % END OF GROUP ----------------------------------
 
 
+
+
 if cluster.do
-    display('doAP');
-else
-    display('dont do AP');
+[clusterIdx, success]=ordered_list_edit(cluster.number, cluster.idx, cluster.linkagemat, cluster.wish_list,CellShapeData);
+if ~ success, return; end
+[squareNames, groupNames, matrix]=calculateClusterHistos(CellShapeData,SCORE, x_slices, y_slices, clusterIdx);
+writeToFile(matrix, squareNames, groupNames, 'AP_Clusters_Histograms', figPath);
+write2Histo(matrix, squareNames, groupNames,  'AP_Clusters', figPath); %TODO
+
+plotFigureGrid(x_slices, y_slices, xShapes,yShapes, blueCol, greenCol);
+subplot(y_slices+1, x_slices+1,p);
+colour=jet(cluster.number);
+colour=flipud(colour);
+colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+mk = getMarkerSize(N);
+for i=1:cluster.number
+    idx=clusterIdx==i;
+    x =SCORE(idx,1);
+    y =SCORE(idx,2);
+    plot(x,y,'.','color',colour(i,:), 'MarkerSize', mk);
+    hold on
+end
+xlim([b1(1) b1(end)]);
+ylim([b2(1) b2(end)]);
+xm =xlim;
+ym =ylim;
+for i=2:x_slices
+   plot([b1(i) b1(i)],ym,'color',blueCol);
+end
+for i=2:y_slices
+   plot(xm,[b2(i) b2(i)],'color',greenCol);
+end
+if axes_equal, axis equal; end
+
+fPath=fullfile(figPath, '4_AP_All_Clusters');
+saveas(gcf, fPath, 'fig');
+saveas(gcf, fPath, 'epsc');
+
+end % end of clusers.do
+   
+
+    
+
 end
 
-end
 
 
 
 
 
-
-function write2Histo(matrix, squareNames, groupNames,  folder)
+function write2Histo(matrix, squareNames, groupNames, prefix, folder)
 s=size(matrix);
 sumGroup = calculateSumOfGroups(matrix);
 colour=jet(s(3));
@@ -231,7 +222,7 @@ for j=1:s(1)
         title(squareNames{j}{i});
         set(gca, 'XTick', 1:s(2), 'XTickLabel', groupNames);
         ylim([0 1.2]);
-        name = char(['4_Histo_' squareNames{j}{i}  '_square']);
+        name = char(['4_Histo_' prefix '_' squareNames{j}{i}  '_square']);
         fPath = fullfile(folder, name);
         saveas(h, fPath, 'fig');
         saveas(h, fPath, 'epsc');
@@ -245,9 +236,9 @@ end % end of the if condition...
 
 
 % matlab 2012 hack for cvs with strings;
-function writeToFile(matrix, squareNames, groupNames,  folder)
-
-path = fullfile(folder, '4_Histogram_for_squares.csv');
+function writeToFile(matrix, squareNames, groupNames, prefix, folder)
+name = char(['4_Table_' prefix '.csv']);
+path = fullfile(folder, name);
 header =char(' ');
 for i =1:length(groupNames)
     header =char( [ header ', ' groupNames{i}]);
@@ -313,6 +304,46 @@ end
 end
 
 
+
+
+%-----------
+% we get a 3 dim matrix back
+% y,x plane defines the square of the sliciing
+% the z dimension lists the groups for the y_j,x_i square.
+function [squareNames, groupNames, matrix]=calculateClusterHistos(CellShapeData,SCORE, x_slices, y_slices, clusterIdxs)
+squareNames={};
+groupNames={};
+
+[xIds, ~]=compSliceGrouping( CellShapeData,SCORE,[1,0], x_slices); % compute x slices.
+[yIds, ~]=compSliceGrouping( CellShapeData,SCORE,[0,1], y_slices); % compute y slices.
+clusterN=length(unique(clusterIdxs));
+matrix=zeros(y_slices,x_slices,clusterN);
+s=size(matrix);
+%------- how the squares are sliced.
+% group2_1 group2_2 group2_3
+% group1_1 group1_2 group1_3
+%-----
+
+for k = 1:y_slices
+    yInd=find(yIds==k);
+for j =1:x_slices
+    xInd=find(xIds==j);
+    ind =intersect(yInd, xInd); % ids that are in both slices.
+    for i=1:s(3)
+        cIds=clusterIdxs==i;
+        matrix(k,j,i)= sum(cIds(ind)); 
+        if (k==1 & j==1),groupNames{end+1}=num2str(i);end
+    end
+    squareNames{k}{j}=char([ 'y_' num2str(k) '_x_' num2str(j)]);
+end
+
+end
+
+end
+
+
+
+
 %---------------------------------------------------------------
 function [bounds, avshapes]=slicey_magoo( CSD,SCORE, vect, num, plotshapes, color )
 avshapes={};
@@ -376,7 +407,7 @@ end
 
 
 
-function [clusterIdx, success]=ordered_list_edit(number, wish_list, linkagemat,CellShapeData)
+function [clusterIdx, success]=ordered_list_edit(number, cIdx, linkagemat,wish_list,CellShapeData)
 %ORDERED_LIST generates a number of figures bringing together BAM DM and
 %APe. APe is a hierarchical clustering extension to Affinity Propagation
 %using Wishart Seriation, this should have been executed using
@@ -391,32 +422,9 @@ function [clusterIdx, success]=ordered_list_edit(number, wish_list, linkagemat,C
 
 success=0;
 N=length(CellShapeData.point);
-
-if isfield(CellShapeData.set,'SCORE')
-    SCORE=CellShapeData.set.SCORE;
-else
-    for i=1:N
-       SCORE(i,:)= CellShapeData.point(i).SCORE;
-    end
-end
 clusterIdx=zeros(N,1);
 
-
-for i=1:N
-    NewCellArray{i}=CellShapeData.point(i).coords_comp;
-end
-
-
-
 n_exems=length(wish_list);
-exem_list=sort(wish_list);
-figure
-dendrogram(linkagemat,0);
-if number==0
-    return
-else
-    close
-end
 
 if number>n_exems
     display('There are more desired cluster than maximal clusters available in data set.');
@@ -427,11 +435,44 @@ end
 figure
 [~,T]=dendrogram(linkagemat,number);
 close
-
 for i=1:n_exems
-clusterIdx(i)=T(exem_list==wish_list(i));
+    idx=find(cIdx==wish_list(i));
+    clusterIdx(idx)=T(i);
 end
 success=1;
+
+end
+
+
+function [h, p] = plotFigureGrid(x_slices, y_slices, xShapes,yShapes, blueCol, greenCol)
+figure % combined figure with group
+h=gcf;
+set(gcf,'color','w');
+p=x_slices+1:(x_slices+1)*(y_slices+1);
+idx=find(mod(p,x_slices+1)==0);
+p(idx)=[];
+for i=1:x_slices
+    subplot(y_slices+1, x_slices+1,i)
+    s=xShapes{i};
+    if ~isempty(s)
+        plot(s, 'color',blueCol); 
+    end
+    set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
+end
+
+
+for i=1:y_slices
+    subplot(y_slices+1, x_slices+1,(i+1)*(x_slices+1));
+    idx = y_slices-i+1;
+    s=yShapes{idx};
+    if ~isempty(s)
+        plot(s, 'color', greenCol);
+    end
+    set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
+end
+
+
+subplot(y_slices+1, x_slices+1,p);
 
 end
 
