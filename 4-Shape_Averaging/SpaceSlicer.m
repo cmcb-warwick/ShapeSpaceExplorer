@@ -89,7 +89,7 @@ saveas(gcf, fPath, 'epsc');
 close all
 
 [squareNames, groupNames, matrix]=calculateAllHistos(CellShapeData,SCORE, x_slices, y_slices);
-writeToFile(matrix, squareNames, groupNames, 'Square_Histograms', figPath);
+writeToFile(matrix, squareNames, {'Squares'}, 'Square_Histograms', figPath);
 write2HistOverview(matrix, squareNames, groupNames, 'Square_Histograms', figPath);
 %----------------------------------------------------
 
