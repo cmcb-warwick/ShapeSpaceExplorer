@@ -90,9 +90,9 @@ close all
 
 [squareNames, groupNames, matrix]=calculateAllHistos(CellShapeData,SCORE, x_slices, y_slices);
 writeToFile(matrix, squareNames, groupNames, 'Square_Histograms', figPath);
-%write2Histo(matrix, squareNames, groupNames,  'square', figPath); %TODO
-
+write2HistOverview(matrix, squareNames, groupNames, 'Square_Histograms', figPath);
 %----------------------------------------------------
+
 if group.do
 data=load(group.path);
 items = data.groups;
@@ -199,29 +199,25 @@ end
 function write2HistOverview(matrix, squareNames, groupNames, prefix, folder)
 s=size(matrix);
 if length(s)<3, s(3)=1; end
-sumGroup = calculateSumOfGroups(matrix);
-colour=jet(s(3));
-colour=flipud(colour);
-colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+sumGroup = sum(matrix(:));
+
 h=figure();
 clf;
+idx=1;
 for j=1:s(1)
     for i=1:s(2)
-        if sumGroup(k)==0
+        if sumGroup==0
             num =0;
         else
-            num =matrix(j,i, 1)/sumGroup(1);
+            num =matrix(j,i, 1)/sumGroup;
         end
-        h=bar(k, num);
-        set(h,'FaceColor',colour(k,:));
+        h=bar(idx, num); idx=idx+1;
         hold on
-        
-        
         end
 end
 name = char(['4_Histo_' prefix '_' squareNames{j}{i}  '_square']);
 title('Distribution across squares');
-set(gca, 'XTick', 1:s(2), 'XTickLabel', groupNames);
+set(gca, 'XTick', 1:s(2)*s(1), 'XTickLabel', groupNames);
 ylim([0 1.2]);
 fPath = fullfile(folder, name);
 saveas(h, fPath, 'fig');
@@ -234,7 +230,7 @@ end % end of the if condition...
 
 function write2Histo(matrix, squareNames, groupNames, prefix, folder)
 s=size(matrix);
-sumGroup = sum(matrix(:));  % for all 
+sumGroup = calculateSumOfGroups(matrix);   % for all 
 colour=jet(s(3));
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
