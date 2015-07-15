@@ -195,8 +195,8 @@ end
 
 
 %Find eigenvectors (V) and values (D)
-%[Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
-[Vect,Val]=eigs(D,(no_dims+1));
+[Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
+%[Vect,Val]=eigs(D,(no_dims+1));
 
 Frame.set.Vect=Vect; %With large matrices you might want to suppress this as it will take a lot of RAM
 Frame.set.Val=diag(Val);  %ditto
@@ -234,8 +234,8 @@ function [ curve ] = clockcheck( curve )
 %CLOCKCHECK Summary of this function goes here
 %   Detailed explanation goes here
 
-a=curve(1,1)+1i*curve(1,2);
-b=curve(2,1)+1i*curve(2,2);
+a=curve(4,1)+1i*curve(4,2);
+b=curve(5,1)+1i*curve(5,2);
 x=0.5*(a*(1-0.5*1i)+b*(1+0.5*1i));
 
 anticlockwise=inpolygon(real(x),imag(x),curve(:,1),curve(:,2));
