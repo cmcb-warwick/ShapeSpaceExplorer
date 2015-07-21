@@ -90,7 +90,7 @@ close all
 
 [squareNames, groupNames, matrix]=calculateAllHistos(CellShapeData,SCORE, x_slices, y_slices);
 writeToFile(matrix, squareNames, {'Squares'}, 'Square_Histograms', figPath);
-write2HistOverview(matrix, squareNames, groupNames, 'Square_Histograms', figPath);
+write2HistOverview(matrix, groupNames, 'Square_Histograms', figPath);
 %----------------------------------------------------
 
 if group.do
@@ -146,7 +146,7 @@ saveas(gcf, fPath, 'epsc');
 %figure % group and histogram
 [squareNames, groupNames, matrix]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st);
 writeToFile(matrix, squareNames, groupNames, 'Group_Histograms', figPath);
-write2Histo(matrix, squareNames, groupNames,  'Group', figPath); %TODO
+write2Histo(matrix, groupNames,  'Group', figPath); %TODO
 end % END OF GROUP ----------------------------------
 
 
@@ -157,7 +157,7 @@ if cluster.do
 if ~ success, return; end
 [squareNames, groupNames, matrix]=calculateClusterHistos(CellShapeData,SCORE, x_slices, y_slices, clusterIdx);
 writeToFile(matrix, squareNames, groupNames, 'AP_Clusters_Histograms', figPath);
-write2Histo(matrix, squareNames, groupNames,  'AP_Clusters', figPath); %TODO
+write2Histo(matrix, groupNames,  'AP_Clusters', figPath); %TODO
 
 plotFigureGrid(x_slices, y_slices, xShapes,yShapes, blueCol, greenCol);
 subplot(y_slices+1, x_slices+1,p);
@@ -172,6 +172,7 @@ for i=1:cluster.number
     plot(x,y,'.','color',colour(i,:), 'MarkerSize', mk);
     hold on
 end
+if axes_equal, axis equal; end
 xlim([b1(1) b1(end)]);
 ylim([b2(1) b2(end)]);
 xm =xlim;
@@ -182,7 +183,7 @@ end
 for i=2:y_slices
    plot(xm,[b2(i) b2(i)],'color',greenCol);
 end
-if axes_equal, axis equal; end
+
 
 fPath=fullfile(figPath, '4_AP_All_Clusters');
 saveas(gcf, fPath, 'fig');
@@ -196,26 +197,31 @@ end % end of clusers.do
 end
 
 
-function write2HistOverview(matrix, squareNames, groupNames, prefix, folder)
+function write2HistOverview(matrix, groupNames, prefix, folder)
 s=size(matrix);
 if length(s)<3, s(3)=1; end
 sumGroup = sum(matrix(:));
 
 h=figure();
 clf;
+h=subplot(s(1), s(2),1);
 idx=1;
 for j=1:s(1)
+    idx = s(1)-j+1; %
+    idx = idx *s(2)-s(2)+1;
     for i=1:s(2)
+        h=subplot(s(1), s(2),idx);
         if sumGroup==0
             num =0;
         else
             num =matrix(j,i, 1)/sumGroup;
         end
-        h=bar(idx, num); idx=idx+1;
+        bar(idx, num); idx=idx+1;
+        ylim([0 1.0]);
         hold on
         end
 end
-name = char(['4_Histo_' prefix '_' squareNames{j}{i}  '_square']);
+name = char(['4_Histo_' prefix '_square']);
 title('Distribution across squares');
 set(gca, 'XTick', 1:s(2)*s(1), 'XTickLabel', groupNames);
 ylim([0 1.2]);
@@ -228,7 +234,7 @@ end % end of the if condition...
 
 
 
-function write2Histo(matrix, squareNames, groupNames, prefix, folder)
+function write2Histo(matrix, groupNames, prefix, folder)
 s=size(matrix);
 sumGroup = calculateSumOfGroups(matrix);   % for all 
 colour=jet(s(3));
