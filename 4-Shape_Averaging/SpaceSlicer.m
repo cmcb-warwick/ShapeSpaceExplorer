@@ -234,11 +234,14 @@ sumGroup = calculateSumOfGroups(matrix);   % for all
 colour=jet(s(3));
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
-
+figure
+clf
+h=subplot(s(1), s(2),1);
 for j=1:s(1)
+    idx = s(1)-j+1; %
+    idx = idx *s(2)-s(2)+1;
     for i=1:s(2)
-        h=figure('visible','off');
-        clf;
+        h=subplot(s(1), s(2),idx);
         for k=1:s(3)
             if sumGroup(k)==0
                 num =0;
@@ -249,15 +252,15 @@ for j=1:s(1)
             set(h,'FaceColor',colour(k,:));
             hold on
         end
-        title(squareNames{j}{i});
-        set(gca, 'XTick', 1:s(2), 'XTickLabel', groupNames);
-        ylim([0 1.2]);
-        name = char(['4_Histo_' prefix '_' squareNames{j}{i}  '_square']);
+        set(gca, 'XTick', 1:length(groupNames), 'XTickLabel', groupNames);
+        ylim([0 1.0]);
+        idx=idx+1;
+        end
+end
+name = char(['4_Histo_' prefix  '_square']);
         fPath = fullfile(folder, name);
         saveas(h, fPath, 'fig');
         saveas(h, fPath, 'epsc');
-        end
-end
 close all
 end % end of the if condition...
 
