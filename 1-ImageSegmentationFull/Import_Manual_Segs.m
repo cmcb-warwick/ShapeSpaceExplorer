@@ -11,8 +11,8 @@ function [ BigCellArray, cell_indices ] = Import_Manual_Segs
 %
 %
 
-Experiment_folder = uigetdir(pwd,'Select Data Folder');
-
+out = SelectFolder(matlabroot);
+Experiment_folder=out.folder;
 D=dir(Experiment_folder);
 D(~[D.isdir])= []; %Remove all non directories.
 folder_names = setdiff({D.name},{'.','..'}); %Remove '.' and '..' anomalies
