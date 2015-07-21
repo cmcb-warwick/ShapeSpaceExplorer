@@ -1,9 +1,9 @@
 function  RunShapeManifoldEmbedding()
-folder = uigetdir(matlabroot,'Select Analysis Folder');
-dataFile = fullfile(folder, 'Bigcellarrayandindex.mat');
+out=SelectFolderEigen(matlabroot);
+dataFile = fullfile(out.folder, 'Bigcellarrayandindex.mat');
 if exist(dataFile, 'file')
     data = load(dataFile);
-    ShapeManifoldEmbedding_finalSJ(data.BigCellArray, folder);
+    ShapeManifoldEmbedding_finalSJ(data.BigCellArray, out.folder, out.sparse);
 else 
     display('-------')
     display('The file "Bigcellarrayandindex.mat" does not exist in your Analysis folder.');

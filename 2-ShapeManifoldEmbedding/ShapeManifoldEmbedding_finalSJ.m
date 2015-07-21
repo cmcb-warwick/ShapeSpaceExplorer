@@ -1,4 +1,4 @@
-function [ CellShapeData ] = ShapeManifoldEmbedding_finalSJ( Frames, savedestination )
+function [ CellShapeData ] = ShapeManifoldEmbedding_finalSJ( Frames, savedestination, doSparse )
 %SHAPEMANIFOLDEMBEDDING Frames must be Nx1 Cell Array, N is your sample 
 %size, each cell contains the Mx2 Contour outlines (M can vary), corresponding to closed planar curves 
 %savedestination should be a string indicating the path to the desired save destination of the
@@ -75,7 +75,7 @@ end
     
 %diffusion map embedding
 new_d=5; %Increase this to generate more new dimensions
-CellShapeData=BAM_DM_frame(CellShapeData, new_d,h,nodes);
+CellShapeData=BAM_DM_frame(CellShapeData, new_d,h,nodes, doSparse);
 
 waitbar((1)/(1),h,sprintf('Complete'));
 save([savedestination '/CellShapeData.mat'], 'CellShapeData', '-v7.3');
@@ -136,7 +136,7 @@ end
 
 end
 
-function [Frame] = BAM_DM_frame(Frame, no_dims,h ,nodes)
+function [Frame] = BAM_DM_frame(Frame, no_dims,h ,nodes, doSparse)
 %DM Takes some data X, where rows correspond to observations and columns to
 %variables and performs a diffusion map embedding, where the similarity
 %between x and y is the Gaussian kernel of Best Alignment Metric (BAM) between x and y.
@@ -195,8 +195,11 @@ end
 
 
 %Find eigenvectors (V) and values (D)
-%[Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
-[Vect,Val]=eigs(D,(no_dims+1));
+if doSparse
+    [Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
+else
+    [Vect,Val]=eigs(D,(no_dims+1));
+end
 
 Frame.set.Vect=Vect; %With large matrices you might want to suppress this as it will take a lot of RAM
 Frame.set.Val=diag(Val);  %ditto
