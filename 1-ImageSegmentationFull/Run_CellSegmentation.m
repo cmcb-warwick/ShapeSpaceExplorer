@@ -31,7 +31,7 @@ end
  saveFoler=out.folder;
  msConfig.spatialBdw=out.spatialBdw;
  msConfig.rangeBdw=out.rangeBdw;
- msConfig.minArea=0;
+ msConfig.minArea=out.minArea;
  
 CellSegmentation(files, framesConfig, msConfig, saveFoler);
 display('----- Cell Segmentation finished -----');

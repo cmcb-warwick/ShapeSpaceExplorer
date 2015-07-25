@@ -22,7 +22,7 @@ function varargout = ConfigPane3(varargin)
 
 % Edit the above text to modify the response to help ConfigPane3
 
-% Last Modified by GUIDE v2.5 18-Feb-2015 10:47:37
+% Last Modified by GUIDE v2.5 25-Jul-2015 18:40:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -68,6 +68,12 @@ set(handles.popupmenu1, 'string', list);
 set(handles.popupmenu2, 'string', list);
 set(handles.popupmenu1, 'value', 5); % spatial bandwith
 set(handles.popupmenu2, 'value', 3); % range bandwith.
+list2={}
+for i=0:10:10000
+    list2{end+1}=i;
+end
+set(handles.popupmenu3, 'string', list2);
+set(handles.popupmenu2, 'value', 1); % min area size
 
 % Update handles structure
 guidata(hObject, handles);
@@ -92,6 +98,7 @@ end
 struc.folder = get(handles.edit1, 'String');
 struc.spatialBdw=get(handles.popupmenu1, 'value');
 struc.rangeBdw=get(handles.popupmenu2, 'value');
+struc.minArea=get(handles.popupmenu3, 'value');
 varargout{1}=struc;
 delete(handles.figure1);
 
@@ -212,6 +219,29 @@ function popupmenu2_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function popupmenu2_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to popupmenu2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in popupmenu3.
+function popupmenu3_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu3 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu3
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
