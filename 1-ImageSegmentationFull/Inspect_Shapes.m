@@ -137,7 +137,7 @@ global allCellIds;
 allCellIds=getAllCellIds(cellNumbers);
 loadCurrFrame(1, 1, handles);
 setUpGUI(handles, frames);
-
+zoom(0.25); % hack in that it is zoomed out for matlab 2012as
                
 function setUpGUI(handles, frames)
 set(handles.uipushsaveBtn, 'Enable', 'on');
