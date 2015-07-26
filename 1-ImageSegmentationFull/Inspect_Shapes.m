@@ -90,7 +90,7 @@ varargout{1} = handles.output;
 function checkForSavingCurrentMovie(hObject, eventdata, handles)
 global stack;
 if ~isempty(stack)
-    choice = questdlg('Would you like to save current modifiation?', ...
+    choice = questdlg('Would you like to save current modifications?', ...
 	'Save Segementation','No','Yes', 'Yes');
     if strcmp('Yes', choice),
         uipushsaveBtn_ClickedCallback(hObject, eventdata, handles); end   
@@ -110,7 +110,7 @@ checkForSavingCurrentMovie(hObject, eventdata, handles);
 resetGUIVariables(handles);
 global stack;
 global pathName;
-[fileName,pathName] = uigetfile('*.mat','Select a processed Matlab file');
+[fileName,pathName] = uigetfile('*.mat','Select an ImageStack file');
 if fileName==0, return; end
 global stackNumber;
 [stack, stackNumber] = loadStackFromFile(pathName, fileName);
