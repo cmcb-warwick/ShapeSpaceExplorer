@@ -108,7 +108,7 @@ elseif(in == 1),
     nodes = varargin{1,1};
 end
 
-N=size(stack,1);%number of frames
+N=length(stack);%number of frames
 snakemat=zeros(2*nodes,N);%initialise new cell of outline frames
 
 
