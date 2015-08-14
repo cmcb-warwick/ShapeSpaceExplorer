@@ -38,16 +38,27 @@ for i=1:num_stacks
         j
         fdr_name=[Experiment_folder '/' stack_folder_names{i} '/' cell_folder_names{j} '/'];
         fdr_D=dir(fdr_name);
-        frame_names = setdiff({fdr_D.name},{'.','..'});
+        frame_names = setdiff({fdr_D.name},{'.','..','.DS_Store'});
         frame_names = sort_nat(frame_names);
         num_frames=length(frame_names);
         BigCellDataStruct(cell_num).Stack_number=i;
         BigCellDataStruct(cell_num).Cell_number=j;
         BigCellDataStruct(cell_num).Contours={};
         for k=1:num_frames
-            A=importdata([fdr_name frame_names{k}]);
-            BigCellArray{end+1,1}=A.data(:,(end-1):end);
-            BigCellDataStruct(cell_num).Contours{end+1}=BigCellArray{end,1};
+            filename = [fdr_name frame_names{k}];
+    
+            fid  = fopen(filename);
+            xh=fgets(fid);
+            datacell = textscan(fid,'%f\t%f\t%f');
+            fclose(fid) ;
+
+            data = [datacell{2},datacell{3}];
+
+            if size(data,1) >= 3;
+
+                        BigCellArray{end+1,1}=data(:,:);
+                        BigCellDataStruct(cell_num).Contours{end+1}=BigCellArray{end,1};
+            end
         end
         cell_indices=[cell_indices; cell_num*ones(num_frames,1)];
         cell_num=cell_num+1;
