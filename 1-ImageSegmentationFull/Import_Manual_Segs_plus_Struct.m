@@ -7,7 +7,7 @@ function [ BigCellArray, cell_indices ] = Import_Manual_Segs_plus_Struct
 % INPUT: These data should be in numbered folders for each stack, stack001, stack002 etc. each containing 
 % folders with contours from different cells in folders i.e. Cell_001,
 % Cell_002 etc.
-% with numbered text files containing the x and y coordinates for each contour in different image frames.
+% with numbered text files containing the x and y coordinates as integer numbers for each contour in different image frames.
 % Contour files should have the structure pointid /T x /T y as output by
 % ImageJ getSelectionCoordinates(x, y); and saved as individual textfiles
 %
@@ -36,7 +36,7 @@ for i=1:num_stacks
     for j=1:num_cells
         fdr_name=[Experiment_folder '/' stack_folder_names{i} '/' cell_folder_names{j} '/'];
         fdr_D=dir(fdr_name);
-        frame_names = setdiff({fdr_D.name},{'.','..','.DS_Store'});
+        frame_names = setdiff({fdr_D.name},{'.','..','.DS_Store'}); % remove folder anomalies and hidden files
         frame_names = sort_nat(frame_names);
         num_frames=length(frame_names);
         BigCellDataStruct(cell_num).Stack_number=i;
@@ -173,6 +173,28 @@ end
 
 
 function cleanBorder= cleanCellBorder(border)
+
+if border(1,:) ~= border(end,:);
+    border(end+1,:) = border (1,:);   % close curve if not closed yet
+end
+
+% check whether there is a problem with clockcheck
+a=border(1,1)+1i*border(1,2);
+b=border(2,1)+1i*border(2,2);
+x=0.5*(a*(1-0.5*1i)+b*(1+0.5*1i));
+
+anticlockwise=inpolygon(real(x),imag(x),border(:,1),border(:,2));
+
+if anticlockwise
+
+a=border(2,1)+1i*border(2,2);
+b=border(1,1)+1i*border(1,2);
+x=0.5*(a*(1-0.5*1i)+b*(1+0.5*1i));
+
+anticlockwise=inpolygon(real(x),imag(x),border(:,1),border(:,2));
+
+if anticlockwise   % only if answer is contradicting, i.e. anticlockwise in both directions, modify the curve
+
 %remove outliers entries.
 x=border(:,1);
 y=border(:,2);
@@ -203,4 +225,6 @@ tmp =cleanBorder;
 cleanBorder=[];
 cleanBorder(:,1)=tmp(:,2);
 cleanBorder(:,2)=tmp(:,1);
+end
+end
 end

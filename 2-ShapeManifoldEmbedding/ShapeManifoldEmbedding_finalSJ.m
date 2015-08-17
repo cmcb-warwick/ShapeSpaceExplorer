@@ -237,8 +237,8 @@ function [ curve ] = clockcheck( curve )
 %CLOCKCHECK Summary of this function goes here
 %   Detailed explanation goes here
 
-a=curve(4,1)+1i*curve(4,2);
-b=curve(5,1)+1i*curve(5,2);
+a=curve(1,1)+1i*curve(1,2);
+b=curve(2,1)+1i*curve(2,2);
 x=0.5*(a*(1-0.5*1i)+b*(1+0.5*1i));
 
 anticlockwise=inpolygon(real(x),imag(x),curve(:,1),curve(:,2));
