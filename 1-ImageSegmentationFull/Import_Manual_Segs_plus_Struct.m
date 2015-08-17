@@ -55,8 +55,8 @@ for i=1:num_stacks
             if size(data,1) >= 3;
 
                         BigCellArray{end+1,1}=data(:,:);
-						cbw = cleanCellBorder(BigCellArray{end,1});
-            			BigCellArray{end,1}=cbw;
+						cbw = cleanCellBorder(BigCellArray{end,1});         %please make this step optional!!!
+            			BigCellArray{end,1}=cbw;                            %please make this step optional!!!
                         BigCellDataStruct(cell_num).Contours{end+1}=BigCellArray{end,1};
             end
             
@@ -174,9 +174,20 @@ end
 
 function cleanBorder= cleanCellBorder(border)
 
-if border(1,:) ~= border(end,:);
-    border(end+1,:) = border (1,:);   % close curve if not closed yet
-end
+%check whether open curve without overlaps
+if border(1,:) ~= border(end,:);    %check whether open curve
+   C = unique(border,'rows');
+   if size(C,1) == size(border,1)
+       cleanBorder = [border; border(1,:)];   % close curve if not closed yet and not overlapping
+   end
+end   
+       [C,IA,IC] = unique(border,'rows', 'first');
+       pos = setdiff([1:1:size(border,1)],IA);   
+       endpos = min(pos);                        % find first position of final intersection
+       [C,IA,IC] = unique(border,'rows', 'last');
+       pos = setdiff([1:1:size(border,1)],IA);   
+       startpos = max(pos);                     % find last position of intersection
+       cleanBorder = border(startpos:endpos,:); % trim curve to remove all overlaps
 
 % check whether there is a problem with clockcheck
 a=border(1,1)+1i*border(1,2);
@@ -193,7 +204,7 @@ x=0.5*(a*(1-0.5*1i)+b*(1+0.5*1i));
 
 anticlockwise=inpolygon(real(x),imag(x),border(:,1),border(:,2));
 
-if anticlockwise   % only if answer is contradicting, i.e. anticlockwise in both directions, modify the curve
+if anticlockwise   % only if answer is contradicting, i.e. anticlockwise in both directions, further modify the curve
 
 %remove outliers entries.
 x=border(:,1);
