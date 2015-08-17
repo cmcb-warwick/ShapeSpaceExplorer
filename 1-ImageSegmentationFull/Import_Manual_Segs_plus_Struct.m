@@ -27,7 +27,6 @@ BigCellArray={};
 cell_num=1;
 BigCellDataStruct=struct;
 for i=1:num_stacks
-    i
     stackD=dir([Experiment_folder '/' stack_folder_names{i}]);
     stackD(~[stackD.isdir])= []; %Remove all non directories.
     cell_folder_names = setdiff({stackD.name},{'.','..'}); %Remove '.' and '..' anomalies
@@ -35,7 +34,6 @@ for i=1:num_stacks
     cell_folder_names=sort_nat(cell_folder_names);
     
     for j=1:num_cells
-        j
         fdr_name=[Experiment_folder '/' stack_folder_names{i} '/' cell_folder_names{j} '/'];
         fdr_D=dir(fdr_name);
         frame_names = setdiff({fdr_D.name},{'.','..','.DS_Store'});
@@ -57,8 +55,11 @@ for i=1:num_stacks
             if size(data,1) >= 3;
 
                         BigCellArray{end+1,1}=data(:,:);
+						cbw = cleanCellBorder(BigCellArray{end,1});
+            			BigCellArray{end,1}=cbw;
                         BigCellDataStruct(cell_num).Contours{end+1}=BigCellArray{end,1};
             end
+            
         end
         cell_indices=[cell_indices; cell_num*ones(num_frames,1)];
         cell_num=cell_num+1;
@@ -167,4 +168,39 @@ if is_descend
 end
 index = reshape(index,size(c));
 cs = c(index);
+end
+
+
+
+function cleanBorder= cleanCellBorder(border)
+%remove outliers entries.
+x=border(:,1);
+y=border(:,2);
+muX=mean(x); muY=mean(y);
+sigmaX=std(x); sigmaY=std(y);
+
+outlierX=abs(x-muX)>3*sigmaX;
+outlierY=abs(y-muY)>3*sigmaY;
+idx1 =find(outlierX==1);
+idx2 =find(outlierY==1);
+idx =union(idx1,idx2);
+border(idx)=[]; % filter out points that lie somewhere random in image.
+
+maxY=max(border(:,2));
+maxX=max(border(:,1));
+mask = poly2mask(border(:,1), border(:,2),maxY, maxX);
+nuregionmask=imdilate(mask, [0 1 0; 1 1 1; 0 1 0]);
+bound = bwboundaries(nuregionmask,8,'noholes');
+l = 0;
+cleanBorder=[];
+for i=1:length(bound)
+    if length(bound{i})>l
+        cleanBorder=bound{i};
+        l=length(cleanBorder);
+    end
+end
+tmp =cleanBorder;
+cleanBorder=[];
+cleanBorder(:,1)=tmp(:,2);
+cleanBorder(:,2)=tmp(:,1);
 end
