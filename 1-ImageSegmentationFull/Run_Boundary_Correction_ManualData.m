@@ -54,11 +54,12 @@ function cleanBorder= cleanBorder(border)
    idx1 =find(outlierX==1);
    idx2 =find(outlierY==1);
    idx =union(idx1,idx2);
-   border(idx)=[]; % filter out points that lie somewhere random in image.
+   x(idx)=[];
+   y(idx)=[];
 
     maxY=max(border(:,2));
     maxX=max(border(:,1));
-    mask = poly2mask(border(:,1), border(:,2),maxY, maxX);
+    mask = poly2mask(x, y,maxY, maxX);
     nuregionmask=imdilate(mask, [0 1 0; 1 1 1; 0 1 0]);
     bound = bwboundaries(nuregionmask,8,'noholes');
     l = 0;
@@ -69,15 +70,17 @@ function cleanBorder= cleanBorder(border)
             l=length(cleanBorder);
         end
     end
+    if isempty(cleanBorder)
+        display('empty');
+    end
     tmp =cleanBorder;
     cleanBorder=[];
     cleanBorder(:,1)=tmp(:,2);
     cleanBorder(:,2)=tmp(:,1);
-    %figure %@ Anne, here you can see the shape we are taking.
-    %plot(data(:,2), data(:,1));
-    %plot(border(:,1), border(:,2), 'b'); hold on
-    %plot(cleanBorder(:,1), cleanBorder(:,2), 'r');
-    %close all
+    figure %@ Anne, here you can see the shape we are taking.
+    plot(x,y, 'b'); hold on
+    plot(cleanBorder(:,1), cleanBorder(:,2), 'r');
+    close all
 end
 
 
