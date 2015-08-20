@@ -13,11 +13,15 @@ if exist(grFile)
 else % create new group;
     maxStackNo = getMaxStackNumber(inputFolder);
     if maxStackNo <0, exit(0); end
-        items =GroupMaking(maxStackNo);
-        try if items==-1, return; end 
+    items =GroupMaking(maxStackNo);
+    try if items==-1, return; end 
     end
-    
+        grFile =fullfile(inputFolder, 'groups.mat');
+        groups=items;
+        save(grFile, 'groups','-v7.3');
 end
+    
+
 
 
 
@@ -73,10 +77,14 @@ writePersitanceEucledianPerGroup(items,BigCellDataStruct,cell_indices,SCORE,grou
 %writeSpatialAutorrelationPerGroup(items,BigCellDataStruct,cell_indices,SCORE,groupPath);
     
 
-classes={};
 labels={};
 groupNames={};
 groupStacks={};
+%   g1 g2
+% c1
+% c2
+
+groupPlots=zeros(number,length(items));
 for i =1: length(items)
     item = items{i};
     [h, h2, clusters, mClusters] = plotGroup(BigCellDataStruct, number, wish_list, SCORE, idx, T, item.tracks, N);   
@@ -95,17 +103,14 @@ for i =1: length(items)
     labels{end+1}=char(item.name);
     s=size(clusters);
     for j =1:s(1)
-        if isempty(classes) || isempty(classes{clusters(j,1)})
-            classes{s(1)}=[]; end
-        c=classes{clusters(j,1)};
-        c(end+1)=clusters(j,2);
-        classes{clusters(j,1)}=c;   
+        ix =clusters(j,1);
+        groupPlots(ix,i)=clusters(j,2);
     end
     groupNames{end+1}=char(item.name);
     groupStacks{end+1}=getCharOf(item.tracks);
 end
 labels{end+1}='all';
-plotClusterBars(classes,labels, groupPath)
+plotClusterBars(groupPlots,labels, groupPath)
 tableFilename=fullfile(groupPath, 'GroupMapping.csv');
 writeGroups2Table(tableFilename, groupNames, groupStacks);
 
@@ -132,24 +137,25 @@ end
 function plotClusterBars(classes,labels, groupPath)
 
 s = size(classes);
-colour=jet(s(2));
+colour=jet(s(1));
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 
 
 
-for i =1:s(2)
+for i =1:s(1)
     f=figure(12);
     clf;
     fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count']);
     tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.txt']);
-    array = classes{i};
+    array=[];
+    array = classes(i,:);
     array(end+1)=sum(array);
     h=bar(array);
     dlmwrite(tPath ,array, '\t');
     set(h,'FaceColor',colour(i,:))
     hold on
-    set(gca, 'XTick', 1:s(2), 'XTickLabel', labels);
+    set(gca, 'XTick', 1:length(array), 'XTickLabel', labels);
     saveas(h, fPath, 'fig');
     saveas(h, fPath, 'epsc');
     
@@ -164,7 +170,7 @@ for i =1:s(2)
     dlmwrite(tPath ,array, '\t');
     set(h,'FaceColor',colour(i,:))
     hold on
-    set(gca, 'XTick', 1:s(2), 'XTickLabel', labels);
+    set(gca, 'XTick', 1:length(array), 'XTickLabel', labels);
     saveas(h, fPath, 'fig');
     saveas(h, fPath, 'epsc'); 
     
@@ -180,6 +186,7 @@ colour=jet(number);
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 mMax = max(clusters(:,2));
+if isempty(mMax)||mMax<=0, mMax=1;end
 ylim([0, mMax * 1.2]);  %# The 1.2 factor is just an example
 array =[];
 for i=1:number
