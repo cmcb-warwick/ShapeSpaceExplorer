@@ -6,11 +6,20 @@ if strcmp(config1.fpath, '...')==1, return; end
 inputFolder =  config1.fpath;
 number=config1.classes;
 
-maxStackNo = getMaxStackNumber(inputFolder);
-if maxStackNo <0, exit(0); end
-items =GroupMaking(maxStackNo);
-try if items==-1, return; end 
+grFile =fullfile(inputFolder, 'groups.mat');
+if exist(grFile)
+    dt=load(grFile);
+    items=dt.groups;
+else % create new group;
+    maxStackNo = getMaxStackNumber(inputFolder);
+    if maxStackNo <0, exit(0); end
+        items =GroupMaking(maxStackNo);
+        try if items==-1, return; end 
+    end
+    
 end
+
+
 
 
 
