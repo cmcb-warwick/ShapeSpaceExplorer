@@ -40,55 +40,6 @@ function  Run_SpaceSlicer( )
            group.do=false;
        end
      end
-    
-     
-     if out.AP %
-         cluster.do=true;
-         cluster.number=out.classes;
-         % load first file
-         path= fullfile(out.pathAna, 'wish_list.mat');   
-         if ~exist(path, 'file')
-           filleDoesNotexist(path);
-           apMissing();
-           cluster.do=false;
-         else
-             try data =load(path);
-                 cluster.wish_list=data.wish_list;
-             catch
-                fileHasWrongStructure(cellShapePath);
-                cluster.do=false;
-            end   
-         end
-         % load second file
-         path= fullfile(out.pathAna, 'linkagemat.mat');   %APclusterOutput.mat
-         if ~exist(path, 'file')
-           filleDoesNotexist(path);
-           apMissing();
-           cluster.do=false;
-         else
-             try data =load(path);
-                 cluster.linkagemat=data.linkagemat;
-             catch
-                fileHasWrongStructure(cellShapePath);
-                cluster.do=false;
-            end   
-         end
-         
-         % load second file
-         path= fullfile(out.pathAna, 'APclusterOutput.mat');   %APclusterOutput.mat
-         if ~exist(path, 'file')
-           filleDoesNotexist(path);
-           apMissing();
-           cluster.do=false;
-         else
-             try data =load(path);
-                 cluster.idx=data.idx;
-             catch
-                fileHasWrongStructure(cellShapePath);
-                cluster.do=false;
-            end   
-         end
-     end
          
     SpaceSlicer(default, group, cluster);
     close all force

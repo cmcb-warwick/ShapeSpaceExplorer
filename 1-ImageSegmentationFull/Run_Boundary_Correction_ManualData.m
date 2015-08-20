@@ -49,8 +49,8 @@ function cleanBorder= cleanBorder(border)
    muX=mean(x); muY=mean(y);
    sigmaX=std(x); sigmaY=std(y);
    
-   outlierX=abs(x-muX)>3*sigmaX;
-   outlierY=abs(y-muY)>3*sigmaY;
+   outlierX=abs(x-muX)>4*sigmaX;
+   outlierY=abs(y-muY)>4*sigmaY;
    idx1 =find(outlierX==1);
    idx2 =find(outlierY==1);
    idx =union(idx1,idx2);
