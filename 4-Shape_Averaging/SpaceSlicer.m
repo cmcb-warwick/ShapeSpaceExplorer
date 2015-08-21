@@ -144,9 +144,12 @@ saveas(gcf, fPath, 'epsc');
 %----------------------------------------------------
 
 %figure % group and histogram
-[squareNames, groupNames, matrix]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st);
+[squareNames, groupNames, matrix, scoreIdx]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st);
 writeToFile(matrix, squareNames, groupNames, 'Group_Histograms', figPath);
 write2Histo(matrix, groupNames,  'Group', figPath); %TODO
+writeAvgShape(scoreIdx, SCORE, CellShapeData, figPath);
+
+
 end % END OF GROUP ----------------------------------
 
 
@@ -159,6 +162,26 @@ end % END OF GROUP ----------------------------------
 
 end
 
+
+
+
+
+function [cx, cy, idx] =getCenterCoordinate(x,y)
+cDist = Inf;
+idx=-1;
+for i=1:length(x)
+    cd=0;
+    for j=1:length(x)
+         cd =cd+ sqrt((x(i)-x(j))^2+(y(i)-y(j))^2);
+    end
+    if cd<cDist,
+        cx=x(i);
+        cy=y(i);
+        cDist=cd;
+        idx=i;
+    end
+end
+end
 
 function write2HistOverview(matrix, groupNames, prefix, folder)
 s=size(matrix);
@@ -194,6 +217,43 @@ saveas(h, fPath, 'epsc');
         
 close all
 end % end of the if condition...
+
+
+function writeAvgShape(idxMatrix, SCORE, CellShapeData,folder)
+s=size(idxMatrix);
+col=[0.5,0.5,0.5];
+figure
+clf
+set(gcf,'color','white');
+h=subplot(s(1), s(2),1);
+for j=1:s(1)
+    idx = s(1)-j+1; %
+    idx = idx *s(2)-s(2)+1;
+    for i=1:s(2)
+        h=subplot(s(1), s(2),idx);
+        ax=idxMatrix{j,i};
+        if ~isempty(ax)
+            x=SCORE(ax,1);
+            y=SCORE(ax,2);
+            [~, ~, ix] =getCenterCoordinate(x,y);
+            avshape=shapemean(CellShapeData,ax,ax(ix),0);
+            plot(avshape, 'color', col,'LineWidth',2)
+        end
+        axis equal
+        axis off
+        idx=idx+1;
+        end
+end
+name = char(['4_Histo_Groups_AvgShapes']);
+fPath = fullfile(folder, name);
+saveas(h, fPath, 'fig');
+saveas(h, fPath, 'epsc');
+close all
+
+
+
+
+end
 
 
 
@@ -277,10 +337,11 @@ end
 % we get a 3 dim matrix back
 % y,x plane defines the square of the sliciing
 % the z dimension lists the groups for the y_j,x_i square.
-function [squareNames, groupNames, matrix]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st)
+function [squareNames, groupNames, matrix, scoreIdx]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st)
 
 squareNames={};
 groupNames={};
+scoreIdx={};
 [xIds, ~]=compSliceGrouping( CellShapeData,SCORE,[1,0], x_slices); % compute x slices.
 [yIds, ~]=compSliceGrouping( CellShapeData,SCORE,[0,1], y_slices); % compute y slices.
 s=size(items);
@@ -295,6 +356,7 @@ for k = 1:y_slices
 for j =1:x_slices
     xInd=find(xIds==j);
     ind =intersect(yInd, xInd); % ids that are in both slices.
+    scoreIdx{k,j}=ind;
     for i=1:s(2)
         item =items{i};
         gIds=getIndicesForGroup(st.BigCellDataStruct, item.tracks);
