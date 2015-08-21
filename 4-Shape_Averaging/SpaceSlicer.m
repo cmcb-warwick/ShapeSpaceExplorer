@@ -88,9 +88,10 @@ saveas(gcf, fPath, 'epsc');
 
 close all
 
-[squareNames, groupNames, matrix]=calculateAllHistos(CellShapeData,SCORE, x_slices, y_slices);
+[squareNames, groupNames, matrix, scoreIdx]=calculateAllHistos(CellShapeData,SCORE, x_slices, y_slices);
 writeToFile(matrix, squareNames, {'Squares'}, 'Square_Histograms', figPath);
 write2HistOverview(matrix, groupNames, 'Square_Histograms', figPath);
+writeAvgShape(scoreIdx, SCORE, CellShapeData, figPath, 'all');
 %----------------------------------------------------
 
 if group.do
@@ -146,8 +147,13 @@ saveas(gcf, fPath, 'epsc');
 %figure % group and histogram
 [squareNames, groupNames, matrix, scoreIdx]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st);
 writeToFile(matrix, squareNames, groupNames, 'Group_Histograms', figPath);
-write2Histo(matrix, groupNames,  'Group', figPath); %TODO
-writeAvgShape(scoreIdx, SCORE, CellShapeData, figPath);
+write2Histo(matrix, groupNames,  'Group', figPath); %
+for i=1:length(items)
+    group =items{i};
+    idxMatrix =scoreIdx(:,:,i);
+    writeAvgShape(idxMatrix, SCORE, CellShapeData, figPath, ['group_' char(group.name)]);
+end
+
 
 
 end % END OF GROUP ----------------------------------
@@ -219,7 +225,7 @@ close all
 end % end of the if condition...
 
 
-function writeAvgShape(idxMatrix, SCORE, CellShapeData,folder)
+function writeAvgShape(idxMatrix, SCORE, CellShapeData,folder, prefix)
 s=size(idxMatrix);
 col=[0.5,0.5,0.5];
 figure
@@ -238,13 +244,15 @@ for j=1:s(1)
             [~, ~, ix] =getCenterCoordinate(x,y);
             avshape=shapemean(CellShapeData,ax,ax(ix),0);
             plot(avshape, 'color', col,'LineWidth',2)
+        else
+            plot(0,0, 'color', 'w');
         end
         axis equal
         axis off
         idx=idx+1;
         end
 end
-name = char(['4_Histo_Groups_AvgShapes']);
+name = char(['4_Histo_Groups_AvgShapes_' prefix]);
 fPath = fullfile(folder, name);
 saveas(h, fPath, 'fig');
 saveas(h, fPath, 'epsc');
@@ -356,11 +364,18 @@ for k = 1:y_slices
 for j =1:x_slices
     xInd=find(xIds==j);
     ind =intersect(yInd, xInd); % ids that are in both slices.
-    scoreIdx{k,j}=ind;
+    
     for i=1:s(2)
         item =items{i};
         gIds=getIndicesForGroup(st.BigCellDataStruct, item.tracks);
-        matrix(k,j,i)= sum(gIds(ind)); 
+        matrix(k,j,i)= sum(gIds(ind));
+        %find group indices=intersection of being in this slice, and belong
+        %to the corerct group.
+        a=gIds(ind);
+        gIx=a.*ind;
+        zIx=gIx==0;
+        gIx(zIx)=[];
+        scoreIdx{k,j,i}=gIx;
         if (k==1 & j==1),groupNames{end+1}=char(item.name);end
     end
     squareNames{k}{j}=char([ 'y_' num2str(k) '_x_' num2str(j)]);
@@ -373,46 +388,13 @@ end
 
 
 
-%-----------
-% we get a 3 dim matrix back
-% y,x plane defines the square of the sliciing
-% the z dimension lists the groups for the y_j,x_i square.
-function [squareNames, groupNames, matrix]=calculateClusterHistos(CellShapeData,SCORE, x_slices, y_slices, clusterIdxs)
+
+
+
+function [squareNames, groupNames, matrix, idxMatrix]=calculateAllHistos(CellShapeData,SCORE, x_slices, y_slices)
 squareNames={};
 groupNames={};
-
-[xIds, ~]=compSliceGrouping( CellShapeData,SCORE,[1,0], x_slices); % compute x slices.
-[yIds, ~]=compSliceGrouping( CellShapeData,SCORE,[0,1], y_slices); % compute y slices.
-clusterN=length(unique(clusterIdxs));
-matrix=zeros(y_slices,x_slices,clusterN);
-s=size(matrix);
-%------- how the squares are sliced.
-% group2_1 group2_2 group2_3
-% group1_1 group1_2 group1_3
-%-----
-
-for k = 1:y_slices
-    yInd=find(yIds==k);
-for j =1:x_slices
-    xInd=find(xIds==j);
-    ind =intersect(yInd, xInd); % ids that are in both slices.
-    for i=1:s(3)
-        cIds=clusterIdxs==i;
-        matrix(k,j,i)= sum(cIds(ind)); 
-        if (k==1 & j==1),groupNames{end+1}=num2str(i);end
-    end
-    squareNames{k}{j}=char([ 'y_' num2str(k) '_x_' num2str(j)]);
-end
-
-end
-
-end
-
-
-function [squareNames, groupNames, matrix]=calculateAllHistos(CellShapeData,SCORE, x_slices, y_slices)
-squareNames={};
-groupNames={};
-
+idxMatrix={};
 [xIds, ~]=compSliceGrouping( CellShapeData,SCORE,[1,0], x_slices); % compute x slices.
 [yIds, ~]=compSliceGrouping( CellShapeData,SCORE,[0,1], y_slices); % compute y slices.
 matrix=zeros(y_slices,x_slices,1);
@@ -421,7 +403,9 @@ for k = 1:y_slices
     yInd=find(yIds==k);
 for j =1:x_slices
     xInd=find(xIds==j);
+    
     ind =intersect(yInd, xInd); % ids that are in both slices.
+    idxMatrix{k,j}=ind;
     matrix(k,j,1)= length(ind); 
     groupNames{end+1}=char([ 'y_' num2str(k) '_x_' num2str(j)]);  
     squareNames{k}{j}=char([ 'y_' num2str(k) '_x_' num2str(j)]);
