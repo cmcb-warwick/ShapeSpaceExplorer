@@ -152,44 +152,7 @@ end % END OF GROUP ----------------------------------
 
 
 
-if cluster.do
-[clusterIdx, success]=ordered_list_edit(cluster.number, cluster.idx, cluster.linkagemat, cluster.wish_list,CellShapeData);
-if ~ success, return; end
-[squareNames, groupNames, matrix]=calculateClusterHistos(CellShapeData,SCORE, x_slices, y_slices, clusterIdx);
-writeToFile(matrix, squareNames, groupNames, 'AP_Clusters_Histograms', figPath);
-write2Histo(matrix, groupNames,  'AP_Clusters', figPath); %TODO
 
-plotFigureGrid(x_slices, y_slices, xShapes,yShapes, blueCol, greenCol);
-subplot(y_slices+1, x_slices+1,p);
-colour=jet(cluster.number);
-colour=flipud(colour);
-colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
-mk = getMarkerSize(N);
-for i=1:cluster.number
-    idx=clusterIdx==i;
-    x =SCORE(idx,1);
-    y =SCORE(idx,2);
-    plot(x,y,'.','color',colour(i,:), 'MarkerSize', mk);
-    hold on
-end
-if axes_equal, axis equal; end
-xlim([b1(1) b1(end)]);
-ylim([b2(1) b2(end)]);
-xm =xlim;
-ym =ylim;
-for i=2:x_slices
-   plot([b1(i) b1(i)],ym,'color',blueCol);
-end
-for i=2:y_slices
-   plot(xm,[b2(i) b2(i)],'color',greenCol);
-end
-
-
-fPath=fullfile(figPath, '4_AP_All_Clusters');
-saveas(gcf, fPath, 'fig');
-saveas(gcf, fPath, 'epsc');
-
-end % end of clusers.do
    
 
     
