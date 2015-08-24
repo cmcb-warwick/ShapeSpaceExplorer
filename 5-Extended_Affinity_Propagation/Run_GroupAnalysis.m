@@ -163,8 +163,8 @@ for i =1:s(1)
     
     clf;
     
-    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent']);
-    tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_percent.txt']);
+    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_fraction']);
+    tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_fraction.txt']);
     array=array/array(end);
     h=bar(array);
     dlmwrite(tPath ,array, '\t');
@@ -256,7 +256,7 @@ for i=1:number
     clust_idx=clust_order(i);
     exems=wish_list(T2==clust_idx);
     points=ismember(idx,exems);
-    plot(SCORE(points,1),SCORE(points,2),'.','Color',[0.5,.5,.5])
+    plot(SCORE(points,1),SCORE(points,2),'.','Color',[0.5,.5,.5], 'MarkerSize', mk)
     hold on
     mClusters(i,1)=clust_idx;
     mClusters(i,2)=sum(points);
@@ -440,7 +440,7 @@ for i=1:s(2)
     errorbar(x,pM,pSt, 'Color', [156/255,187/255,229/255]);
     hold on
     plot(x,pM, 'Color', [237/255 94/255 48/255], 'LineWidth', 1.5);
-    fPath = fullfile(groupPath, [char(item.name) '_Persitence_EucledianRatio']);
+    fPath = fullfile(groupPath, [char(item.name) '_Directionality']);
     saveas(gcf, fPath, 'fig');
     saveas(gcf, fPath, 'epsc');
     
