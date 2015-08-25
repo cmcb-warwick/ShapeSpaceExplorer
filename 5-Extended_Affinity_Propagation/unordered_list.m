@@ -66,7 +66,7 @@ for i=1:clust_num
         axis xy off
     end
 end
-fPath=fullfile(figPath, '5_AllShapes_10_Examples_foreach_Cluster');
+fPath=fullfile(figPath, '5_10members_foreach_Cluster');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
 
@@ -100,7 +100,7 @@ for i=1:(a*b)
     end
     axis(h(i), 'xy','off')
 end
-fPath=fullfile(figPath, '5_AllShapes_Example_foreach_Cluster');
+fPath=fullfile(figPath, '5_unordered_APexemplars');
 saveas(gcf, fPath, 'fig');
 saveas(gcf, fPath, 'epsc');
 end

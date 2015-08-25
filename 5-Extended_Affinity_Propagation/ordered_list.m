@@ -85,7 +85,7 @@ axis tight
 axis equal
 grid on
 if ~isempty(APe_output_foldername)
-    fPath=fullfile(figPath, '5_Coloured_Shape_in_ShapeSpace');
+    fPath=fullfile(figPath, '5_Clustermembers_in_ShapeSpace');
     saveas(gcf, fPath, 'fig');
     saveas(gcf, fPath, 'epsc');
 end
@@ -128,7 +128,7 @@ while c<=a*b
     c=c+1;
 end
 if~isempty(APe_output_foldername)
-    fPath=fullfile(figPath, '5_Avg_Shape_for_Clusters');
+    fPath=fullfile(figPath, '5_Clusters_ordered_exemplars');
     saveas(gcf, fPath, 'fig');
     saveas(gcf, fPath, 'epsc');
 end
