@@ -42,6 +42,7 @@ for i=1:num_stacks
         BigCellDataStruct(cell_num).Stack_number=i;
         BigCellDataStruct(cell_num).Cell_number=j;
         BigCellDataStruct(cell_num).Contours={};
+        skipped = 0;
         for k=1:num_frames
             filename = [fdr_name frame_names{k}];
     
@@ -56,10 +57,12 @@ for i=1:num_stacks
 
                         BigCellArray{end+1,1}=data(:,:);
 						BigCellDataStruct(cell_num).Contours{end+1}=BigCellArray{end,1};
+            else
+                skipped = skipped + 1;
             end
             
         end
-        cell_indices=[cell_indices; cell_num*ones(num_frames,1)];
+        cell_indices=[cell_indices; cell_num*ones((num_frames-skipped),1)];
         cell_num=cell_num+1;
         
     end
