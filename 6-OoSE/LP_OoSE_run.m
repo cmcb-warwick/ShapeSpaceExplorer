@@ -81,15 +81,15 @@ for i=1:train_nobs
 end
 waitbar(1,h,'OoSE Step 3. Embedding, please wait.');
 load(path_to_LPtrained);
-
 ndims=length(d);
-K=length(d{1});
+
 %train_nobs=length(D);
 sum_sk=zeros(N,ndims);
 save([new_unique_savedestination '/Dist_mat.mat'], 'D','-v7.3');
 D=D.^2;
 for n=1:N
     for m=1:ndims
+        K=length(d{m});
         for i=1:K
             k=zeros(1,train_nobs);
             sig=sig_naught/(2^(i-1));
@@ -97,8 +97,6 @@ for n=1:N
             D2=-D2;
             D2=exp(D2);
             for j=1:train_nobs
-                %if j==1 && m==3 && i==19
-                   % display([num2str(j) ' m=' num2str(m) ' i=' num2str(i) ]); end
                 k(j)=D2(j)/q{m}{i}(j);          
             end
             sum_sk(n,m)=sum_sk(n,m)+k*d{m}{i}';
