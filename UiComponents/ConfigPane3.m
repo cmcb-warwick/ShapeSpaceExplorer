@@ -73,7 +73,7 @@ for i=0:10:10000
     list2{end+1}=i;
 end
 set(handles.popupmenu3, 'string', list2);
-set(handles.popupmenu2, 'value', 1); % min area size
+set(handles.popupmenu3, 'value', 1); % min area size
 
 % Update handles structure
 guidata(hObject, handles);
