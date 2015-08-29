@@ -262,11 +262,12 @@ for j=1:s(1)
             y=SCORE(ax,2);
             [~, ~, ix] =getCenterCoordinate(x,y);
             avshape=shapemean(CellShapeData,ax,ax(ix),0);
-            plot(avshape, 'color', col,'LineWidth',2)
+            plot(avshape, 'color', col,'LineWidth',2);
+            axis equal
+            
         else
             plot(0,0, 'color', 'w');
         end
-        axis equal
         axis off
         idx=idx+1;
         end
@@ -507,10 +508,12 @@ p=x_slices+1:(x_slices+1)*(y_slices+1);
 idx=find(mod(p,x_slices+1)==0);
 p(idx)=[];
 for i=1:x_slices
-    subplot(y_slices+1, x_slices+1,i)
+    h=subplot(y_slices+1, x_slices+1,i);
     s=xShapes{i};
     if ~isempty(s)
         plot(s, 'color',blueCol); 
+        axis equal
+        axis off
     end
     set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
 end
@@ -522,6 +525,8 @@ for i=1:y_slices
     s=yShapes{idx};
     if ~isempty(s)
         plot(s, 'color', greenCol);
+        axis equal
+        axis off
     end
     set(gca,'xcolor','w','ycolor','w','xtick',[],'ytick',[])
 end
