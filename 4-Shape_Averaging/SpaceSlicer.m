@@ -1,4 +1,4 @@
-function [ idx ] = SpaceSlicer(default, group, cluster)
+function [ idx ] = SpaceSlicer(default, group)
 % this comes from old structure
 CellShapeData =default.csd;
 x_slices=default.xSlices;
@@ -145,19 +145,38 @@ saveas(gcf, fPath, 'epsc');
 %----------------------------------------------------
 
 %figure % group and histogram
-[squareNames, groupNames, matrix, scoreIdx]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st);
+[squareNames, groupNames, matrix, ~]=calculateHistos(CellShapeData,SCORE, x_slices, y_slices, items, st);
 writeToFile(matrix, squareNames, groupNames, 'Group_Histograms', figPath);
 write2Histo(matrix, groupNames,  'Group', figPath); %
-for i=1:length(items)
-    group =items{i};
-    idxMatrix =scoreIdx(:,:,i);
-    writeAvgShape(idxMatrix, SCORE, CellShapeData, figPath, ['group_' char(group.name)]);
-end
+% average group shape
+plotAverageShapePerGroup(items,st, SCORE,figPath);
 
 
 
 end % END OF GROUP ----------------------------------
 
+function plotAverageShapePerGroup(items,st, SCORE, figPath)
+col=[0.5,0.5,0.5];
+for i=1:length(items)
+    item =items{i};
+    ax=getIndicesForGroup(st.BigCellDataStruct, item.tracks);
+    ax=find(ax==1);
+    x=SCORE(ax,1);
+    y=SCORE(ax,2);
+    [~, ~, ix] =getCenterCoordinate(x,y);
+    avshape=shapemean(CellShapeData,ax,ax(ix),0);
+    figure
+    h=subplot(1,1,1);
+    plot(avshape, 'color', col,'LineWidth',2)
+    axis equal
+    axis off
+    name = char(['4_Histo_Groups_AvgShapes_Group_' char(item.name)]);
+    fPath = fullfile(figPath, name);
+    saveas(h, fPath, 'fig');
+    saveas(h, fPath, 'epsc');
+end
+close all
+end
 
 
 
@@ -289,7 +308,7 @@ for j=1:s(1)
             set(h,'FaceColor',colour(k,:));
             hold on
         end
-        set(gca, 'XTick', 1:length(groupNames), 'XTickLabel', groupNames);
+        set(gca, 'XTick', 1:length(groupNames), 'XTickLabel', '');
         ylim([0 1.0]);
         idx=idx+1;
         end
@@ -478,42 +497,6 @@ end
 
 
 
-
-function [clusterIdx, success]=ordered_list_edit(number, cIdx, linkagemat,wish_list,CellShapeData)
-%ORDERED_LIST generates a number of figures bringing together BAM DM and
-%APe. APe is a hierarchical clustering extension to Affinity Propagation
-%using Wishart Seriation, this should have been executed using
-%AP_Seriation_analysis_finaledit prior to running this code. 
-
-%number is the number of clusters you wish to view in your generated images,
-%if you haven't yet decided you can enter 0 to display the just the
-%dendrogram to aid your decision. 
-
-%CellShapeData should be the output of BAM DM through the
-%ShapeManifoldEmbedding code
-
-success=0;
-N=length(CellShapeData.point);
-clusterIdx=zeros(N,1);
-
-n_exems=length(wish_list);
-
-if number>n_exems
-    display('There are more desired cluster than maximal clusters available in data set.');
-    display('Please enter an appropriate number of clusters.');
-    return
-end
-
-figure
-[~,T]=dendrogram(linkagemat,number);
-close
-for i=1:n_exems
-    idx=find(cIdx==wish_list(i));
-    clusterIdx(idx)=T(i);
-end
-success=1;
-
-end
 
 
 function [h, p] = plotFigureGrid(x_slices, y_slices, xShapes,yShapes, blueCol, greenCol)

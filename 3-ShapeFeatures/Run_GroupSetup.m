@@ -1,6 +1,6 @@
 function Run_GroupSetup()
 
-out=SelectFolder(matlabpath);
+out=SelectFolder();
 maxStackNo = getMaxStackNumber(out.folder);
 if maxStackNo <0, exit(0); end
 items =GroupMaking(maxStackNo);

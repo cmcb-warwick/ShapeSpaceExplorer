@@ -1,5 +1,6 @@
 function  RunShapeManifoldEmbedding()
-out=SelectFolderEigen(matlabroot);
+
+out=SelectFolderEigen();
 dataFile = fullfile(out.folder, 'Bigcellarrayandindex.mat');
 if exist(dataFile, 'file')
     data = load(dataFile);

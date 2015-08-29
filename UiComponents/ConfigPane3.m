@@ -68,7 +68,7 @@ set(handles.popupmenu1, 'string', list);
 set(handles.popupmenu2, 'string', list);
 set(handles.popupmenu1, 'value', 5); % spatial bandwith
 set(handles.popupmenu2, 'value', 3); % range bandwith.
-list2={}
+list2={};
 for i=0:10:10000
     list2{end+1}=i;
 end

@@ -62,7 +62,7 @@ img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
 axis('off')
 set(handles.edit1, 'String','...')
-handles.root=varargin{1};
+handles.root=matlabroot;
 
 % Update handles structure
 guidata(hObject, handles);

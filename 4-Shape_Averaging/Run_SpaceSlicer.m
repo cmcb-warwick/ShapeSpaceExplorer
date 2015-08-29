@@ -3,7 +3,6 @@
 function  Run_SpaceSlicer( )
     out=guiShapeSlicer();
     group.do=false;
-    cluster.do=false;
     try if out==-1,return; end 
        end
     try if strcmp(out.pathAna,'...'), 
@@ -31,7 +30,7 @@ function  Run_SpaceSlicer( )
     default.path=out.pathAna;
     default.axesEqual=out.axesEqual;
     
-     if out.Group
+    if out.Group
     gfile = fullfile(out.pathAna, 'groups.mat');
     group.do=true;
     group.path=gfile;
@@ -41,7 +40,7 @@ function  Run_SpaceSlicer( )
        end
      end
          
-    SpaceSlicer(default, group, cluster);
+    SpaceSlicer(default, group);
     close all force
     display('Cell Slicer run successfully');
     display('-------');
@@ -60,9 +59,4 @@ function fileHasWrongStructure(filename)
     display(['The file "' filename '" does not have the expected structure in your Analysis folder.']);
     display('Please check whether previous steps have been succesfully completed.');
     display('-------');
-end
-
-
-function apMissing()
-    display('Affinity propagation step files seem to be missing.')    
 end
