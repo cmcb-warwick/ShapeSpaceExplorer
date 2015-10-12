@@ -23,7 +23,7 @@ end
 
 
 
-figPath = fullfile(path, 'Figures');
+figPath = fullfile(path, 'Figures', 'SpaceSlicer', ['Slicer_' num2str(x_slices) 'x_' num2str(y_slices) 'y']);
 if ~exist(figPath,'dir'),mkdir(figPath);end
 figure % x figure---------------------
 set(gcf,'color','w');
