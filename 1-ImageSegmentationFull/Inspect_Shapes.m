@@ -747,6 +747,12 @@ warning('off');
 newId=FilterDialog(msg, 'new Id ', num2str(cellId));
 if newId<=0, return; end % user clicked cancel.
 if newId==cellId, return; end
+if doesIdExist(newId)
+    warndlg('Your proposed cell id exists already! Please  try another id.',' Warning !!');
+    return;
+end
+
+
 changeIds(cellId, newId, state);
 
 
@@ -1359,3 +1365,32 @@ for i=1:tlen
     end
     if ~(length(allIds)==length(unique(allIds))), b=0; frmId=i; break; end
 end
+
+
+function [doesExist] = doesIdExist(newId)
+doesExist=0;
+b=1; frmId=-1;
+global stack;
+global mergeInfo;
+global cellNumbers;
+[~, ~, tlen]=size(stack);
+for i=1:tlen
+    allIds=[];
+    cellIds=cellNumbers{i,1};
+    cellAct=cellNumbers{i,2};
+    ids = cellAct<2;
+    allIds=[allIds, cellIds(ids)];
+    mrgInfo = mergeInfo{i};
+    for j=1:length(mrgInfo)
+        m=mrgInfo{j};
+        allIds(end+1)=m.id;
+    end
+    allIds=unique(allIds);
+    if ~isempty (intersect(allIds,newId))
+        doesExist=1;
+        return;
+    end
+end
+
+
+
