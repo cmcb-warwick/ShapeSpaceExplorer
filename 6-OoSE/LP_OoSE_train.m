@@ -19,9 +19,6 @@ function [ d, q, sig_naught ] = LP_OoSE_train(trainingCellShapeData, savedestina
 %Extension embedding, this should be one of the Diffusion dimensions
 %(stored as SCORE), created by ShapeManifoldEmbedding. 
 
-if ~exist('savedestination','var')
-    savedestination=pwd; 
-end
 
 shape_distance_vector=trainingCellShapeData.set.Long_D;
 target_func=trainingCellShapeData.set.SCORE;
@@ -89,8 +86,8 @@ for m=1:dims
     
     
 end
-
-save([savedestination '/LP_trained.mat'], 'd','q','sig_naught','-v7.3')
+filedir = fullfile(savedestination, 'LP_trained.mat');
+save(filedir, 'd','q','sig_naught','-v7.3');
 
 
 end

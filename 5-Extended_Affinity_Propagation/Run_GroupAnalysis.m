@@ -150,7 +150,6 @@ for i =1:s(1)
     tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.txt']);
     array=[];
     array = classes(i,:);
-    array(end+1)=sum(array);
     h=bar(array);
     dlmwrite(tPath ,array, '\t');
     set(h,'FaceColor',colour(i,:))
@@ -165,12 +164,15 @@ for i =1:s(1)
     
     fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_fraction']);
     tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_fraction.txt']);
-    array=array/array(end);
+    for k =1:length(array)
+        array(k)=array(k)/sum(classes(:,k));
+    end
     h=bar(array);
     dlmwrite(tPath ,array, '\t');
     set(h,'FaceColor',colour(i,:))
     hold on
     set(gca, 'XTick', 1:length(array), 'XTickLabel', labels);
+    ylim([0 1.0]);
     saveas(h, fPath, 'fig');
     saveas(h, fPath, 'epsc'); 
     

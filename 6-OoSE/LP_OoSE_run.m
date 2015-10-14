@@ -16,10 +16,6 @@ function [ sum_sk ] = LP_OoSE_run(trainingCellShapeData, OoSE_frames, path_to_LP
 %previous runs.
 %
 
-if ~exist('new_unique_savedestination','var')
-    new_unique_savedestination=pwd; 
-end
-
 N=length(OoSE_frames);
 %waitbar
 h = waitbar(0,'Please wait...');
@@ -58,7 +54,7 @@ for i=1:N
 end
     
 %diffusion map embedding
-new_d=5; %Increase this to generate more new dimensions
+%new_d=5; %Increase this to generate more new dimensions
 
 for i=1:N
     curve=CSD.point(i).coords_comp;
@@ -69,9 +65,7 @@ end
 
 
 train_nobs=length(trainingCellShapeData.point);
-
 D=zeros(train_nobs,N);
-
 for i=1:train_nobs
     for j=1:N
         D(i,j)=BAM(trainingCellShapeData.point(i).sum_curve,CSD.point(j).sum_curve,trainingCellShapeData.point(i).fft_conj,CSD.point(j).fft_flip);
@@ -85,7 +79,8 @@ ndims=length(d);
 
 %train_nobs=length(D);
 sum_sk=zeros(N,ndims);
-save([new_unique_savedestination '/Dist_mat.mat'], 'D','-v7.3');
+filedir = fullfile(new_unique_savedestination, 'Dist_mat.mat');
+save(filedir, 'D','-v7.3');
 D=D.^2;
 for n=1:N
     for m=1:ndims
@@ -106,7 +101,7 @@ end
 
 OoSE_emb=sum_sk;
 
-save([new_unique_savedestination '/OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
+save([new_unique_savedestination 'OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
 h=waitbar(1,h,'Complete');
 delete(h);
 
@@ -169,9 +164,6 @@ end
 function [ curve ] = clockcheck( curve )
 %CLOCKCHECK Clockcheck returns a curve that is parameterised clockwise.
 %curve should be an Mx2 vector 
-%   Detailed explanation goes here
-%CLOCKCHECK Summary of this function goes here
-%   Detailed explanation goes here
 
 a=curve(1,1)+1i*curve(1,2);
 b=curve(2,1)+1i*curve(2,2);

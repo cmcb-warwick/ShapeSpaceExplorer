@@ -9,7 +9,9 @@ function [ CellShapeData ] = ShapeManifoldEmbedding_finalSJ( Frames, savedestina
 
 %CellShapeData is a structure containing information about the dataset, the Diffusion Maps analysis and intermediate steps.
 
-%The main output of this algorithm is the Diffusion Maps embedding of the contour data (Find this at CellShapeData.set.SCORE or CellShapeData.point(i).SCORE for the DM embedding of ith contour)   
+%The main output of this algorithm is the Diffusion Maps embedding of 
+%the contour data (Find this at CellShapeData.set.SCORE or 
+%CellShapeData.point(i).SCORE for the DM embedding of ith contour)   
 
 %CellShapeData contains two substructures: set and point. 
     %Fields in the set substructure relate to the whole dataset:
