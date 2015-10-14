@@ -109,7 +109,8 @@ for i =1: length(items)
     groupNames{end+1}=char(item.name);
     groupStacks{end+1}=getCharOf(item.tracks);
 end
-labels{end+1}='all';
+
+
 plotClusterBars(groupPlots,labels, groupPath)
 tableFilename=fullfile(groupPath, 'GroupMapping.csv');
 writeGroups2Table(tableFilename, groupNames, groupStacks);
@@ -132,6 +133,26 @@ end
 end
 
 
+%hack for dml so that it works for Matlab2012.
+function writeGroupswithClusters2Table(path,labels, table)
+header ='';
+for k=1:length(labels)
+    header = strcat([ header ' ,'], labels{k});
+end
+dlmwrite(path,header,'delimiter','');
+
+s=size(table);
+for k=1:s(1)
+    line = ['Cluster_' num2str(k) ','];
+    for j=1:s(2)
+        line =strcat(line, [num2str(table(k,j)) ', ']);
+    end
+    dlmwrite(path,line,'delimiter','','-append');
+end
+
+end
+
+
 
 
 function plotClusterBars(classes,labels, groupPath)
@@ -141,6 +162,7 @@ colour=jet(s(1));
 colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 
+percTable=zeros(size(classes));
 
 
 for i =1:s(1)
@@ -167,6 +189,7 @@ for i =1:s(1)
     for k =1:length(array)
         array(k)=array(k)/sum(classes(:,k));
     end
+    percTable(i,:)=array;
     h=bar(array);
     dlmwrite(tPath ,array, '\t');
     set(h,'FaceColor',colour(i,:))
@@ -177,6 +200,12 @@ for i =1:s(1)
     saveas(h, fPath, 'epsc'); 
     
 end
+
+tPath = fullfile(groupPath, 'Cluster_all_barplot_count.csv');
+writeGroupswithClusters2Table(tPath, labels, classes);
+tPath = fullfile(groupPath, 'Cluster_all_barplot_fraction.csv');
+writeGroupswithClusters2Table(tPath,labels, percTable)
+
 end
 
 
