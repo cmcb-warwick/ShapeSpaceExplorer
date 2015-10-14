@@ -38,9 +38,9 @@ load(fullfile(inputFolder, '/Bigcellarrayandindex.mat'));
 load(fullfile(inputFolder, '/BigCellDataStruct.mat'));
 display('Files loaded ');
 
-formatOut = 'yyyy-mm-dd_HHMMSS';
-fname = ['GroupAnalysis_' datestr(now,formatOut)];
-groupPath=fullfile(inputFolder, fname);
+
+fname = ['Cluster_' num2str(number) '_Groups_' num2str(length(items)) ];
+groupPath=fullfile(inputFolder, 'Figures', 'GroupAnalysis', fname);
 if ~exist(groupPath,'dir'),mkdir(groupPath);end
 
 %save group config in matlab file format
