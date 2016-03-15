@@ -16,7 +16,7 @@ end
 cPath=fullfile(path.anaFolder, 'CellShapeData.mat');
 cData= load(cPath);
 
-bPath = fullfile(path.anaFolder, 'Bigcellarrayandindex.mat');
+bPath = fullfile(path.OosFolder, 'Bigcellarrayandindex.mat');
 bData= load(bPath);
 
 lPath=fullfile(path.OosFolder, 'LP_trained.mat');

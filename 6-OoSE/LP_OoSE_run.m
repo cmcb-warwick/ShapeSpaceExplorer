@@ -101,7 +101,7 @@ end
 
 OoSE_emb=sum_sk;
 
-save([new_unique_savedestination 'OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
+save([new_unique_savedestination '/OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
 h=waitbar(1,h,'Complete');
 delete(h);
 

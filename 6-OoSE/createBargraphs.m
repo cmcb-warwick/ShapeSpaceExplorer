@@ -15,5 +15,5 @@ display('File is loading ... ');
 cData= load(cPath);
 classes= path.classes;
 OoSE_bargraphs(classes,cData.CellShapeData,path.anaFolder,path.OosFolder );
-display('OoSE Bargraphs genrated succesfully');
+display('OoSE Bargraphs generated successfully');
 end
