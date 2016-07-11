@@ -1,7 +1,7 @@
 function [ DynamicData ] = ShapeSpaceDynamics( cell_idx, CellShapeData,savedestination )
 %SHAPESPACE Summary of this function goes here
 %   Detailed explanation goes here
-%cell_idx is inside Bigcellarrayandindex from you segmentation output
+% cell_idx is inside Bigcellarrayandindex from your segmentation output
 if ~exist('savedestination','var')
     savedestination=pwd; 
 end
