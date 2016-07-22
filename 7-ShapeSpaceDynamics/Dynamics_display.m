@@ -56,7 +56,11 @@ pos = 0;
 for i=1:L
     np = length(data(i).speeds);
     for j=1:np
-    line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(norm_prop(pos+j),:), 'LineWidth', 2);
+        if strcomp(propname,'speeds') + strcomp(propname,'angles') == 1
+            line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(norm_prop(pos+j),:), 'LineWidth', 2);
+        else
+            line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(norm_prop(i),:), 'LineWidth', 2);
+        end
     hold on
     end
     pos = pos + np;
