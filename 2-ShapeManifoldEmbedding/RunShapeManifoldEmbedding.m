@@ -2,6 +2,8 @@ function  RunShapeManifoldEmbedding()
 
 out=SelectFolderEigen();
 dataFile = fullfile(out.folder, 'Bigcellarrayandindex.mat');
+global PATH;
+PATH=out.folder;
 if exist(dataFile, 'file')
     data = load(dataFile);
     ShapeManifoldEmbedding_finalSJ(data.BigCellArray, out.folder, out.sparse);

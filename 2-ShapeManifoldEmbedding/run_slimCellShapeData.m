@@ -1,6 +1,11 @@
 function   run_slimCellShapeData()
-
-folder = uigetdir(matlabroot,'Select Analysis Folder');
+root =matlabroot;
+global PATH
+if (length(PATH)>2)
+root= PATH;
+end
+folder = uigetdir(root,'Select Analysis Folder');
+PATH=folder;
 dataFile = fullfile(folder, 'CellShapeData.mat');
 if exist(dataFile, 'file')
     display('File is loading ... ');
