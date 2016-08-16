@@ -7,7 +7,6 @@ function  Run_Sliced_Dynamics( )
     PATH=out.path;
     close all force
     dPath = fullfile(out.path, 'DynamicData.mat');
-    
     if exist(dPath, 'file')
         try data = load(dPath);
             dynamicData=data.DynamicData;

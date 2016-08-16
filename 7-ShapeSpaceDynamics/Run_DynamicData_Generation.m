@@ -7,6 +7,7 @@ root= PATH;
 end
 
 folder = uigetdir(root,'Select Analysis Folder');
+PATH =folder;%set it for next time;
 if folder==0, return; end
 cellShapePath = fullfile(folder, 'CellShapeData.mat');
 if exist(cellShapePath, 'file')
