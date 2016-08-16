@@ -3,6 +3,10 @@ out= ConfigPane1;
 if ~isfield(out,'files')  
         display('canceled');return; end 
 folder = out.folder;
+% show path from last time.
+global PATH
+PATH=folder;
+
 fls = out.files;
 maxFrame=inf;
 len = length(fls);

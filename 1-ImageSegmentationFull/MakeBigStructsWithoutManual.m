@@ -1,6 +1,11 @@
 %Put me in your imagestacks folder from CSG
-
-folder = uigetdir(matlabroot,'Select Experiment Folder');
+root =matlabroot;
+global PATH
+if (length(PATH)>2)
+root= PATH;
+end
+folder = uigetdir(root,'Select Experiment Folder');
+PATH=folder;
 dirData=dir( fullfile(folder,'CellFrameData*.mat') );
 dirIndex = [dirData.isdir];  %# Find the index for directories
 fileList = {dirData(~dirIndex).name}';  %'# Get a list of the files
