@@ -2,6 +2,8 @@ function Run_GroupSetup()
 
 out=SelectFolder();
 maxStackNo = getMaxStackNumber(out.folder);
+global PATH;
+PATH=out.folder;
 if maxStackNo <0, exit(0); end
 items =GroupMaking(maxStackNo);
 try if items==-1, 
