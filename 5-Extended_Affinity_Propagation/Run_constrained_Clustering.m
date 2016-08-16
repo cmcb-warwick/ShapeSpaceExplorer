@@ -1,6 +1,8 @@
 function  Run_constrained_Clustering()
     out=ConstrainedClustering();
     folder =out.fpath;
+    global PATH;
+    PATH =out.fpath;
     classes = out.classes;    
    cellShapePath = fullfile(folder, 'CellShapeData_slim.mat');
 if exist(cellShapePath, 'file')

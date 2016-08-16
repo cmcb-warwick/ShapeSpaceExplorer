@@ -1,5 +1,12 @@
 function  Run_Dendogram_of_Shapes( )
-folder = uigetdir(matlabroot,'Select Analysis Folder');
+root =matlabroot;
+global PATH
+if length(PATH>2)
+root= PATH;
+end
+folder = uigetdir(root,'Select Analysis Folder');
+PATH=folder; % set it for next time.
+
 dataFile = fullfile(folder, 'CellShapeData_slim.mat');
 if exist(dataFile, 'file')
      display('File is loading ... ');

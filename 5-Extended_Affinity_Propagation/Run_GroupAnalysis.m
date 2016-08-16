@@ -2,6 +2,8 @@ function   runGroupAnalysis()
 
 
 config1=ConstrainedClustering();
+global PATH;
+PATH=config1.fpath;
 if strcmp(config1.fpath, '...')==1, return; end
 inputFolder =  config1.fpath;
 number=config1.classes;
