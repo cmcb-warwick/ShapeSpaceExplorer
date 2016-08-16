@@ -1,98 +1,81 @@
-function [ output_args ] = Dynamics_display( DynamicData, propname , folder, cell_numbers)
+function   Dynamics_display(DynamicData , folder, propname)
 %DYNAMICS_DISPLAY To plot colour-coded tracks of cells through shape space.
 %   Detailed explanation goes here
 %
 %DynamicData shuld be generated first using Run_DynamicData_Generation.m
 
 %propname should be the desired property to view, the options are:
-    %speeds
-    %average_speed
-    %angles
-    %av_displacement_direction
+    %0==speeds
+    %1==average_speed
+    %2==angles
+    %3==av_displacement_direction
 
 %cell_numbers is an optional argument that allows you to specify a sublist
 %of cells to plot, the default is all cells.
-
+minTrackLength=1; % we have also a hared coded min lenght
 if ~exist('cell_numbers','var')
     cell_numbers=1:length(DynamicData);
 end
+%create a fig folder in the path;
 figPath = fullfile( folder, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
 h=figure(100);
-L=length(cell_numbers);
 col_res=512;
 colourmap=jet(col_res);
 
 data=DynamicData(cell_numbers);
 
-for i=1:L
-    prop=[prop; data(i).(propname)];
-end
+
 
 %chop outliers
-std_dev=std(prop);
-med_prop=median(prop);
-prop(prop>(med_prop+3.5*std_dev))=med_prop+3.5*std_dev;
-prop(prop<(med_prop-3.5*std_dev))=med_prop-3.5*std_dev;
+%std_dev=std(prop);
+%med_prop=median(prop);
+%prop(prop>(med_prop+3.5*std_dev))=med_prop+3.5*std_dev;
+%prop(prop<(med_prop-3.5*std_dev))=med_prop-3.5*std_dev;
 
-if std_dev==0
-   disp([propname ' constant'])
-   return
-end
+%if std_dev==0
+ %  disp([propname ' constant'])
+  % return
+%end
 
 
-norm_prop=prop-min(prop);
-norm_prop=norm_prop/max(norm_prop);
-norm_prop=(col_res-1)*norm_prop+1;
-norm_prop=round(norm_prop);
-
+% division on subplot size
 sb1=9;
 sb2=15;
 mat=ones(sb1,1)*(1:(sb2))+(sb2+2)*(0:(sb1-1))'*ones(1,sb2);
 subplot(sb1,sb2+2,mat(:)');
 
-pos = 0;
-
-for i=1:L
-    np = length(data(i).speeds);
-    for j=1:np
-        if strcomp(propname,'speeds') + strcomp(propname,'angles') == 1
-            line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(norm_prop(pos+j),:), 'LineWidth', 2);
-        else
-            line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(norm_prop(i),:), 'LineWidth', 2);
-        end
-    hold on
-    end
-    pos = pos + np;
+if strcmp('speeds',propname)
+    drawLinesForSpeeds(data,col_res, minTrackLength)
+elseif strcmp('angles',propname)
+    drawLinesForAngles(data,col_res, minTrackLength)
+elseif strcmp('average_speed',propname)  
+    drawLinesForAvgSpeed(data,col_res, minTrackLength)
+elseif strcmp('av_displacement_direction',propname) 
+    drawLinesForAvgDisplacement(data,col_res, minTrackLength)
 end
+% angle, speed are one per point (transistion), while 
+% 
 
+[minProp, maxProp]=getDataForProperty(data, propname, minTrackLength);
 axis equal
 title( ['Display Shape Dynamics: ' propname]);
 %sb=6;
 set(gca,'FontSize',12);
-subplot(sb1,sb2+2,(sb2+1):(sb2+2):(sb1*(sb2+2)-1));
+% plot colorbar
+%subplot(sb1,sb2+2,(sb2+1):(sb2+2):(sb1*(sb2+2)-1));
+colorbar;
+caxis([minProp, maxProp]);
 set(gca,'FontSize',12);
 set(gca,'XTickLabel','');
 set(gca,'YTickLabel','');
-xlabel({['max:',sprintf('%2.2f',max(prop))],['min:',sprintf('%2.2f',min(prop))]});
+xlabel({['max:',sprintf('%8.2E', maxProp)],['min:',sprintf('%8.2E',minProp)]});
 hold on;
-for kl=1:512
-    s=(kl*(max(prop)-min(prop))/512)+min(prop);
-    c=colourmap(kl,:);
-    plot(0,s,'s','MarkerSize',20,'MarkerFaceColor',c,'MarkerEdgeColor',c);
-end
-axis xy off
+
 
 subplot(sb1,sb2+2,(sb2+2):(sb2+2):sb1*(sb2+2));
-set(gca,'FontSize',12);
-set(gca,'XTickLabel','');
-x=((1:512)*(max(prop)-min(prop))/512)+min(prop);
-y=hist(prop,x);
-barh(x,y);
-set(gca,'YAxisLocation','right');
-ax=get(gca,'Xtick');
-set(gca,'Xtick',ax([1 end]));
-
+%plot histogram along colorbar
+plotHistogram(data, col_res, minTrackLength, propname)
 
 
 
@@ -103,3 +86,140 @@ close(h);
 
 end
 
+
+function [minProp, maxProp] =getDataForProperty(data, propName, minTrackLength)
+minProp =1000000000000;
+maxProp =0;
+for i=1: length(data)
+    s=size(data(i).track);
+    L =s(1);
+    if (L>minTrackLength)
+        if (strcmp(propName, 'speeds')==1)
+            minProp=min(minProp,min(data(i).speeds));
+            maxProp=max(maxProp,max(data(i).speeds));
+        elseif (strcmp(propName, 'average_speed')==1)
+            minProp=min(minProp,min(data(i).average_speed));
+            maxProp=max(maxProp,max(data(i).average_speed));
+        elseif (strcmp(propName, 'angles')==1)
+            minProp=min(minProp,min(data(i).angles));
+            maxProp=max(maxProp,max(data(i).angles));
+        
+        
+        elseif (strcmp(propName, 'av_displacement_direction')==1)
+            minProp=min(minProp,min(data(i).angles));
+            maxProp=max(maxProp,max(data(i).angles));
+        
+end
+
+    end
+end
+end
+
+function [prop] =getAllProp(data, propName, minTrackLength)
+prop=[];
+for i=1: length(data)
+    s=size(data(i).track);
+    L =s(1);
+    if (L>minTrackLength)
+        if (strcmp(propName, 'speeds')==1)
+            prop =[prop; data(i).speeds];
+        elseif (strcmp(propName, 'average_speed')==1)
+            prop =[prop; data(i).average_speed];
+        elseif (strcmp(propName, 'angles')==1)
+            prop =[prop; data(i).angles];
+        elseif (strcmp(propName, 'av_displacement_direction')==1)
+            prop =[prop; data(i).angles];
+        end
+    end
+end
+end
+
+
+function drawLinesForSpeeds(data,col_res, minTrackLength)
+L = length(data);
+colourmap=jet(col_res);
+[minProp, maxProp]=getDataForProperty(data, 'speeds', minTrackLength);
+for i=1:L
+    s = size(data(i).track); % size of array
+    np=s(1);
+    if np>minTrackLength
+    for j=1:np-1
+        c = round((data(i).speeds(j)-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
+        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(c,:), 'LineWidth', 2);
+    hold on
+    
+    end
+    end
+end
+
+end
+
+
+function drawLinesForAngles(data,col_res, minTrackLength)
+L = length(data);
+colourmap=jet(col_res);
+[minProp, maxProp]=getDataForProperty(data, 'angles', minTrackLength);
+for i=1:L
+    s = size(data(i).track); % size of array
+    np=s(1);
+    if np>minTrackLength
+    for j=1:np-1
+        c = round((data(i).angles(j)-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
+        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(c,:), 'LineWidth', 2);
+    hold on
+    
+    end
+    end
+end
+end
+
+
+function drawLinesForAvgSpeed(data,col_res, minTrackLength)
+L = length(data);
+colourmap=jet(col_res);
+[minProp, maxProp]=getDataForProperty(data, 'average_speed', minTrackLength);
+for i=1:L
+    s = size(data(i).speeds); % size of array
+    np=s(1);
+    if np>minTrackLength
+    for j=1:np-1
+        colorIndex = round((data(i).average_speed-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
+        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(colorIndex,:), 'LineWidth', 2);
+    hold on
+    
+    end
+    end
+end
+
+end
+
+
+function drawLinesForAvgDisplacement(data,col_res, minTrackLength)
+L = length(data);
+colourmap=jet(col_res);
+[minProp, maxProp]=getDataForProperty(data, 'av_displacement_direction', minTrackLength);
+for i=1:L
+    s = size(data(i).speeds); % size of array
+    np=s(1);
+    if np>minTrackLength
+    for j=1:np-1
+        colorIndex = round((data(i).av_displacement_direction-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
+        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(colorIndex,:), 'LineWidth', 2);
+    hold on
+    end
+    end
+end
+end
+
+function plotHistogram(data, col_res, minTrackLength, propName)
+set(gca,'FontSize',12);
+
+[minProp, maxProp]=getDataForProperty(data, propName, minTrackLength);
+prop =getAllProp(data, propName, minTrackLength);
+x=((1:col_res)*(maxProp-minProp)/col_res)+minProp;
+y=hist(prop,x);
+barh(x,y);
+set(gca,'xtick',[])
+axis off
+
+end

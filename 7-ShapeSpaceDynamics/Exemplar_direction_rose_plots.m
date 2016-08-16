@@ -7,7 +7,7 @@ function [ output_args ] = Exemplar_direction_rose_plots( DynamicData, CellShape
 % else
 %     Nbins=[100 50];
 % end
-
+minTrackLength=1; % we have also a hared coded min lenght
 cw=load( fullfile(APe_output_foldername, 'wish_list.mat'));
 cl=load( fullfile(APe_output_foldername, 'linkagemat.mat'));
 ci=load([APe_output_foldername '/APclusterOutput.mat']);
@@ -40,7 +40,7 @@ for j=1:N
     for i=1:L
         clust=exemplars==ci.idx(k);
         k=k+1;
-        if L>1
+        if L>minTrackLength % here we filter that the track is larger...
             if i==1
                 vecs_in_cluster{clust}(end+1)=atan2(Cell_cell{j}(2,2)-Cell_cell{j}(1,2),Cell_cell{j}(2,1)-Cell_cell{j}(1,1));
             elseif i==L
