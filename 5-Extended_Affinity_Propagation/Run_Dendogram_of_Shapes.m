@@ -1,7 +1,7 @@
 function  Run_Dendogram_of_Shapes( )
 root =matlabroot;
 global PATH
-if length(PATH>2)
+if (length(PATH)>2)
 root= PATH;
 end
 folder = uigetdir(root,'Select Analysis Folder');
