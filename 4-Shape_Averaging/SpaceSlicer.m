@@ -164,6 +164,7 @@ for i=1:length(items)
     x=SCORE(ax,1);
     y=SCORE(ax,2);
     [~, ~, ix] =getCenterCoordinate(x,y);
+    
     avshape=shapemean(CellShapeData,ax,ax(ix),0);
     figure
     h=subplot(1,1,1);
@@ -247,6 +248,11 @@ end % end of the if condition...
 function writeAvgShape(idxMatrix, SCORE, CellShapeData,folder, prefix)
 s=size(idxMatrix);
 col=[0.5,0.5,0.5];
+
+vect=[0,1];
+proj=SCORE(:,1:2)*vect';
+normproj=SCORE(:,1:2)-proj*vect;
+normproj_d=sqrt(diag(normproj*normproj'));
 figure
 clf
 set(gcf,'color','white');
@@ -260,10 +266,17 @@ for j=1:s(1)
         if ~isempty(ax)
             x=SCORE(ax,1);
             y=SCORE(ax,2);
-            [~, ~, ix] =getCenterCoordinate(x,y);
-            avshape=shapemean(CellShapeData,ax,ax(ix),0);
+            %[~, ~, ix] =getCenterCoordinate(x,y);
+            [~,mid]=min(abs(normproj_d(ax)));
+            avshape=shapemean(CellShapeData,ax,ax(mid),0);
+            
+            c=princomp([real(avshape) imag(avshape)]);
+            theta=atan2(c(2),c(1));
+            avshape=avshape*exp(1i*(-theta));
+            avshape=-avshape*sign(max(real(avshape))+min(real(avshape)));
+            avshape=avshape*exp(1i*(pi/4)); % 45 degree
             plot(avshape, 'color', col,'LineWidth',2);
-            axis equal
+            axis square
             
         else
             plot(0,0, 'color', 'w');
@@ -468,14 +481,14 @@ if plotshapes
         theta=atan2(c(2),c(1));
         avshape=avshape*exp(1i*(-theta));
         avshape=-avshape*sign(max(real(avshape))+min(real(avshape)));
-        avshape=avshape*exp(1i*(pi/4));
-        avshape=0.5*step*avshape/(1.1*max(abs(avshape)));
+        avshape=avshape*exp(1i*(pi/4)); % 45 degree
+        %avshape=0.5*step*avshape/(1.1*max(abs(avshape)));
         avshapes{i}=avshape;
-        plot(avshape+centres(i), 'color', color);
-        hold on
+        %plot(avshape+centres(i), 'color', color);
+        %hold on
     end
-    axis equal
-    axis xy off
+    axis square
+    %axis xy off
 end
 
 end

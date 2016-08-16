@@ -1,8 +1,8 @@
-function [ shapemean_out ] = shapemean( CSD, cellset_idx, middle_idx, ploton )
+function [ shape ] = shapemean( CSD, cellset_idx, middle_idx, ploton )
 %SHAPEMEAN Summary of this function goes here
 %   Detailed explanation goes here
 if isempty(cellset_idx)
-    shapemean_out=[];
+    shape=[];
     return
 end
 
@@ -18,16 +18,14 @@ for i=1:n
     complex_A=CSD.point(idx).coords_comp;
     rotated_A=exp(1i*phi)*complex_A;
     rotated_and_cycled_A=rotated_A([(1+R):end 1:R]);
-    
     newcellarray(i,:)=rotated_and_cycled_A;
 end
 
-shapemean_out=mean(newcellarray,1);
-
+shape=mean(newcellarray,1);
 if ploton
    plot(CSD.point(middle_idx).coords_comp,'g')
    hold on
-   plot(shapemean_out,'r','LineWidth',3)
+   plot(shape,'r','LineWidth',3)
     axis equal
 end
 
