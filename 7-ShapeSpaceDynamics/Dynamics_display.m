@@ -1,4 +1,4 @@
-function   Dynamics_display(DynamicData , folder, propname)
+function   Dynamics_display(DynamicData , folder, propname, minTrackLength)
 %DYNAMICS_DISPLAY To plot colour-coded tracks of cells through shape space.
 %   Detailed explanation goes here
 %
@@ -12,7 +12,7 @@ function   Dynamics_display(DynamicData , folder, propname)
 
 %cell_numbers is an optional argument that allows you to specify a sublist
 %of cells to plot, the default is all cells.
-minTrackLength=1; % we have also a hared coded min lenght
+
 if ~exist('cell_numbers','var')
     cell_numbers=1:length(DynamicData);
 end
