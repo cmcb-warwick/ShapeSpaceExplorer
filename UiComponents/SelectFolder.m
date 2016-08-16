@@ -63,7 +63,12 @@ imshow(img,'Parent',handles.axes1)
 axis('off')
 set(handles.edit1, 'String','...')
 handles.root=matlabroot;
-
+% show path from last time.
+global PATH
+if (length(PATH)>2)
+set(handles.edit1, 'String', PATH);
+set(handles.pushbutton2, 'enable', 'on');
+end
 % Update handles structure
 guidata(hObject, handles);
 

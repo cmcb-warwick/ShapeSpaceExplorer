@@ -62,7 +62,11 @@ img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
 axis('off')
 set(handles.edit1, 'String','...') 
-
+% show path from last time.
+global PATH
+if ((length(PATH)>2)&& ~(PATH==0))
+set(handles.edit1, 'String', PATH);
+end
 % Update handles structure
 guidata(hObject, handles);
 

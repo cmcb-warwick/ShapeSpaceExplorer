@@ -66,6 +66,12 @@ imFile = fullfile(folder, 'img/', 'cluster.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes2)
 
+% show path from last time.
+global PATH
+if length(PATH>2)
+set(handles.edit1, 'String', PATH);
+end
+
 % UIWAIT makes ConstrainedClustering wait for user response (see UIRESUME)
 uiwait(handles.figure1);
 

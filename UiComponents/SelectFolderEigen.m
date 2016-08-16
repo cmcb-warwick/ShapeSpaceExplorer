@@ -62,6 +62,12 @@ img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
 axis('off')
 set(handles.edit1, 'String','...')
+% show path from last time.
+global PATH
+if (length(PATH)>2)
+set(handles.edit1, 'String', PATH);
+set(handles.pushbutton2, 'enable', 'on');
+end
 handles.root=matlabpath;
 
 % Update handles structure
