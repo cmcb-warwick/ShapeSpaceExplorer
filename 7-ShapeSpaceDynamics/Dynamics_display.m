@@ -19,24 +19,10 @@ end
 %create a fig folder in the path;
 figPath = fullfile( folder, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
-h=figure(100);
-col_res=512;
-colourmap=jet(col_res);
+fig=figure(100);
 
+col_res=512;% how many colors the colormap has
 data=DynamicData(cell_numbers);
-
-
-
-%chop outliers
-%std_dev=std(prop);
-%med_prop=median(prop);
-%prop(prop>(med_prop+3.5*std_dev))=med_prop+3.5*std_dev;
-%prop(prop<(med_prop-3.5*std_dev))=med_prop-3.5*std_dev;
-
-%if std_dev==0
- %  disp([propname ' constant'])
-  % return
-%end
 
 
 % division on subplot size
@@ -44,7 +30,7 @@ sb1=9;
 sb2=15;
 mat=ones(sb1,1)*(1:(sb2))+(sb2+2)*(0:(sb1-1))'*ones(1,sb2);
 subplot(sb1,sb2+2,mat(:)');
-
+% use drawing method according to property
 if strcmp('speeds',propname)
     drawLinesForSpeeds(data,col_res, minTrackLength)
 elseif strcmp('angles',propname)
@@ -60,29 +46,19 @@ end
 [minProp, maxProp]=getDataForProperty(data, propname, minTrackLength);
 axis equal
 title( ['Display Shape Dynamics: ' propname]);
-%sb=6;
 set(gca,'FontSize',12);
-% plot colorbar
-%subplot(sb1,sb2+2,(sb2+1):(sb2+2):(sb1*(sb2+2)-1));
-colorbar;
+colorbar
 caxis([minProp, maxProp]);
-set(gca,'FontSize',12);
-set(gca,'XTickLabel','');
-set(gca,'YTickLabel','');
-xlabel({['max:',sprintf('%8.2E', maxProp)],['min:',sprintf('%8.2E',minProp)]});
 hold on;
 
 
 subplot(sb1,sb2+2,(sb2+2):(sb2+2):sb1*(sb2+2));
 %plot histogram along colorbar
 plotHistogram(data, col_res, minTrackLength, propname)
-
-
-
 name = ['7_ShapeDynamics_' propname '.eps'];
 path = fullfile(figPath, name);
 saveas(gca, path,'epsc');
-close(h);
+close(fig);
 
 end
 
@@ -219,7 +195,6 @@ prop =getAllProp(data, propName, minTrackLength);
 x=((1:col_res)*(maxProp-minProp)/col_res)+minProp;
 y=hist(prop,x);
 barh(x,y);
-set(gca,'xtick',[])
-axis off
-
+ylim([minProp maxProp]);
+set(gca,'XTickLabel','');
 end
