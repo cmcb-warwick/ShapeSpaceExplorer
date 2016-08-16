@@ -4,7 +4,10 @@ function   Run_DynamicDisplay( )
  props ={'speeds' 'average_speed' 'angles' 'av_displacement_direction'};
  close all force
  propname =props{out.prop};
- dPath = fullfile(out.path, 'DynamicData.mat');     
+ dPath = fullfile(out.path, 'DynamicData.mat');
+ % to show it next time we run app.
+ global PATH;
+ PATH=out.path;
     if exist(dPath, 'file')
         try data = load(dPath);
             dynamicData=data.DynamicData;

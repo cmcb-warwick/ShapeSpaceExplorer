@@ -62,8 +62,11 @@ cPath=mfilename('fullpath');
 imFile = fullfile(folder, 'img/', 'header.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
-
-
+% show path from last time.
+global PATH
+if length(PATH>2)
+set(handles.edit1, 'String', PATH);
+end
 
 
 % UIWAIT makes guiDynamicDisplay wait for user response (see UIRESUME)

@@ -2,6 +2,9 @@
 % on Editor-->Run
 function  Run_Sliced_Dynamics( )
     out=guiDynamicData();
+    % set the path for next use
+    global PATH;
+    PATH=out.path;
     close all force
     dPath = fullfile(out.path, 'DynamicData.mat');
     

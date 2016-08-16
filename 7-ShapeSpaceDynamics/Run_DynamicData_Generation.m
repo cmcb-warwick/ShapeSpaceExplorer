@@ -1,5 +1,12 @@
 function  Run_DynamicData_Generation( )
-folder = uigetdir(matlabroot,'Select Analysis Folder');
+% show path from last time.
+root =matlabroot;
+global PATH
+if length(PATH>2)
+root= PATH;
+end
+
+folder = uigetdir(root,'Select Analysis Folder');
 if folder==0, return; end
 cellShapePath = fullfile(folder, 'CellShapeData.mat');
 if exist(cellShapePath, 'file')

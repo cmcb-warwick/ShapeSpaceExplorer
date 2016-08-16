@@ -70,6 +70,12 @@ imFile = fullfile(folder, 'img/', 'y-slices.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes3)
 
+% show path from last time.
+global PATH
+if length(PATH>2)
+set(handles.edit1, 'String', PATH);
+end
+
 % UIWAIT makes guiDynamicData wait for user response (see UIRESUME)
 uiwait(handles.figure1);
 

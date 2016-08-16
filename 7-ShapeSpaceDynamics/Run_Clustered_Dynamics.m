@@ -2,7 +2,9 @@ function  Run_Clustered_Dynamics()
     out=ConstrainedClustering();
     close all force
     folder =out.fpath;
-    classes = out.classes;    
+    classes = out.classes; 
+    global PATH;
+    PATH=out.fpath;
 cellShapePath = fullfile(folder, 'CellShapeData_slim.mat');
 if exist(cellShapePath, 'file')
     display('File is loading ... ');
