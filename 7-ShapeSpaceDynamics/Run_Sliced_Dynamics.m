@@ -18,7 +18,6 @@ function  Run_Sliced_Dynamics( )
         filleDoesNotexist(dPath);
         return;
     end
-    minTrackLength=2;
     Local_direction_rose_plots(dynamicData, out.path,[out.xSlice out.ySlice], out.minTrackLength);
     display('Dynamics for sliced cells shape space has run successfully');
     display('-------');

@@ -313,10 +313,10 @@ for j=1:s(1)
     for i=1:s(2)
         h=subplot(s(1), s(2),idx);
         for k=1:s(3)
-            if sumGroup(k)==0
+            if sumGroup==0
                 num =0;
             else
-                num =matrix(j,i, k)/sumGroup(k);
+                num =matrix(j,i, k)/sumGroup;
             end
             h=bar(k, num);
             set(h,'FaceColor',colour(k,:));
