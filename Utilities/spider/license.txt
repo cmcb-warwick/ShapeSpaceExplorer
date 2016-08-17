@@ -1,4 +1,4 @@
-Copyright (c) 2011, David Said
+Copyright (c) 2015, michael arant
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

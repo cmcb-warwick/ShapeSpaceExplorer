@@ -66,15 +66,16 @@ for i=1:exL
     m=max(m(:));
     subplot(2,1,2)
     c=scale_fac/m;
-    v=SCORE(exemplars(i),[1 2]);
-    g=patch(c*x+v(1),c*y+v(2),'y');
-    set(g,'FaceColor','b','EdgeColor','k');
+    %v=SCORE(exemplars(i),[1 2]);
+    %g=patch(c*x+v(1),c*y+v(2),'y');
+    %set(g,'FaceColor','b','EdgeColor','k');
     hold on
+    
 end
 axis equal
-subplot(2,1,1)
+subplot(2,1,2)
 
-
+%plot shape
 colours=jet(number);
 colours=flipud(colours);
 colours=colours.*repmat((1-0.25*colours(:,2)),1,3);
