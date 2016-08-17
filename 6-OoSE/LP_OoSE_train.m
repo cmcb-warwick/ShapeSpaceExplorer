@@ -29,7 +29,7 @@ D=shape_distance_vector;
 clear('shape_distance_vector');
 
 nobs=size(target_func,1);
-if size(D,1)~=size(D,2)
+if size(D,1)~=size(D,2) % when D is not a square matrix
     %D2=D;
     D2=zeros(nobs,nobs);
     k=1;
@@ -49,7 +49,6 @@ end
 dims=size(target_func,2);
 
 for m=1:dims
-    
     f=target_func(:,m);
     f=f';
     Err=1;

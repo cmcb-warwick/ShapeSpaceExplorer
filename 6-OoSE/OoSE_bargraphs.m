@@ -1,11 +1,9 @@
-function [ output_args ] = OoSE_bargraphs( number,trainingCellShapeData,APe_output_foldername,OoSE_experiment_folder )
+function   OoSE_bargraphs( number,trainingCellShapeData,APe_output_foldername,OoSE_experiment_folder,wish_list, D, OoSE_emb )
 %OOSE_HISTOGRAMS Summary of this function goes here
 %   Detailed explanation goes here
+% wishlist, generated... after training.
 
 
-load(fullfile(OoSE_experiment_folder, '/OoSE_embedding.mat'));
-load(fullfile(OoSE_experiment_folder, '/Dist_mat.mat'))
-load(fullfile(APe_output_foldername, '/wish_list.mat'))
 figPath = fullfile( OoSE_experiment_folder, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
 
@@ -154,7 +152,7 @@ for i=1:number
 end
  alpha(1.0);
 %axis tight
-axis equal
+%axis equal
 grid on
 
 

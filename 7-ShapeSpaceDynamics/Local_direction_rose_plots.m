@@ -101,15 +101,14 @@ saveas(gcf, path, 'epsc');
 
 % now do the spider graph
 clf
-spiderMax=5;
 for j=1:Nbins(2);
     for i=1:Nbins(1);
         
-        if ~isempty(angles_in_box{j,i})
+        if ~isempty(dicrection_in_box{j,i})
             plot=subplot(Nbins(2),Nbins(1),Nbins(1)*(Nbins(2)-j)+i);
             %set(gcf, 'Visible', 'off');
-            spiderValues=calculateSpiderWebValues(dicrection_in_box{ybox, xbox});
-            spider( spiderValues, ' ', [0 spiderMax], {'0', '90', '180', '270'}, {''}, plot);
+            spiderValues=calculateSpiderWebValues(dicrection_in_box{j,i});
+            spider( spiderValues, ' ', [0 spiderMax/2], {'0', '90', '180', '270'}, {''}, plot);
            
             
             %g=patch(x,y,'y');
@@ -159,5 +158,38 @@ end
 end
 
 function [spiderValues]=calculateSpiderWebValues(allDirections)
-spiderValues =[ 1;2;3;4];
+lengthDir = length(allDirections);
+one=[];
+if ((lengthDir>0)&& ~(isempty(allDirections{1}))) 
+    one=allDirections{1}; end
+
+two=[];
+if ((lengthDir>1)&&(~isempty(allDirections{2}))) 
+    two=allDirections{2}; end
+
+three=[];
+if ((lengthDir>2)&&(~isempty(allDirections{3}))) 
+    three=allDirections{3}; end
+four=[];
+if ((lengthDir>3)&&(~isempty(allDirections{4}))) 
+    four=allDirections{4}; end
+spiderValues=[getMagnitudeDirection(one); getMagnitudeDirection(two);...
+              getMagnitudeDirection(three); getMagnitudeDirection(four)];
+    
+
+end
+
+%% calculate the mean vector of a series of vectors
+%  and return the Magnitude of the average Direction.
+function [value]=getMagnitudeDirection(directions)
+if (isempty(directions)) 
+    value=0; return; 
+end
+s=size(directions);
+if (s(1)>1)
+    avg_direction=mean(directions);
+else
+    avg_direction=directions;
+end
+value=sqrt(avg_direction(1)^2+avg_direction(2)^2);
 end
