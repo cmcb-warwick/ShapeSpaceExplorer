@@ -268,17 +268,17 @@ function [val] = color_index(len)
 if nargin < 1 || nargout < 1; help color_index; error('I / O error'); end
 
 if len == 1
-	val = [0 0 0];
+	val = [0 0 1];
 else
 	% initial color posibilities (no white)
 	% default color scale
-	col = [	0 0 0
-			0 0 1
+	col = [	0 0 1
 			0 1 1
 			0 1 0
 			1 1 0
 			1 0 1
-			1 0 0];
+			1 0 0
+            0 0 0];
 
 	% reduce if fewer than 6 items are needed (no interpolation needed)
 	switch len

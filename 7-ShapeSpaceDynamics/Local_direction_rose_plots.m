@@ -106,14 +106,8 @@ for j=1:Nbins(2);
         
         if ~isempty(dicrection_in_box{j,i})
             plot=subplot(Nbins(2),Nbins(1),Nbins(1)*(Nbins(2)-j)+i);
-            %set(gcf, 'Visible', 'off');
             spiderValues=calculateSpiderWebValues(dicrection_in_box{j,i});
             spider( spiderValues, ' ', [0 spiderMax/2], {'0', '90', '180', '270'}, {''}, plot);
-           
-            
-            %g=patch(x,y,'y');
-            %set(g,'FaceColor','b','EdgeColor','k');
-            %axis equal
             axis xy off
         else
             
