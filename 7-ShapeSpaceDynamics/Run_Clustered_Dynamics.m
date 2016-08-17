@@ -52,8 +52,8 @@ if ~exist(dynamicPath, 'file')
 end
 
 
-
-Exemplar_direction_rose_plots(dynamicData, cellShapeData, classes, folder);
+minTrackLength=2;
+Exemplar_direction_rose_plots(dynamicData, cellShapeData, classes, folder,minTrackLength);
 display('Clustered Dynamic Data run successfully');
 display('-------');
 end
