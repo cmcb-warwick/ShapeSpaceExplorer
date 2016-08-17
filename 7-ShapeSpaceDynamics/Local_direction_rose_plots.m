@@ -1,12 +1,8 @@
-function  Local_direction_rose_plots( DynamicData, folder, varargin )
+function  Local_direction_rose_plots( DynamicData, folder, Nbins, minTrackLength )
 %AVERAGE_LOCAL_DIRECTION Summary of this function goes here
 %   Cell_track should be a cell array where each cell contains the embedded
 %shape space path of one cell through time, this should be a Kx2 matrix, K being the number of time points for the cell.
-if ~isempty(varargin)
-    Nbins=varargin{1};
-else
-    Nbins=[10 6];
-end
+
 
 figPath = fullfile( folder, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
@@ -30,7 +26,7 @@ spiderMax=0;
 N=length(Cell_track);
 for j=1:N
     L=size(Cell_track{j},1);
-    if L<2, continue; end %  if track smaller than minLength. forget it
+    if L<minTrackLength, continue; end %  if track smaller than minLength. forget it
     for i=1:L-1 % we have one angle less, than we have points.
         %calculate in which bin the track falls
         vec=Cell_track{j}(i,:);

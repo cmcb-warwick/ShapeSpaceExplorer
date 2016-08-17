@@ -22,7 +22,7 @@ function varargout = guiDynamicData(varargin)
 
 % Edit the above text to modify the response to help guiDynamicData
 
-% Last Modified by GUIDE v2.5 04-Jun-2015 20:27:25
+% Last Modified by GUIDE v2.5 17-Aug-2016 10:53:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -91,6 +91,7 @@ function varargout = guiDynamicData_OutputFcn(hObject, eventdata, handles)
 struc.path= get(handles.edit1, 'String');
 struc.xSlice=get(handles.popupmenu2,'Value');
 struc.ySlice=get(handles.popupmenu3,'Value');
+struc.minTrackLength=get(handles.popupmenu4,'Value')+1;
 struc.axesEqual=get(handles.checkbox1,'Value');
 struc.handle = handles.figure1;
 varargout{1} = struc;
@@ -150,16 +151,7 @@ else
 figure1_CloseRequestFcn(hObject, eventdata, handles);
 end
 
-% fpath= get(handles.edit1, 'String');
-% xslice=get(handles.popupmenu2,'Value');
-% yslice=get(handles.popupmenu3,'Value');
-% axesEqual=get(handles.checkbox1,'Value');
-% [folder,~,~] = fileparts(fpath);
-% path = fullfile(folder, 'Figures');
-% if checkIfCorrectFilepath(fpath)==1
-%    data = load(fpath);
-%    SpaceSlicer(data.CellShapeData, xslice,yslice, path, axesEqual);
-% end
+
    
 
 
@@ -247,3 +239,26 @@ function checkbox2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox2
+
+
+% --- Executes on selection change in popupmenu4.
+function popupmenu4_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu4 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu4
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

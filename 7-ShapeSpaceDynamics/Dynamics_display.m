@@ -96,17 +96,17 @@ prop=[];
 for i=1: length(data)
     s=size(data(i).track);
     L =s(1);
-    if (L>minTrackLength)
-        if (strcmp(propName, 'speeds')==1)
-            prop =[prop; data(i).speeds];
-        elseif (strcmp(propName, 'average_speed')==1)
-            prop =[prop; data(i).average_speed];
-        elseif (strcmp(propName, 'angles')==1)
-            prop =[prop; data(i).angles];
-        elseif (strcmp(propName, 'av_displacement_direction')==1)
-            prop =[prop; data(i).angles];
-        end
+    if (L<minTrackLength) continue; end
+    if (strcmp(propName, 'speeds')==1)
+        prop =[prop; data(i).speeds];
+    elseif (strcmp(propName, 'average_speed')==1)
+        prop =[prop; data(i).average_speed];
+    elseif (strcmp(propName, 'angles')==1)
+        prop =[prop; data(i).angles];
+    elseif (strcmp(propName, 'av_displacement_direction')==1)
+        prop =[prop; data(i).angles];
     end
+    
 end
 end
 
@@ -118,13 +118,12 @@ colourmap=jet(col_res);
 for i=1:L
     s = size(data(i).track); % size of array
     np=s(1);
-    if np>minTrackLength
+    if (np<minTrackLength) 
+        continue; end
     for j=1:np-1
         c = round((data(i).speeds(j)-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
         line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(c,:), 'LineWidth', 2);
     hold on
-    
-    end
     end
 end
 
@@ -138,13 +137,12 @@ colourmap=jet(col_res);
 for i=1:L
     s = size(data(i).track); % size of array
     np=s(1);
-    if np>minTrackLength
+    if (np<minTrackLength) 
+        continue; end
     for j=1:np-1
         c = round((data(i).angles(j)-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
         line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(c,:), 'LineWidth', 2);
     hold on
-    
-    end
     end
 end
 end
@@ -157,13 +155,13 @@ colourmap=jet(col_res);
 for i=1:L
     s = size(data(i).speeds); % size of array
     np=s(1);
-    if np>minTrackLength
+    if (np<minTrackLength) 
+        continue; end
     for j=1:np-1
         colorIndex = round((data(i).average_speed-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
         line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(colorIndex,:), 'LineWidth', 2);
     hold on
     
-    end
     end
 end
 
@@ -177,12 +175,12 @@ colourmap=jet(col_res);
 for i=1:L
     s = size(data(i).speeds); % size of array
     np=s(1);
-    if np>minTrackLength
+    if (np<minTrackLength) 
+        continue; end
     for j=1:np-1
         colorIndex = round((data(i).av_displacement_direction-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
         line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(colorIndex,:), 'LineWidth', 2);
     hold on
-    end
     end
 end
 end

@@ -1,4 +1,4 @@
-function [ output_args ] = Exemplar_direction_rose_plots( DynamicData, CellShapeData, number,APe_output_foldername)
+function   Exemplar_direction_rose_plots( DynamicData, CellShapeData, number,APe_output_foldername, minTrackLength)
 %AVERAGE_LOCAL_DIRECTION Summary of this function goes here
 %   Cell_cell should be a cell array where each cell contains the embedded
 %shape space path of one cell through time, this should be a Kx2 matrix, K being the number of time points for the cell.
@@ -7,7 +7,7 @@ function [ output_args ] = Exemplar_direction_rose_plots( DynamicData, CellShape
 % else
 %     Nbins=[100 50];
 % end
-minTrackLength=1; % we have also a hared coded min lenght
+
 cw=load( fullfile(APe_output_foldername, 'wish_list.mat'));
 cl=load( fullfile(APe_output_foldername, 'linkagemat.mat'));
 ci=load([APe_output_foldername '/APclusterOutput.mat']);

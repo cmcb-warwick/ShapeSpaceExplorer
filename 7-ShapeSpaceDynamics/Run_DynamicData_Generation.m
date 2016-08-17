@@ -2,7 +2,7 @@ function  Run_DynamicData_Generation( )
 % show path from last time.
 root =matlabroot;
 global PATH
-if length(PATH>2)
+if (length(PATH)>2)
 root= PATH;
 end
 
