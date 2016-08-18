@@ -313,10 +313,10 @@ for j=1:s(1)
     for i=1:s(2)
         h=subplot(s(1), s(2),idx);
         for k=1:s(3)
-            if sumGroup==0
+            if sumGroup(k)==0
                 num =0;
             else
-                num =matrix(j,i, k)/sumGroup;
+                num =matrix(j,i, k)/sumGroup(k);
             end
             h=bar(k, num);
             set(h,'FaceColor',colour(k,:));
@@ -364,12 +364,16 @@ end
 
 
 function sumG = calculateSumOfGroups(matrix)
+
 s=size(matrix);
-if s<3, s(3)=1; end % for single group.
+try 
 sumG =zeros(s(3),1);
 for i=1:s(3)
     tmp = matrix(:,:,i);
     sumG(i)=sum(tmp(:));
+end
+catch % there is no s(3)
+   sumG=sum(matrix(:));
 end
 end
 

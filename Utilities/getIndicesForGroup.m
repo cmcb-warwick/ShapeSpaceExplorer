@@ -1,3 +1,4 @@
+%get the ides for a group
 function ids = getIndicesForGroup(BigCellDataStruct, stacks)
     stack_indices=getStackIndices(BigCellDataStruct);
     ids =getAllIndicesFor(stack_indices, stacks);
