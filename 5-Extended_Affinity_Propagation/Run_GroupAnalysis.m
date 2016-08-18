@@ -188,9 +188,7 @@ for i =1:s(1)
     
     fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_fraction']);
     tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_fraction.txt']);
-    for k =1:length(array)
-        array(k)=array(k)/sum(classes(:,k));
-    end
+    array=classes(i,:)/sum(classes(i,:));
     percTable(i,:)=array;
     h=bar(array);
     dlmwrite(tPath ,array, '\t');
@@ -231,6 +229,7 @@ for i=1:number
 end
 
 set(gca, 'XTick', 1:number, 'XTickLabel', clusters(:,1));
+ylim([0 1.0]);
 end
 
 
@@ -395,8 +394,6 @@ function allDist=getDistancesForGroup(stacks, BigCellDataStruct, cell_indices, S
 
 allDist=[];
 gIds=getIndicesForGroup(BigCellDataStruct, stacks);
-%stack_indices=getStackIndices(BigCellDataStruct);
-%gIds =getAllIndicesFor(stack_indices, stacks);
 cIds = sort(unique(cell_indices.*gIds));
 cIds = cIds(2:end);
 for i=1:length(cIds)
