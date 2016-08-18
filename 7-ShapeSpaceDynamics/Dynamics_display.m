@@ -72,7 +72,7 @@ maxProp =0;
 for i=1: length(data)
     s=size(data(i).track);
     L =s(1);
-    if (L>minTrackLength)
+    if (L<minTrackLength), continue; end
         if (strcmp(propName, 'speeds')==1)
             minProp=min(minProp,min(data(i).speeds));
             maxProp=max(maxProp,max(data(i).speeds));
@@ -85,14 +85,13 @@ for i=1: length(data)
         
         
         elseif (strcmp(propName, 'av_displacement_direction')==1)
-            minProp=min(minProp,min(data(i).angles));
-            maxProp=max(maxProp,max(data(i).angles));
-        
+            minProp=min(minProp,min(data(i).av_displacement_direction));
+            maxProp=max(maxProp,max(data(i).av_displacement_direction))
+
+        end
+end
 end
 
-    end
-end
-end
 
 function [prop] =getAllProp(data, propName, minTrackLength)
 prop=[];
@@ -107,11 +106,12 @@ for i=1: length(data)
     elseif (strcmp(propName, 'angles')==1)
         prop =[prop; data(i).angles];
     elseif (strcmp(propName, 'av_displacement_direction')==1)
-        prop =[prop; data(i).angles];
+        prop =[prop; data(i).av_displacement_direction];
     end
     
 end
 end
+
 
 
 function drawLinesForSpeeds(data,col_res, minTrackLength)
@@ -177,6 +177,8 @@ for i=1:L
 end
 
 end
+
+
 
 
 function drawLinesForAvgDisplacement(data,col_res, minTrackLength)
