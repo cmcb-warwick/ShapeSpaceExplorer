@@ -13,55 +13,18 @@ function   Dynamics_display(default, group)
 %cell_numbers is an optional argument that allows you to specify a sublist
 %of cells to plot, the default is all cells.
 
-%setup variables
-DynamicData=default.DynamicData; 
-propname=default.propname;
-minTrackLength=default.minTrackLength;
-cell_numbers=1:length(DynamicData);
+
 
 %create a fig folder in the path;
 figPath = fullfile( default.path, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
-fig=figure(100);
-
-col_res=512;% how many colors the colormap has
-data=DynamicData(cell_numbers);
 
 
-% division on subplot size
-sb1=9;
-sb2=15;
-mat=ones(sb1,1)*(1:(sb2))+(sb2+2)*(0:(sb1-1))'*ones(1,sb2);
-subplot(sb1,sb2+2,mat(:)');
-% use drawing method according to property
-if strcmp('speeds',propname)
-    drawLinesForSpeeds(data,col_res, minTrackLength)
-elseif strcmp('angles',propname)
-    drawLinesForAngles(data,col_res, minTrackLength)
-elseif strcmp('average_speed',propname)  
-    drawLinesForAvgSpeed(data,col_res, minTrackLength)
-elseif strcmp('av_displacement_direction',propname) 
-    drawLinesForAvgDisplacement(data,col_res, minTrackLength)
-end
-% angle, speed are one per point (transistion), while 
-% 
-
-[minProp, maxProp]=getDataForProperty(data, propname, minTrackLength);
-axis equal
-title( ['Display Shape Dynamics: ' propname]);
-set(gca,'FontSize',12);
-colorbar
-caxis([minProp, maxProp]);
-hold on;
+data=default.DynamicData; 
+drawDynamicDisplay(data,default.propname, default.minTrackLength, figPath, 'all_')
 
 
-subplot(sb1,sb2+2,(sb2+2):(sb2+2):sb1*(sb2+2));
-%plot histogram along colorbar
-plotHistogram(data, col_res, minTrackLength, propname)
-name = ['7_ShapeDynamics_' propname '.eps'];
-path = fullfile(figPath, name);
-saveas(gca, path,'epsc');
-close(fig);
+
 
 end
 
@@ -213,4 +176,43 @@ set(gca,'XTickLabel','');
 end
 
 
+
+function drawDynamicDisplay(data, propname,minTrackLength, figPath, stringId)
+clf
+fig = figure(1);
+col_res=512;% how many colors the colormap has
+% division on subplot size
+sb1=9;
+sb2=15;
+mat=ones(sb1,1)*(1:(sb2))+(sb2+2)*(0:(sb1-1))'*ones(1,sb2);
+subplot(sb1,sb2+2,mat(:)');
+% use drawing method according to property
+if strcmp('speeds',propname)
+    drawLinesForSpeeds(data,col_res, minTrackLength)
+elseif strcmp('angles',propname)
+    drawLinesForAngles(data,col_res, minTrackLength)
+elseif strcmp('average_speed',propname)  
+    drawLinesForAvgSpeed(data,col_res, minTrackLength)
+elseif strcmp('av_displacement_direction',propname) 
+    drawLinesForAvgDisplacement(data,col_res, minTrackLength)
+end
+% angle, speed are one per point (transistion), while 
+% 
+
+[minProp, maxProp]=getDataForProperty(data, propname, minTrackLength);
+axis equal
+title( ['Display Shape Dynamics: ' propname]);
+set(gca,'FontSize',12);
+colorbar
+caxis([minProp, maxProp]);
+hold on;
+
+subplot(sb1,sb2+2,(sb2+2):(sb2+2):sb1*(sb2+2));
+%plot histogram along colorbar
+plotHistogram(data, col_res, minTrackLength, propname)
+name = ['7_ShapeDynamics_' char(stringId) propname '.eps'];
+path = fullfile(figPath, name);
+saveas(gca, path,'epsc');
+close(fig);
+end
 

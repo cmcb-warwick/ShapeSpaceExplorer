@@ -9,6 +9,7 @@ function   Run_DynamicDisplay( )
  % to show it next time we run app.
  global PATH;
  PATH=out.path;
+ 
  default.path=out.path;
     if exist(dPath, 'file')
         try data = load(dPath);
