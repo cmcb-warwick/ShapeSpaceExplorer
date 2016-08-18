@@ -86,7 +86,7 @@ for i=1: length(data)
         
         elseif (strcmp(propName, 'av_displacement_direction')==1)
             minProp=min(minProp,min(data(i).av_displacement_direction));
-            maxProp=max(maxProp,max(data(i).av_displacement_direction))
+            maxProp=max(maxProp,max(data(i).av_displacement_direction));
 
         end
 end
