@@ -486,13 +486,13 @@ if plotshapes
         avshape=avshape*exp(1i*(-theta));
         avshape=-avshape*sign(max(real(avshape))+min(real(avshape)));
         avshape=avshape*exp(1i*(pi/4)); % 45 degree
-        %avshape=0.5*step*avshape/(1.1*max(abs(avshape)));
+        avshape=0.5*step*avshape/(1.1*max(abs(avshape)));
         avshapes{i}=avshape;
-        %plot(avshape+centres(i), 'color', color);
-        %hold on
+        plot(avshape+centres(i), 'color', color);
+        hold on
     end
     axis square
-    %axis xy off
+    axis xy off
 end
 
 end
