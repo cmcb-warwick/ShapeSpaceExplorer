@@ -22,7 +22,7 @@ function varargout = guiDynamicData(varargin)
 
 % Edit the above text to modify the response to help guiDynamicData
 
-% Last Modified by GUIDE v2.5 17-Aug-2016 10:53:57
+% Last Modified by GUIDE v2.5 18-Aug-2016 13:05:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,7 +72,7 @@ imshow(img,'Parent',handles.axes3)
 
 % show path from last time.
 global PATH
-if length(PATH>2)
+if (length(PATH)>2)
 set(handles.edit1, 'String', PATH);
 end
 
@@ -93,6 +93,7 @@ struc.xSlice=get(handles.popupmenu2,'Value');
 struc.ySlice=get(handles.popupmenu3,'Value');
 struc.minTrackLength=get(handles.popupmenu4,'Value')+1;
 struc.axesEqual=get(handles.checkbox1,'Value');
+struc.groups=get(handles.checkbox3,'Value');
 struc.handle = handles.figure1;
 varargout{1} = struc;
 h= handles.figure1;
@@ -262,3 +263,12 @@ function popupmenu4_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in checkbox3.
+function checkbox3_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox3

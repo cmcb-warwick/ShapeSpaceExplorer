@@ -10,13 +10,28 @@ figPath = fullfile( default.path, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
 % prepare the data for the box (angles and speed)
 [angles_in_box, spiderPlot_in_box] = getDataForPlots(DynamicData, Nbins, minTrackLength);
-plotRoses(Nbins, angles_in_box, figPath)
+plotRoses(Nbins, angles_in_box, figPath, 'all_')
 
 % now do the spider graph
-maxVal = getMaxOfAvgSpeeds(Nbins,spiderPlot_in_box);
-plotSpiderCharts(Nbins, spiderPlot_in_box, figPath,maxVal)
-% get the maximum value
+gobalMaxVal = getMaxOfAvgSpeeds(Nbins,spiderPlot_in_box);
+plotSpiderCharts(Nbins, spiderPlot_in_box, figPath,gobalMaxVal, 'all_')
 
+
+
+% get
+if ~ groups.do, return; end
+for g=1:length(groups.items)
+    item =groups.items{g};
+    gIds=getIndicesForGroup(groups.BigCellDataStruct, item.tracks);
+    finalIds=unique(gIds.*groups.cellIdxes);
+    finalIds=finalIds(finalIds~=0);
+    groupDynamicData=DynamicData(finalIds);
+    [angles_in_box, spiderPlot_in_box] = getDataForPlots(groupDynamicData, Nbins, minTrackLength);
+    plotRoses(Nbins, angles_in_box, figPath, ['Group_' char(item.name) '_']);
+    % now do the spider graph
+    
+    plotSpiderCharts(Nbins, spiderPlot_in_box, figPath,gobalMaxVal, ['Group_' char(item.name) '_']);
+end
 end
 
 %---------------------------------------------------------------
@@ -68,8 +83,10 @@ m =0;
 for j=1:Nbins(2)
     for i=1:Nbins(1)
      for a=1:4 % iterate over angle
+        try
         tmp= allspeeds{j,i}{a};
         m= max(m, mean(tmp));
+        end
      end
     end
 end
@@ -125,7 +142,7 @@ end
 end
 
 
-function plotRoses(Nbins, angles_in_box, figPath)
+function plotRoses(Nbins, angles_in_box, figPath, stringID)
 clf
 
 for j=1:Nbins(2);
@@ -152,14 +169,14 @@ for j=1:Nbins(2);
         %axis xy off
     end
 end
-name = ['7_SlicedSpacedShape_Dynamics_' num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices'];
+name = ['7_SlicedSpacedShape_Dynamics_' char(stringID) num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices'];
 path = fullfile(figPath, name);
 saveas(gcf, path, 'fig');
 saveas(gcf, path, 'epsc');
 end
 
 
-function plotSpiderCharts(Nbins, spiderPlot_in_box, figPath, maxVal)
+function plotSpiderCharts(Nbins, spiderPlot_in_box, figPath, maxVal, stringID)
 clf
 for j=1:Nbins(2)
     for i=1:Nbins(1)
@@ -178,8 +195,15 @@ for j=1:Nbins(2)
     end
 end
 
-name = ['7_SlicedSpacedShape_Dynamics_Radar_' num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices'];
+name = ['7_SlicedSpacedShape_Dynamics_Radar_' char(stringID) num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices'];
 path = fullfile(figPath, name);
 saveas(gcf, path, 'fig');
 saveas(gcf, path, 'epsc');
+end
+
+
+function groupDynamicData =getGroupDynamicData(DynamicData, finalIds)
+
+
+
 end
