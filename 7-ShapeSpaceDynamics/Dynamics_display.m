@@ -1,4 +1,4 @@
-function   Dynamics_display(DynamicData , folder, propname, minTrackLength)
+function   Dynamics_display(default, group)
 %DYNAMICS_DISPLAY To plot colour-coded tracks of cells through shape space.
 %   Detailed explanation goes here
 %
@@ -13,11 +13,14 @@ function   Dynamics_display(DynamicData , folder, propname, minTrackLength)
 %cell_numbers is an optional argument that allows you to specify a sublist
 %of cells to plot, the default is all cells.
 
-if ~exist('cell_numbers','var')
-    cell_numbers=1:length(DynamicData);
-end
+%setup variables
+DynamicData=default.DynamicData; 
+propname=default.propname;
+minTrackLength=default.minTrackLength;
+cell_numbers=1:length(DynamicData);
+
 %create a fig folder in the path;
-figPath = fullfile( folder, 'Figures');
+figPath = fullfile( default.path, 'Figures');
 if ~exist(figPath,'dir'),mkdir(figPath);end 
 fig=figure(100);
 
@@ -121,8 +124,10 @@ for i=1:L
     if (np<minTrackLength) 
         continue; end
     for j=1:np-1
-        c = round((data(i).speeds(j)-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
-        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(c,:), 'LineWidth', 2);
+        %normalize value
+        X_std = (data(i).speeds(j) - minProp) ./ (maxProp - minProp); % now between [0,1]
+        Cidx = round(X_std .* (col_res - 1) + 1); % now bring it into range.
+        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(Cidx,:), 'LineWidth', 2);
     hold on
     end
 end
@@ -140,8 +145,10 @@ for i=1:L
     if (np<minTrackLength) 
         continue; end
     for j=1:np-1
-        c = round((data(i).angles(j)-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
-        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(c,:), 'LineWidth', 2);
+        %normalize value
+        X_std =  (data(i).angles(j) - minProp) ./ (maxProp - minProp); % now between [0,1]
+        Cidx = round(X_std .* (col_res - 1) + 1); % now bring it into range.
+        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(Cidx,:), 'LineWidth', 2);
     hold on
     end
 end
@@ -151,6 +158,8 @@ end
 function drawLinesForAvgSpeed(data,col_res, minTrackLength)
 L = length(data);
 colourmap=jet(col_res);
+
+
 [minProp, maxProp]=getDataForProperty(data, 'average_speed', minTrackLength);
 for i=1:L
     s = size(data(i).speeds); % size of array
@@ -158,8 +167,10 @@ for i=1:L
     if (np<minTrackLength) 
         continue; end
     for j=1:np-1
-        colorIndex = round((data(i).average_speed-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
-        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(colorIndex,:), 'LineWidth', 2);
+        %normalize value
+        X_std =  (data(i).average_speed - minProp) ./ (maxProp - minProp); % now between [0,1]
+        Cidx = round(X_std .* (col_res - 1) + 1); % now bring it into range.
+        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(Cidx,:), 'LineWidth', 2);
     hold on
     
     end
@@ -178,8 +189,10 @@ for i=1:L
     if (np<minTrackLength) 
         continue; end
     for j=1:np-1
-        colorIndex = round((data(i).av_displacement_direction-minProp)/(maxProp-minProp)*(col_res-1)) +1; % plus one,because index starts at one
-        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(colorIndex,:), 'LineWidth', 2);
+        %normalize value
+        X_std =  (data(i).av_displacement_direction - minProp) ./ (maxProp - minProp); % now between [0,1]
+        Cidx = round(X_std .* (col_res - 1) + 1); % now bring it into range.
+        line([data(i).track(j,1) data(i).track(j+1,1)],[data(i).track(j,2) data(i).track(j+1,2)],'Color',colourmap(Cidx,:), 'LineWidth', 2);
     hold on
     end
 end
@@ -196,3 +209,6 @@ barh(x,y);
 ylim([minProp maxProp]);
 set(gca,'XTickLabel','');
 end
+
+
+
