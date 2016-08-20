@@ -23,7 +23,7 @@ function   Run_DynamicDisplay( )
         return;
     end
     
-    group.do=0;
+    group.do=1;
 %---------------------------------------------
 % get group analysis data together.
 %---------------------------------------------
