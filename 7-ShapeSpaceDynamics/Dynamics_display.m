@@ -46,7 +46,7 @@ end
 
 function [minProp, maxProp] =getDataLimitsForProperty(data, propName, minTrackLength)
 minProp =1000000000000;
-maxProp =0;
+maxProp =-100000000000;
 for i=1: length(data)
     s=size(data(i).track);
     L =s(1);
@@ -63,7 +63,7 @@ for i=1: length(data)
         elseif (strcmp(propName, 'av_displacement_direction')==1)
             minProp=min(minProp,min(data(i).av_displacement_direction));
             maxProp=max(maxProp,max(data(i).av_displacement_direction));
-       elseif (strcmp(propName, 'track')==1)
+       elseif (strcmp(propName, 'tracks')==1)
             minProp=min(minProp,min(data(i).track));
             maxProp=max(maxProp,max(data(i).track));
 
@@ -97,7 +97,7 @@ end
 
 
 
-function [limits]=drawLinesForProperty(data,col_res, minTrackLength, propName, fig)
+function drawLinesForProperty(data,col_res, minTrackLength, propName, fig)
 L = length(data);
 colourmap=jet(col_res);
 
@@ -115,7 +115,9 @@ for i=1:L
     hold on
     end
 end
-limits=[xlim ylim];
+xlim([fig.minTrack(2) fig.maxTrack(2)]);
+ylim([fig.minTrack(1) fig.maxTrack(1)]);
+
 end
 
 % helper method to get data for plotting.
@@ -149,7 +151,7 @@ end
 
 
 
-function [limits] =drawDynamicDisplay(data, propname,minTrackLength, fig)
+function drawDynamicDisplay(data, propname,minTrackLength, fig)
 clf
 h = figure(1);
 col_res=512;
@@ -158,7 +160,7 @@ sb1=9;
 sb2=15;
 mat=ones(sb1,1)*(1:(sb2))+(sb2+2)*(0:(sb1-1))'*ones(1,sb2);
 subplot(sb1,sb2+2,mat(:)');
-limits=drawLinesForProperty(data, col_res, minTrackLength, propname, fig);
+drawLinesForProperty(data, col_res, minTrackLength, propname, fig);
 % use drawing method according to property
 
 % angle, speed are one per point (transistion), while 
