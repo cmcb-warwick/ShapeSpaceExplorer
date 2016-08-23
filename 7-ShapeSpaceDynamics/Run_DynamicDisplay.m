@@ -23,11 +23,11 @@ function   Run_DynamicDisplay( )
         return;
     end
     
-    group.do=1;
+    group.do=0;
 %---------------------------------------------
 % get group analysis data together.
 %---------------------------------------------
-if (group.do)
+if (out.groupAnalysis)
     group.do=1;
     grFile =fullfile(out.path, 'groups.mat');
     if ~exist(grFile,'file')

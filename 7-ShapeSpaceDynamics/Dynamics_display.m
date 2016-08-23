@@ -175,7 +175,7 @@ hold on;
 subplot(sb1,sb2+2,(sb2+2):(sb2+2):sb1*(sb2+2));
 %plot histogram along colorbar
 plotHistogram(data, col_res, minTrackLength, propname, fig.minProp, fig.maxProp)
-name = ['7_ShapeDynamics_' char(fig.name) propname '.eps'];
+name = ['7_ShapeDynamics_'  propname '_' char(fig.name) '.eps'];
 path = fullfile(fig.path, name);
 saveas(gca, path,'epsc');
 close(h);

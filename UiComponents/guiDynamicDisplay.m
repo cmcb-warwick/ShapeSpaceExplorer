@@ -22,7 +22,7 @@ function varargout = guiDynamicDisplay(varargin)
 
 % Edit the above text to modify the response to help guiDynamicDisplay
 
-% Last Modified by GUIDE v2.5 16-Aug-2016 10:47:49
+% Last Modified by GUIDE v2.5 23-Aug-2016 21:09:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -84,6 +84,7 @@ function varargout = guiDynamicDisplay_OutputFcn(hObject, eventdata, handles)
 struc.path= get(handles.edit1, 'String');
 struc.prop=get(handles.popupmenu2,'Value');
 struc.minTrackLenght=get(handles.popupmenu3,'Value');
+struc.groupAnalysis=get(handles.checkbox3,'Value');
 struc.handle = handles.figure1;
 varargout{1} = struc;
 h= handles.figure1;
@@ -239,3 +240,12 @@ function checkbox2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox2
+
+
+% --- Executes on button press in checkbox3.
+function checkbox3_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox3
