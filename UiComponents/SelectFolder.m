@@ -1,28 +1,28 @@
 function varargout = SelectFolder(varargin)
-% SELECTFOLDER MATLAB code for SelectFolder.fig
-%      SELECTFOLDER, by itself, creates a new SELECTFOLDER or raises the existing
+% SELECTFOLDEREIGEN MATLAB code for SelectFolderEigen.fig
+%      SELECTFOLDEREIGEN, by itself, creates a new SELECTFOLDEREIGEN or raises the existing
 %      singleton*.
 %
-%      H = SELECTFOLDER returns the handle to a new SELECTFOLDER or the handle to
+%      H = SELECTFOLDEREIGEN returns the handle to a new SELECTFOLDEREIGEN or the handle to
 %      the existing singleton*.
 %
-%      SELECTFOLDER('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in SELECTFOLDER.M with the given input arguments.
+%      SELECTFOLDEREIGEN('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in SELECTFOLDEREIGEN.M with the given input arguments.
 %
-%      SELECTFOLDER('Property','Value',...) creates a new SELECTFOLDER or raises the
+%      SELECTFOLDEREIGEN('Property','Value',...) creates a new SELECTFOLDEREIGEN or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before SelectFolder_OpeningFcn gets called.  An
+%      applied to the GUI before SelectFolderEigen_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to SelectFolder_OpeningFcn via varargin.
+%      stop.  All inputs are passed to SelectFolderEigen_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help SelectFolder
+% Edit the above text to modify the response to help SelectFolderEigen
 
-% Last Modified by GUIDE v2.5 02-Jun-2015 16:26:35
+% Last Modified by GUIDE v2.5 21-Jul-2015 22:16:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -44,15 +44,15 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before SelectFolder is made visible.
+% --- Executes just before SelectFolderEigen is made visible.
 function SelectFolder_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to SelectFolder (see VARARGIN)
+% varargin   command line arguments to SelectFolderEigen (see VARARGIN)
 
-% Choose default command line output for SelectFolder
+% Choose default command line output for SelectFolderEigen
 handles.output = hObject;
 guidata(hObject, handles);
 cPath=mfilename('fullpath');
@@ -62,17 +62,18 @@ img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
 axis('off')
 set(handles.edit1, 'String','...')
-handles.root=matlabroot;
 % show path from last time.
 global PATH
 if (length(PATH)>2)
 set(handles.edit1, 'String', PATH);
 set(handles.pushbutton2, 'enable', 'on');
 end
+handles.root=matlabpath;
+
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes SelectFolder wait for user response (see UIRESUME)
+% UIWAIT makes SelectFolderEigen wait for user response (see UIRESUME)
 uiwait(handles.figure1);
 
 
@@ -90,6 +91,7 @@ if handles.cancel==1,   % if cancel
     return;
 end
 struc.folder = get(handles.edit1, 'String');
+struc.sparse = get(handles.checkbox1,'Value');
 varargout{1}=struc;
 delete(handles.figure1);
 
@@ -170,3 +172,12 @@ else
     h= handles.figure1;
     delete(h);
 end
+
+
+% --- Executes on button press in checkbox1.
+function checkbox1_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox1
