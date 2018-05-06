@@ -54,13 +54,13 @@ for i=1:clust_num
         disp=clust;
     end
     subplot(clust_num,disp_num,disp_num*(i-1)+1)
-    plot(real(NewCellArray{ex}),imag(NewCellArray{ex}),'color',colour(i,:),'LineWidth',2)
+    plot(real(NewCellArray{ex}),imag(NewCellArray{ex}),'color',colour(i,:),'LineWidth',1)
          axis equal
         axis([-0.4 0.4 -0.4 0.4])
         axis xy off
     for j=2:(length(disp)+1)
         subplot(clust_num,disp_num,disp_num*(i-1)+j)
-        plot(real(NewCellArray{disp(j-1)}),imag(NewCellArray{disp(j-1)}),'color',colour(i,:),'LineWidth',2)
+        plot(real(NewCellArray{disp(j-1)}),imag(NewCellArray{disp(j-1)}),'color',colour(i,:),'LineWidth',1)
          axis equal
         axis([-0.4 0.4 -0.4 0.4])
         axis xy off
@@ -72,33 +72,39 @@ saveas(gcf, fPath, 'epsc');
 
 % --------------------
 % create axes in a grid
+hold off
 figure
-set(gcf,'color','w');
-h = [];
-t = 1;
-A = 0.9/a;
-B=0.9/b;
-for i=1:b
-    y = (b-i)/b;
-    for j=1:a
-        x = (j-1)/a;
-        h(t) = axes('units','norm','pos',[x y A B]);
-        t = t+1;
-    end
-end
+% %set(gcf,'color','w');
+% h = [];
+% t = 1;
+% A = 0.9/a;
+% B=0.9/b;
+% for i=1:b
+%     y = (b-i)/b;
+%     for j=1:a
+%         x = (j-1)/a;
+%         h(t) = axes('units','norm','pos',[x y A B]);
+%         t = t+1;
+%     end
+% end
 
-
+k=1;
 for i=1:(a*b)
     if i<=L
         if ismember(i,EG)
-            plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'color',colour(EG==i,:),'LineWidth',2,'parent',h(i))
+            subplot(clust_num,1,k)
+            plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'color',colour(EG==i,:),'LineWidth',1)
+                     axis equal
+                     axis([-0.4 0.4 -0.4 0.4])
+                     axis xy off
+                     k=k+1;
         else
-            plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'k','LineWidth',2,'parent',h(i))
+           % plot(real(NewCellArray{exems(i)}),imag(NewCellArray{exems(i)}),'k','LineWidth',2,'parent',h(i))
         end
-        axis(h(i), 'equal')
-        axis(h(i),[-0.4 0.4 -0.4 0.4])
+     %   axis(h(i), 'equal')
+     %   axis(h(i),[-0.4 0.4 -0.4 0.4])
     end
-    axis(h(i), 'xy','off')
+    %axis(h(i), 'xy','off')
 end
 fPath=fullfile(figPath, '5_unordered_APexemplars');
 saveas(gcf, fPath, 'fig');
