@@ -15,7 +15,7 @@ plotRoses(Nbins, angles_in_box, figPath, 'all_')
 % now do the spider graph
 gobalMaxVal = getMaxOfAvgSpeeds(Nbins,spiderPlot_in_box);
 plotSpiderCharts(Nbins, spiderPlot_in_box, figPath,gobalMaxVal, 'all_')
-
+%save(fullfile(figPath, 'spiderPlot_in_boxUntreated.mat'), 'spiderPlot_in_box','-v7.3');
 
 
 % get
@@ -29,8 +29,17 @@ for g=1:length(groups.items)
     [angles_in_box, spiderPlot_in_box] = getDataForPlots(groupDynamicData, Nbins, minTrackLength);
     plotRoses(Nbins, angles_in_box, figPath, ['Group_' char(item.name) '_']);
     % now do the spider graph
-    
+    %item.name
     plotSpiderCharts(Nbins, spiderPlot_in_box, figPath,gobalMaxVal, ['Group_' char(item.name) '_']);
+    item.name
+    if g==1
+        
+        save(fullfile(figPath, 'spiderPlot_in_box1.mat'), 'spiderPlot_in_box','-v7.3');
+    else
+         save(fullfile(figPath, 'spiderPlot_in_box2.mat'), 'spiderPlot_in_box','-v7.3');
+    end
+    
+    
 end
 end
 
@@ -130,7 +139,7 @@ for j=1:N
         angleType=getAngleType(Cell_angle{j}(i));
         vector =Cell_speeds{j}(i);
         old = [];
-        try  % needs try because if it does not exist, failsß
+        try  % needs try because if it does not exist, failsï¿½
             old=spiderPlot_in_box{ybox, xbox}{angleType};
         end
         spiderPlot_in_box{ybox, xbox}{angleType}=[old; vector];
@@ -145,21 +154,37 @@ end
 function plotRoses(Nbins, angles_in_box, figPath, stringID)
 clf
 
-for j=1:Nbins(2);
-    for i=1:Nbins(1);
+for j=1:Nbins(2)
+    for i=1:Nbins(1)
         
         if ~isempty(angles_in_box{j,i})
-            gf=figure(1);
-            set(gf, 'Visible', 'off');
-            h=rose(angles_in_box{j,i});
-            x = get(h,'Xdata');
-            y = get(h,'Ydata');
+            %gf=figure(1);
+            %set(gf, 'Visible', 'off');
+            %polarhistogram(angles_in_box{j,i});
+            %x = get(h,'Xdata');
+            %y = get(h,'Ydata');
             figure(2)
             subplot(Nbins(2),Nbins(1),Nbins(1)*(Nbins(2)-j)+i)
-            g=patch(x,y,'y');
-            set(g,'FaceColor','b','EdgeColor','k');
-            axis equal
-            axis xy off
+            polarhistogram(angles_in_box{j,i},'FaceColor','blue');
+            rticklabels({})
+            rticks([])
+%             % ax=gca;
+%             % ax = 'none';
+              ax = gca;
+%             %d = ax.ThetaDir;
+%             ax.ThetaGrid = 'off';
+%             ax.RGrid = 'off';
+%             ax.ThetaMinorGrid = 'off';
+%             ax.RMinorGrid = 'off';
+             ax.GridLineStyle = 'none';
+%             ax.MinorGridLineStyle = 'none';
+             ax.FontSize = 7;
+             ax.FontSmoothing = 'off';
+            %set(h, 'Visible', 'off');
+            %g=patch(x,y,'y');
+            %set(gcf,'FaceColor','b');
+            %axis equal
+            %axis off
         else
             figure(2)
             subplot(Nbins(2),Nbins(1),Nbins(1)*(Nbins(2)-j)+i)
@@ -178,12 +203,15 @@ end
 
 function plotSpiderCharts(Nbins, spiderPlot_in_box, figPath, maxVal, stringID)
 clf
+ 
 for j=1:Nbins(2)
     for i=1:Nbins(1)
         if ~isempty(spiderPlot_in_box{j,i})
             plot=subplot(Nbins(2),Nbins(1),Nbins(1)*(Nbins(2)-j)+i);
             spiderValues=calculateSpiderWebValues(spiderPlot_in_box{j,i});
             spider( spiderValues, ' ', [0 maxVal], {'0', '90', '180', '270'}, {''}, plot);
+            
+            
             axis xy off
         else
             
@@ -194,11 +222,36 @@ for j=1:Nbins(2)
         %axis xy off
     end
 end
-
 name = ['7_SlicedSpacedShape_Dynamics_Radar_' char(stringID) num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices'];
 path = fullfile(figPath, name);
 saveas(gcf, path, 'fig');
 saveas(gcf, path, 'epsc');
+% clf
+% for j=1:Nbins(2)
+%     for i=1:Nbins(1)
+%         if ~isempty(spiderPlot_in_box{j,i})
+%            % spiderPlot_in_box{j,i}
+%             plot=subplot(Nbins(2),Nbins(1),Nbins(1)*(Nbins(2)-j)+i);
+%             % DD=cell2mat(spiderPlot_in_box{j,i});
+%            DD=cell2mat(cellfun(@(m) m(:).', spiderPlot_in_box{j,i}, 'UniformOutput', false));
+%             boxplot(DD);
+%           %  spider( spiderValues, ' ', [0 maxVal], {'0', '90', '180', '270'}, {''}, plot);
+%             axis xy off
+%         else
+%             
+%             subplot(Nbins(2),Nbins(1),Nbins(1)*(Nbins(2)-j)+i)
+%             axis xy off
+%             
+%         end
+%         %axis xy off
+%     end
+% end
+% name = ['7_SlicedSpacedShape_Dynamics_boxPlot_4directions' char(stringID) num2str(Nbins(1)) '_xSlices_' num2str(Nbins(2)) '_ySlices'];
+% path = fullfile(figPath, name);
+% saveas(gcf, path, 'fig');
+% saveas(gcf, path, 'epsc');
+
+
 end
 
 
