@@ -22,7 +22,7 @@ function varargout = InteractiveShapeSlicer(varargin)
 
 % Edit the above text to modify the response to help InteractiveShapeSlicer
 
-% Last Modified by GUIDE v2.5 26-Mar-2015 09:13:17
+% Last Modified by GUIDE v2.5 13-Dec-2017 15:35:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,9 +54,10 @@ function InteractiveShapeSlicer_OpeningFcn(hObject, eventdata, handles, varargin
 
 % Choose default command line output for InteractiveShapeSlicer
 handles.output = hObject;
-resetAxes(handles);
+ resetAxes(handles);
 % Update handles structure
 guidata(hObject, handles);
+uiwait(handles.figure1);
 
 %figure1_ResizeFcn(hObject, eventdata, handles);
 % UIWAIT makes InteractiveShapeSlicer wait for user response (see UIRESUME)
@@ -84,10 +85,11 @@ function open_ClickedCallback(hObject, eventdata, handles)
 % hObject    handle to open (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global cellShapeData
 resetAxes(handles);
 path = uigetdir();
 if path==0, return; end
-cellShapePath = fullfile(path, 'CellShapeData_med.mat');
+cellShapePath = fullfile(path, 'CellShapeData.mat');
 if exist(cellShapePath, 'file')
     display('File is loading ... ');
     try data = load(cellShapePath);
@@ -104,21 +106,67 @@ end
 
 SCORE = getScoreFrom(cellShapeData);
 plotScore(SCORE, handles.axes2);
+%%
+
+%%
 handles.score=SCORE;
 handles.path=path;
 handles.CSD=cellShapeData;
 guidata(handles.figure1,handles); 
 
 
+
 function plotScore(SCORE, axes1)
+global cellShapeData
+csd= cellShapeData;
 %set(0, 'currentfigure', fig);  %# for figures
 %set(f, 'currentaxes', axs);  %# for axes with handle axs on figure f
 if isempty(SCORE), return; end
 N = length(SCORE);
 mk = getMarkerSize(N);
-plot(axes1,SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', mk);
-axis equal; axis tight; box on
+hLine=plot(axes1,SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', mk);
+%%
+brush on
+%f = figure;
+h = uicontrol('Position',[20 20 200 40],'String','Continue',...
+              'Callback','uiresume(gcbf)');
+disp('This will print immediately');
+uiwait(gcf); 
+disp('This will print after you click Continue');
+%close(f);
+
+brushedIdx = logical(hLine.BrushData);  % logical array
+ x = hLine.XData(brushedIdx);
+ y = hLine.YData(brushedIdx);
+ 
+% csd =[];
+%try csd = handles.CSD;end
+%if isempty(csd), return; end
+[cx, cy] =getCenterCoordinate(x,y);
+size(csd)
+[selectedIdx, mIdx] = findSelectedIdx(csd, x,y, cx, cy);
+if isempty(mIdx) || ~isempty(find(selectedIdx==0, 1)), return; end
+avshape=shapemean(csd,selectedIdx,mIdx,0);
+
+%figure(10)
+%clf;
 hold on
+axes('Position',[.7 .7 .2 .2])
+box on
+orangeCol=[237/255 94/255 48/255];
+plot(avshape, 'color', orangeCol,'LineWidth',3)
+%axis equal
+plotScore(SCORE, axes1);
+% h=figure(11);
+% clf;
+% set(0, 'currentfigure', h);  %# for figures
+% N = length(SCORE);
+% mk = getMarkerSize(N);
+% plotScore(SCORE, gca);
+% plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
+% %%
+% axis equal; axis tight; box on
+% hold on
 
     
 function filleDoesNotexist(filename)
@@ -136,13 +184,14 @@ display('-------');
 
 
 function SCORE = getScoreFrom(CellShapeData)
-if isfield(CellShapeData.set,'SCORE')
-    SCORE=CellShapeData.set.SCORE;
-else
+%if isfield(CellShapeData.point,'SCORE')
+    SCORE=CellShapeData.point.SCORE;
+    N=length(CellShapeData.point);
+%else
     for i=1:N
        SCORE(i,:)= CellShapeData.point(i).SCORE;
     end
-end
+%end
 
 
 % --- Executes when figure1 is resized.
@@ -162,16 +211,22 @@ function brush_OffCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 brush off
 set(handles.brush, 'State', 'off');
+
+
+
+
 % --------------------------------------------------------------------
 function brush_OnCallback(hObject, eventdata, handles)
 % hObject    handle to brush (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 zoom off
 pan off
 h = brush(handles.figure1);
 orangeCol=[237/255 94/255 48/255];
 set(h,'Color',orangeCol,'Enable','on');
+%b = get(orangeCol,'BrushData')
 
 
 % --------------------------------------------------------------------
@@ -213,7 +268,7 @@ x = brushedData{1}(brushedIdx);
 y = brushedData{2}(brushedIdx);
 csd =[];
 try csd = handles.CSD;end
-if isempty(csd), return; end;
+if isempty(csd), return; end
 [cx, cy] =getCenterCoordinate(x,y);
 [selectedIdx, mIdx] = findSelectedIdx(csd, x,y, cx, cy);
 if isempty(mIdx) || ~isempty(find(selectedIdx==0, 1)), return; end
@@ -240,10 +295,11 @@ plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
 function [selectedIdx, mIdx] = findSelectedIdx(csd, x,y, cx, cy)
 mIdx=[];
 selectedIdx=zeros(length(x),1);
-allScores=csd.set.SCORE;
+allScores=csd.point.SCORE;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+length(csd.point)
 for i=1:length(x)
-    for j=1:length(allScores)
-        if x(i)==allScores(j,1) && y(i)==allScores(j,2)
+    for j=1:length(csd.point)
+        if x(i)==csd.point(j).SCORE(1) && y(i)==csd.point(j).SCORE(2)
            selectedIdx(i)=j;
         end 
     end
@@ -300,3 +356,60 @@ mk = 10;
 if N>10000, mk =7; end
 if N>20000, mk =3; end
 
+function  out=brushpanel(STR,fighandle)
+
+g.fh = figure('units','pixels',...
+    'position',[1169 324 380 100],...
+    'menubar','none',...
+    'Color','w',...
+    'name','Select plot regions',...
+    'numbertitle','off',...
+    'resize','off');
+
+g.sub=annotation('textbox',...
+    'units','pixels',...
+    'position',[0 0 380 100],...
+    'Tag','box',...
+    'Color',[58 51 153]/255,...
+    'BackgroundColor','none',...
+    'String',STR,...
+    'Fontsize',14,...
+    'FaceAlpha',0,...
+    'EdgeColor', [112 112 112]/255);
+
+g.bg = uibuttongroup('units','pix',...
+    'pos',[0 0 380 50],...
+    'BorderType','line',...
+    'ForegroundColor','w');
+g.rd = uicontrol(g.bg,...
+    'style','push',...
+    'unit','pix',...
+    'position',[260 15 70 22],...
+    'Fontsize',8,...
+    'string','Close');
+
+g.bO = brush(fighandle);
+g.axhandle=get(fighandle,'CurrentAxes');
+set(g.bO,'enable','on');
+set(g.rd(:),'callback',{@select,g});
+uiwait(g.fh)
+
+hBrushLine = findall(g.axhandle,'tag','Brushing');
+brushedData = get(hBrushLine, {'Xdata','Ydata'});
+brushedIdx = ~isnan(brushedData{1});
+brushedXData = brushedData{1}(brushedIdx);
+brushedYData = brushedData{2}(brushedIdx);
+
+out=[brushedXData' brushedYData'];
+close(g.fh)
+
+function select(varargin)
+g = varargin{3};
+str=get(g.rd(1),'val');
+
+if str(1)==1    
+    g.st=true;
+    set(g.bO,'enable','off');
+end
+guidata(g.fh,g.bO);
+uiresume
