@@ -38,7 +38,7 @@ if (out.groups)
         filleDoesNotexistGroup(grFile)
     else 
         dt=load(grFile);
-        group.items=dt.groups;
+        group.items=dt.groups.groups;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
     end
     
     bigMatrixPath = fullfile(out.path, 'Bigcellarrayandindex.mat');
@@ -67,11 +67,13 @@ if (out.groups)
         group.do=0;
         filleDoesNotexistGroup(stPath); return;
     end
-end
+    
 % Start method
+   
+end
 Dynamics_rose_plots_for_Slices(default, group);
 display('Dynamics for sliced cells shape space has run successfully');
-display('-------');
+display('-------'); 
 end
 
 
