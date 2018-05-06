@@ -6,7 +6,7 @@ root= PATH;
 end
 folder = uigetdir(root,'Select Analysis Folder');
 PATH=root;
-dataFile = fullfile(folder, 'CellShapeData_slim.mat');
+dataFile = fullfile(folder, 'CellShapeData.mat');
 if exist(dataFile, 'file')
     display('File is loading ... ');
     data = load(dataFile);
