@@ -38,7 +38,7 @@ for j=1:N
     
     L=size(Cell_cell{j},1);
     for i=1:L
-        clust=exemplars==ci.idx(k);
+        clust = exemplars==ci.idx(k);
         k=k+1;
         if L>minTrackLength % here we filter that the track is larger...
             if i==1
@@ -54,46 +54,82 @@ for j=1:N
 end
 
 scale_fac=(max(SCORE(:,1))-min(SCORE(:,1)))/(2*exL);
+%plot shape
+colours=jet(number);
+colours=flipud(colours);
+colours=colours.*repmat((1-0.25*colours(:,2)),1,3);
+[colour_idx, success]=ordered_list_edit(number,cw.wish_list, cl.linkagemat, CellShapeData);
 
-figure
-
-for i=1:exL
-    subplot(2,1,1)
-    h=rose(vecs_in_cluster{i});
-    x = get(h,'Xdata');
-    y = get(h,'Ydata');
-    m=sqrt(x.^2+y.^2);
-    m=max(m(:));
-    subplot(2,1,2)
-    c=scale_fac/m;
+if ~ success, return; end
+h1=figure(50);
+%subplot(number,1,2)
+%number
+%for i=1:exL
+for i=1:number
+       subplot(number,number,i)
+    %h=rose(vecs_in_cluster{i});
+    %%
+    cc=colours(i,:);
+%   h=plot(vecs_in_cluster{i});
+            polarhistogram(vecs_in_cluster{i},'FaceColor',cc);
+            rticklabels({})
+            rticks([])
+%             % ax=gca;
+%             % ax = 'none';
+              ax = gca;
+%             %d = ax.ThetaDir;
+%             ax.ThetaGrid = 'off';
+%             ax.RGrid = 'off';
+%             ax.ThetaMinorGrid = 'off';
+%             ax.RMinorGrid = 'off';
+             ax.GridLineStyle = 'none';
+%             ax.MinorGridLineStyle = 'none';
+             ax.FontSize = 7;
+    %%
+  %  h=rose(vecs_in_cluster{i});
+ %   x = get(h,'Xdata');
+ %   y = get(h,'Ydata');
+    %[x,y] = rose(vecs_in_cluster{i})
+ %   m=sqrt(x.^2+y.^2);
+ %   m=max(m(:));
+   %subplot(2,1,2)
+ %   c=scale_fac/m;
     %v=SCORE(exemplars(i),[1 2]);
     %g=patch(c*x+v(1),c*y+v(2),'y');
     %set(g,'FaceColor','b','EdgeColor','k');
     hold on
     
 end
-axis equal
-subplot(2,1,2)
+name = ['7_ClusteredSpaceShape_Dynamics_1_' num2str(number) '_clusters'];
+path = fullfile(figPath, name);
+saveas(h1, path, 'fig');
+saveas(h1, path, 'epsc');
+%axis equal
+hold off
+h2=figure(60);
+%subplot(number,1,1)
 
-%plot shape
-colours=jet(number);
-colours=flipud(colours);
-colours=colours.*repmat((1-0.25*colours(:,2)),1,3);
-[colour_idx, success]=ordered_list_edit(number,cw.wish_list, cl.linkagemat, CellShapeData);
-if ~ success, return; end
+
 for i=1:exL
     v=SCORE(exemplars(i),[1 2]);
-    c=scale_fac;
+    c=scale_fac*10;
     plot(c*CellShapeData.point(exemplars(i)).coords_comp+v(1)+1i*v(2),'Color',colours(colour_idx(i),:),'LineWidth',1)
     hold on
 end
-axis equal
-linkaxes
+%axis equal
+%linkaxes
+%hold off
 
-name = ['7_ClusteredSpaceShape_Dynamics_' num2str(number) '_clusters'];
+ 
+
+% set(ha_axes, 'Parent', h)
+% set(hb_axes, 'Parent', h)
+% set(ha_axes, 'Position', [0.1300    0.1100    0.3347    0.8150])
+% set(hb_axes, 'Position', [0.5703    0.1100    0.3347    0.8150])
+name = ['7_ClusteredSpaceShape_Dynamics_2_' num2str(number) '_clusters'];
 path = fullfile(figPath, name);
-saveas(gcf, path, 'fig');
-saveas(gcf, path, 'epsc');
+saveas(h2, path, 'fig');
+saveas(h2, path, 'epsc');
 end
 
 
