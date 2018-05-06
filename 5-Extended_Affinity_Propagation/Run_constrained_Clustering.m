@@ -4,7 +4,7 @@ function  Run_constrained_Clustering()
     global PATH;
     PATH =out.fpath;
     classes = out.classes;    
-   cellShapePath = fullfile(folder, 'CellShapeData_slim.mat');
+   cellShapePath = fullfile(folder, 'CellShapeData.mat');
 if exist(cellShapePath, 'file')
     display('File is loading ... ');
     try data = load(cellShapePath);
