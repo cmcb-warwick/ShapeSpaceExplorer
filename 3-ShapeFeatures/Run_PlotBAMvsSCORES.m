@@ -33,7 +33,9 @@ end
 %     classes = vec2ind(ydata)';
 %     T=classes;
    
-
+%% clustering using AP
+%[ wish_list, idx ] = AP_Seriation_analysis_finaledit(CellShapeData.set.Long_D, 1, BPath);
+%%
     
 xdata=ZZ';
     net = selforgmap([3 2]);
@@ -45,13 +47,13 @@ xdata=ZZ';
 h=figure(22222);
 scatter(ZZ(:,1) ,ZZ(:,2),1,T)
 colormap(colourW(:,:))
-      fPath=fullfile(BPath, 'plot_solidyratio');
+      fPath=fullfile(BPath, 'plot_Scores');
       %saveas(n, fPath, 'fig');
       saveas(h, fPath, 'epsc');
 h=figure(11111);
 scatter(YY(:,2) ,YY(:,1),1,T)
 colormap(colourW(:,:))
-      fPath=fullfile(BPath, 'plot_Scores');
+      fPath=fullfile(BPath, 'plot_solidyratio');
       %saveas(n, fPath, 'fig');
       saveas(h, fPath, 'epsc')
 % %%
@@ -105,13 +107,13 @@ title(['Coefficient of determination (Rsq) value is  ' num2str(Rsq) ])
       %saveas(n, fPath, 'fig');
       saveas(h, fPath, 'epsc')
  p = polyfit(X,Z,1); 
- f = polyval(p,X);
+ ff = polyval(p,X);
 h=figure(2);
-reduce_plot(X,Z,'.',X,f,'-');
+reduce_plot(X,Z,'.',X,ff,'-');
 mn=mean(Z);
 dot(Z-mn,Z-mn); 
 SST=var(Z)*(length(Z)-1);
-SSE=dot(Z-f,Z-f);
+SSE=dot(Z-ff,Z-ff);
 Rsq=1-SSE/SST;
 %figure(2), reduce_plot(X,Z,'.',X,f,'-') 
 %figure(2),reduce_plot(X,Z,'.');
@@ -126,7 +128,12 @@ title(['  Coefficient of determination (Rsq) value is  ' num2str(Rsq) ])
 h=figure(11);
 hist3([X Y],[100 100])
 xlabel('BAM Distance'); ylabel('Solidity and DistRatio Distance');
-set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
+s = findobj(gca,'Type','Surface');
+s.FaceAlpha = 0.75;
+set(get(gca,'child'),'FaceColor','interp','CDataMode','auto','EdgeColor','none');
+colormap('hot')
+colorbar
+view(2)
       fPath=fullfile(BPath, 'plot_density_solidyratio');
       %saveas(n, fPath, 'fig');
       saveas(h, fPath, 'epsc')
@@ -135,10 +142,49 @@ h=figure(22);
 hist3([X Z],[100 100])
 
 xlabel('BAM Distance'); ylabel('SCORE Distance');
-set(get(gca,'child'),'FaceColor','interp','CDataMode','auto');
+s = findobj(gca,'Type','Surface');
+s.FaceAlpha = 0.75;
+set(get(gca,'child'),'FaceColor','interp','CDataMode','auto','EdgeColor','none');
+colormap('hot')
+colorbar
+view(2)
       fPath=fullfile(BPath, 'plot_density_Scores');
       %saveas(n, fPath, 'fig');
       saveas(h, fPath, 'epsc')
+      
+%%
+h=figure(111);
+hist3([X Y],[100 100])
+xlabel('BAM Distance'); ylabel('Solidity and DistRatio Distance');
+s = findobj(gca,'Type','Surface');
+s.FaceAlpha = 0.75;
+set(get(gca,'child'),'FaceColor','interp','CDataMode','auto','EdgeColor','none');
+colormap('hot')
+colorbar
+view(2)
+
+hold on,
+reduce_plot(X,f,'b-');
+      fPath=fullfile(BPath, 'plot_density_solidyratioReg');
+      %saveas(n, fPath, 'fig');
+      saveas(h, fPath, 'epsc')
+hold off,      
+h=figure(222);
+hist3([X Z],[100 100])
+
+xlabel('BAM Distance'); ylabel('SCORE Distance');
+s = findobj(gca,'Type','Surface');
+s.FaceAlpha = 0.75;
+set(get(gca,'child'),'FaceColor','interp','CDataMode','auto','EdgeColor','none');
+colormap('hot')
+colorbar
+view(2)
+hold on,
+reduce_plot(X,ff,'b-');
+      fPath=fullfile(BPath, 'plot_density_ScoresReg');
+      %saveas(n, fPath, 'fig');
+      saveas(h, fPath, 'epsc')
+%%
 % %%
 % %%
 % %Y=vecnorm(Y,2,2);
