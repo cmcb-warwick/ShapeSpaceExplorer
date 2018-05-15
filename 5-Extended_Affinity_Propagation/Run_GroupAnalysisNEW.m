@@ -145,7 +145,7 @@ config1 = ConstrainedClusteringNEW();
 number1=config1.classes1;
 number2=config1.classes2;
 number = number1 * number2;
-fname = ['Cluster_' num2str(number) '_Groups_' num2str(length(items.groups)) ];
+fname = ['Region_' num2str(number) '_Groups_' num2str(length(items.groups)) ];
 groupPath=fullfile(inputFolder, 'Figures', 'GroupAnalysis', fname);
 if ~exist(groupPath,'dir'),mkdir(groupPath);end
 
@@ -323,68 +323,10 @@ colourW=colourW.*repmat((1-0.25*colourW(:,2)),1,3);
     classes = vec2ind(ydata)';
     T=classes;
 size(T);
-%%
-%% clustering approach AP
-% Z = linkage(CellShapeData.set.SCORE,'ward','euclidean','savememory','on');
-% T = cluster(Z,'maxclust',number);
-%%
-%% GMM
-%%%%%%%%%%%%%GMM visualization
-% X=CellShapeData.set.SCORE(:,1:2);
-% GMM = gmdistribution.fit(X,number); %training
-% figure(1000), scatter(X(:,1),X(:,2),1,'.')
-% hold on
-% h = ezcontour(@(x,y)pdf(GMM,[x y]),[min(X(:)) max(X(:))],[min(X(:)) max(X(:))]);
-% hold on
-% scatter(GMM.mu(:,1),GMM.mu(:,2),200,'*','r')
-% T = cluster(GMM,X);
-
-
-%obj = fitgmdist(X,number);
-% Gaussian mixture model
-%P = pdf(GMM, X);
-%T = cluster(P,'maxclust',number);
-
-%% Clustering approach GMM
-% X=CellShapeData.set.SCORE(:,1:2);
-% GMM = gmdistribution.fit(X,number); %training
-% T = cluster(GMM,X);
-%%
-
 
 
 
 %%
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 %dendrogram(Z)
@@ -471,7 +413,7 @@ groupPlots=zeros(number,length(items.groups));
        [indexv valuev]=find(T(ii)==search(k));
        
         %clusters(k,2)=sum(indexv)/length(T(ii));
-        clusters(k,2)=sum(indexv);
+        clusters(k,2)=sum(valuev);
         clusters(k,1)= search(k);
         %groupPlots(k,i)=clusters(k,2);
         groupPlots(clusters(k,1),i)=clusters(k,2);
@@ -479,9 +421,9 @@ groupPlots=zeros(number,length(items.groups));
         
     end
  end
- groupPlots1=groupPlots;
+ %groupPlots1=groupPlots;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
- groupPlots = normc(groupPlots1);
+ %groupPlots = normc(groupPlots1);%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %      for k=1:number
 %         clusters(k,1)=k;
 %         
@@ -506,24 +448,90 @@ groupPlots=zeros(number,length(items.groups));
     tableFilename=fullfile(groupPath, 'GroupMapping.csv');
     writeGroups2Table(tableFilename, groupNames, groupStacks);
    hold off,
+% s = size(groupPlots);
+% colour=jet(s(1));...
+% colour=flipud(colour);
+% colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+%    
+%   for i=1:length(items.groups)
+%     figure,
+%     %h=bar(sum(groupPlots,2));
+%     h=bar(groupPlots(:,i));
+%     set(h,'FaceColor',colour(i,:))
+% 
+%      fPath=fullfile(groupPath, [char(items.groups{i}.name) 'allClusters_barplot']);
+%     % saveas(h, fPath, 'fig');
+%      saveas(h, fPath, 'epsc');
+%   end
+
+
+
+%colour=jet(number);
+%colour=flipud(colour);
+%colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
+   
+%%
+%         search = unique(T(i),'stable');
+%        
+%         
+%         [indexv valuev]=find(T(i)==search(j));
+%        %clusters(k,2)=sum(valuev);
+%         clusters(j,1)= search(j);
+%         groupPlots(clusters(j,1),i)=clusters(k,2);
+%%
+
+
   for i=1:length(items.groups)
+    items.groups{i}.tracks;%stack numbers for group i%=items.groups{i}.tracks+maxStackNumber(i-1);
+     gIds =getAllIndicesFor(stack_indices, items.groups{i}.tracks);
+     [ii, v]=find(gIds);% v is a vector contains the indecis of elements of group i
+     %A=zeros(length(T),1);
+     %A(ii)=T(ii);
+     search = unique(T(ii),'stable');  
     figure,
-    %h=bar(sum(groupPlots,2));
-    h=bar(groupPlots(:,i));
-    set(h,'FaceColor',[.5 0 0])
-
-     fPath=fullfile(groupPath, [char(items.groups{i}.name) 'allClusters_barplot']);
-    % saveas(h, fPath, 'fig');
+    for j=1:number
+%        [indexv valuev]=find(T(i)==search(j));
+        clusters(j,1)= search(j);
+        jj=clusters(j,1)
+        h=bar(jj,groupPlots(jj,i));
+        set(h,'FaceColor',colourW(jj,:))
+        hold on
+    end
+    hold off
+     fPath=fullfile(groupPath, [char(items.groups{i}.name) 'allRegions_barplot']);
      saveas(h, fPath, 'epsc');
-  end
+  end  
+    
+    
+%     h=bar(groupPlots(:,i));
+%     set(h,'FaceColor',colour(i,:))
+% 
+%      fPath=fullfile(groupPath, [char(items.groups{i}.name) 'allClusters_barplot']);
+%     % saveas(h, fPath, 'fig');
+%      saveas(h, fPath, 'epsc');
+%   end
+% 
+% 
+%   %%
+% 
+% mMax = max(clusters(:,2));
+% if isempty(mMax)||mMax<=0, mMax=1;end
+% ylim([0, mMax * 1.2]);  %# The 1.2 factor is just an example
+% array =[];
+% for i=1:number
+%     barNum=1/mClusters(i,2)*clusters(i,2);
+%     h=bar(i,barNum);
+%     array(end+1)=barNum;
+%     %array=[array; barNum];
+%     set(h,'FaceColor',colour(clusters(i,1),:))
+%     hold on
+% end
 
-
-
-
-
-
-
-
+  
+  %%
+  
+  
+  
 %item=items.groups;
 % write avg speed per cluster to file.
 writeAverageSpeed2File(items.groups,BigCellDataStruct,cell_indices,CellShapeData.set.SCORE,groupPath);
@@ -536,7 +544,7 @@ writePersitanceEucledianPerGroup(items.groups,BigCellDataStruct,cell_indices,Cel
       button = 1;
     x=[];
     y=[];
-disp('Please select two clusters and then right-click to find speed of cells between the clusters...')
+disp('Please select two regions and then right-click to find speed of cells between the regions...')
  while sum(button) <=1   % read ginputs until a mouse right-button occurs
    [a1,a2,button] = ginput(1);
    x=[x;a1];
@@ -549,8 +557,8 @@ ClickedPoints=CPs(1:2,:);
 IDX = knnsearch([CellShapeData.set.SCORE(:,1) CellShapeData.set.SCORE(:,2)],ClickedPoints);
 T(IDX);%list of clusters to find trans. speed from/to
 %%
-txt1=['Cluster_' num2str(T(IDX(1)))];
-txt2=['Cluster_' num2str(T(IDX(2)))];
+txt1=['Region_' num2str(T(IDX(1)))];
+txt2=['Region_' num2str(T(IDX(2)))];
 text(ClickedPoints(1,1),ClickedPoints(1,2),txt1)
 text(ClickedPoints(2,1),ClickedPoints(2,2),txt2)
 
@@ -558,7 +566,7 @@ text(ClickedPoints(2,1),ClickedPoints(2,2),txt2)
     % saveas(h, fPath, 'fig');
      saveas(h, fPath, 'epsc');
      
-S=['Calculating speed from Cluster ' num2str(T(IDX(1))) ' to Cluster' num2str(T(IDX(2))) ' and vise versa ....'];
+S=['Calculating speed from Region ' num2str(T(IDX(1))) ' to Region' num2str(T(IDX(2))) ' and vise versa ....'];
  disp(S)
 
 [fId1, v]=find(A == T(IDX(1)));
@@ -650,18 +658,18 @@ for j=1:length(uCIs1)%65:65%1:length(uCIs1)%647:647%
                                         % hold on,
                                      end
                                   end
-                                              iD1;
-                                              iD2;
-                                              min(fId1(idxes1));
-                                              max(fId1(idxes1));
-                                              min(fId2(idxes));
-                                              max(fId2(idxes));
-                                              iD;
-                                              IDD;
-                                              BigCellDataStruct(cell_indices(iD1)).Cell_number;
-                                              stack_indices(iD1);
-                                              stack_indices(iD2);
-                                              stack_indices(iD);
+%                                               iD1;
+%                                               iD2;
+%                                               min(fId1(idxes1));
+%                                               max(fId1(idxes1));
+%                                               min(fId2(idxes));
+%                                               max(fId2(idxes));
+%                                               iD;
+%                                               IDD;
+%                                               BigCellDataStruct(cell_indices(iD1)).Cell_number;
+%                                               stack_indices(iD1);
+%                                               stack_indices(iD2);
+%                                               stack_indices(iD);
 
                        else
                                %hold off,
@@ -683,18 +691,18 @@ for j=1:length(uCIs1)%65:65%1:length(uCIs1)%647:647%
                                        % hold on,
                                      end
                                   end  
-                                              iD1;
-                                              iD2;
-                                              min(fId1(idxes1));
-                                              max(fId1(idxes1));
-                                              min(fId2(idxes));
-                                              max(fId2(idxes));
-                                              iD;
-                                              IDDD;
-                                              BigCellDataStruct(cell_indices(iD1)).Cell_number;
-                                              stack_indices(iD1);
-                                              stack_indices(iD2);
-                                              stack_indices(iD);
+%                                               iD1;
+%                                               iD2;
+%                                               min(fId1(idxes1));
+%                                               max(fId1(idxes1));
+%                                               min(fId2(idxes));
+%                                               max(fId2(idxes));
+%                                               iD;
+%                                               IDDD;
+%                                               BigCellDataStruct(cell_indices(iD1)).Cell_number;
+%                                               stack_indices(iD1);
+%                                               stack_indices(iD2);
+%                                               stack_indices(iD);
 
                        end
            end
@@ -747,19 +755,19 @@ end
 
 
 
-fPath = fullfile(groupPath, ['Paths_from_Cluster_' num2str(T(IDX(1))) '_to_Cluster_' num2str(T(IDX(2)))]);
+fPath = fullfile(groupPath, ['Paths_from_Region_' num2str(T(IDX(1))) '_to_Region_' num2str(T(IDX(2)))]);
      saveas(h1, fPath, 'fig');
      saveas(h1, fPath, 'epsc');
 
 hold off,
 
-fPath = fullfile(groupPath, ['Paths_from_Cluster_' num2str(T(IDX(2))) '_to_Cluster_' num2str(T(IDX(1)))]);
+fPath = fullfile(groupPath, ['Paths_from_Region_' num2str(T(IDX(2))) '_to_Region_' num2str(T(IDX(1)))]);
      saveas(h2, fPath, 'fig');
      saveas(h2, fPath, 'epsc');
 
 hold off,
 if (~isempty(d1))
-fPath = fullfile(groupPath, ['Speed_from_Cluster_' num2str(T(IDX(1))) '_to_Cluster_' num2str(T(IDX(2)))]);
+fPath = fullfile(groupPath, ['Speed_from_Region_' num2str(T(IDX(1))) '_to_Region_' num2str(T(IDX(2)))]);
 figure(601), bar(d1)
      h=figure(601);
      %fPath=fullfile(groupPath, 'speed_from_to');
@@ -770,7 +778,7 @@ end
 hold off,
 if (~isempty(d2))
 
-fPath = fullfile(groupPath, ['Speed_from_Cluster_' num2str(T(IDX(2))) '_to_Cluster_' num2str(T(IDX(1)))]);
+fPath = fullfile(groupPath, ['Speed_from_Region_' num2str(T(IDX(2))) '_to_Region_' num2str(T(IDX(1)))]);
 figure(602), bar(d2)
      h=figure(602);
      %fPath=fullfile(groupPath, 'speed_from_to');
@@ -983,7 +991,7 @@ dlmwrite(path,header,'delimiter','');
 
 s=size(table);
 for k=1:s(1)
-    line = ['Cluster_' num2str(k) ','];
+    line = ['Region_' num2str(k) ','];
     for j=1:s(2)
         line =strcat(line, [num2str(table(k,j)) ', ']);
     end
@@ -1003,13 +1011,13 @@ colour=flipud(colour);
 colour=colour.*repmat((1-0.25*colour(:,2)),1,3);
 
 percTable=zeros(size(classess));
-
+NORMrows=classess./sum(classess);
 
 for i =1:s(1)
     f=figure(12);
     clf;
-    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count']);
-    tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_count.txt']);
+    fPath = fullfile(groupPath, ['Region_' num2str(i) '_barplot_count']);
+    tPath = fullfile(groupPath, ['Region_' num2str(i) '_barplot_count.txt']);
     array=[];
     array = classess(i,:);
     h=bar(array);
@@ -1024,9 +1032,11 @@ for i =1:s(1)
     
     clf;
     
-    fPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_fraction']);
-    tPath = fullfile(groupPath, ['Cluster_' num2str(i) '_barplot_fraction.txt']);
-    array=classess(i,:)/sum(classess(i,:));
+    fPath = fullfile(groupPath, ['Region_' num2str(i) '_barplot_fraction']);
+    tPath = fullfile(groupPath, ['Region_' num2str(i) '_barplot_fraction.txt']);
+    %array=classess(i,:)/sum(classess(i,:));%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   %array=normc(classess(i,:));
+   array=NORMrows(i,:);
     percTable(i,:)=array;
     h=bar(array);
     dlmwrite(tPath ,array, '\t');
@@ -1039,9 +1049,9 @@ for i =1:s(1)
     
 end
 
-tPath = fullfile(groupPath, 'Cluster_all_barplot_count.csv');
+tPath = fullfile(groupPath, 'Region_all_barplot_count.csv');
 writeGroupswithClusters2Table(tPath, labels, classess);
-tPath = fullfile(groupPath, 'Cluster_all_barplot_fraction.csv');
+tPath = fullfile(groupPath, 'Region_all_barplot_fraction.csv');
 writeGroupswithClusters2Table(tPath,labels, percTable)
 
 end
