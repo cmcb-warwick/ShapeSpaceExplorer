@@ -158,9 +158,10 @@ hist3([X Y],[100 100])
 xlabel('BAM Distance'); ylabel('Solidity and DistRatio Distance');
 s = findobj(gca,'Type','Surface');
 s.FaceAlpha = 0.75;
-set(get(gca,'child'),'FaceColor','interp','CDataMode','auto','EdgeColor','none');
+set(get(gca,'child'),'FaceColor','interp','CDataMode','auto','EdgeColor','interp');
 colormap('hot')
 colorbar
+caxis([0 2000000])
 view(2)
 
 hold on,
@@ -175,9 +176,10 @@ hist3([X Z],[100 100])
 xlabel('BAM Distance'); ylabel('SCORE Distance');
 s = findobj(gca,'Type','Surface');
 s.FaceAlpha = 0.75;
-set(get(gca,'child'),'FaceColor','interp','CDataMode','auto','EdgeColor','none');
+set(get(gca,'child'),'FaceColor','interp','CDataMode','auto','EdgeColor','interp');
 colormap('hot')
 colorbar
+caxis([0 2000000])
 view(2)
 hold on,
 reduce_plot(X,ff,'b-');
