@@ -336,20 +336,20 @@ function save_ClickedCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 [filename, pathname, filterindex]=uiputfile({'*.eps'; '*.fig'},'Save Average Shape Files');
 [~,name,ext] = fileparts(filename);
-if ~(ishandle(11) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
+%if ~(ishandle(11) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
 if filterindex==1
-   saveas(11, fullfile(pathname, filename), 'epsc');   
+   saveas(gcf, fullfile(pathname, filename), 'epsc');   
 elseif filterindex==2
-    saveas(11, fullfile(pathname, filename), 'fig');  
+    saveas(gcf, fullfile(pathname, filename), 'fig');  
 end
 % if avergage fig does not exist, we are done.
-if ~(ishandle(10) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
+%if ~(ishandle(10) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
 avgPath =[name '_Avg_Shape' ext];
 if filterindex==1
-   saveas(10, fullfile(pathname, avgPath), 'epsc');   
+   saveas(gcf, fullfile(pathname, avgPath), 'epsc');   
 elseif filterindex==2
-   saveas(handles.figure1, fullfile(pathname, filename), 'fig');  
-end    
+   saveas(gcf, fullfile(pathname, filename), 'fig');  
+end      
 
 
 function mk = getMarkerSize(N)
