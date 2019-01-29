@@ -156,6 +156,7 @@ box on
 orangeCol=[237/255 94/255 48/255];
 plot(avshape, 'color', orangeCol,'LineWidth',3)
 %axis equal
+axis off
 plotScore(SCORE, axes1);
 % h=figure(11);
 % clf;
