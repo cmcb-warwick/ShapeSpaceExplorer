@@ -268,9 +268,9 @@ for j=1:s(1)
             y=SCORE(ax,2);
             %[~, ~, ix] =getCenterCoordinate(x,y);
             [~,mid]=min(abs(normproj_d(ax)));
-            avshape=shapemean(CellShapeData,ax,ax(mid),0);
+            avshape=shapemean(CellShapeData,ax,ax(mid),0)';
             
-            c=princomp([real(avshape) imag(avshape)]);
+            c=pca([real(avshape) imag(avshape)]);
             theta=atan2(c(2),c(1));
             avshape=avshape*exp(1i*(-theta));
             avshape=-avshape*sign(max(real(avshape))+min(real(avshape)));
@@ -481,7 +481,7 @@ if plotshapes
             continue; end
         [~,mid]=min(abs(normproj_d(cellset_idx)));
         avshape=shapemean(CSD,cellset_idx,cellset_idx(mid),0)';
-        c=princomp([real(avshape) imag(avshape)]);
+        c=pca([real(avshape) imag(avshape)]);
         theta=atan2(c(2),c(1));
         avshape=avshape*exp(1i*(-theta));
         avshape=-avshape*sign(max(real(avshape))+min(real(avshape)));
@@ -491,7 +491,7 @@ if plotshapes
         plot(avshape+centres(i), 'color', color);
         hold on
     end
-    axis square
+    axis equal
     axis xy off
 end
 
