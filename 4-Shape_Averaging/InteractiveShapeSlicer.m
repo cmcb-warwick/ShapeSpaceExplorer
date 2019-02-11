@@ -125,13 +125,15 @@ if isempty(SCORE), return; end
 N = length(SCORE);
 mk = getMarkerSize(N);
 hLine=plot(axes1,SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', mk);
+
 %%
 brush on
 %f = figure;
 h = uicontrol('Position',[20 20 200 40],'String','Continue',...
               'Callback','uiresume(gcbf)');
 disp('This will print immediately');
-uiwait(gcf); 
+uiwait(gcf);
+
 disp('This will print after you click Continue');
 %close(f);
 
@@ -148,15 +150,15 @@ size(csd)
 if isempty(mIdx) || ~isempty(find(selectedIdx==0, 1)), return; end
 avshape=shapemean(csd,selectedIdx,mIdx,0);
 
-%figure(10)
-%clf;
-hold on
-axes('Position',[.7 .7 .2 .2])
-box on
+figure(10)
+clf;
+%hold on
+%axes('Position',[.7 .7 .2 .2])
+%box on
 orangeCol=[237/255 94/255 48/255];
 plot(avshape, 'color', orangeCol,'LineWidth',3)
 %axis equal
-axis off
+%axis off
 plotScore(SCORE, axes1);
 % h=figure(11);
 % clf;
@@ -168,7 +170,6 @@ plotScore(SCORE, axes1);
 % %%
 % axis equal; axis tight; box on
 % hold on
-
     
 function filleDoesNotexist(filename)
 display('-------');
