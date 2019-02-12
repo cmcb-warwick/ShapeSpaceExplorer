@@ -150,16 +150,17 @@ size(csd)
 if isempty(mIdx) || ~isempty(find(selectedIdx==0, 1)), return; end
 avshape=shapemean(csd,selectedIdx,mIdx,0);
 
-figure(10)
-clf;
-%hold on
-%axes('Position',[.7 .7 .2 .2])
-%box on
+%figure(12)
+%clf;
+hold on
+axes('Position',[.7 .7 .2 .2])
+box on
 orangeCol=[237/255 94/255 48/255];
 plot(avshape, 'color', orangeCol,'LineWidth',3)
 %axis equal
 %axis off
 plotScore(SCORE, axes1);
+
 % h=figure(11);
 % clf;
 % set(0, 'currentfigure', h);  %# for figures
@@ -169,7 +170,7 @@ plotScore(SCORE, axes1);
 % plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
 % %%
 % axis equal; axis tight; box on
-% hold on
+%hold off
     
 function filleDoesNotexist(filename)
 display('-------');
