@@ -118,6 +118,8 @@ guidata(handles.figure1,handles);
 
 function plotScore(SCORE, axes1)
 global cellShapeData
+global h1
+global h2
 csd= cellShapeData;
 %set(0, 'currentfigure', fig);  %# for figures
 %set(f, 'currentaxes', axs);  %# for axes with handle axs on figure f
@@ -128,14 +130,14 @@ hLine=plot(axes1,SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', m
 
 %%
 brush on
-%f = figure;
+f = figure;
 h = uicontrol('Position',[20 20 200 40],'String','Continue',...
-              'Callback','uiresume(gcbf)');
+              'Callback','uiresume(gcf)');
 disp('This will print immediately');
 uiwait(gcf);
 
 disp('This will print after you click Continue');
-%close(f);
+close(f);
 
 brushedIdx = logical(hLine.BrushData);  % logical array
  x = hLine.XData(brushedIdx);
@@ -156,12 +158,30 @@ hold on
 axes('Position',[.7 .7 .2 .2])
 box on
 orangeCol=[237/255 94/255 48/255];
-plot(avshape, 'color', orangeCol,'LineWidth',3)
+ALine=plot(avshape, 'color', orangeCol,'LineWidth',3);
 %axis equal
 %axis off
 set(gca,'YTickLabel',[]);
 set(gca,'XTickLabel',[]);
-plotScore(SCORE, axes1);
+
+
+h1=figure(10);
+clf;
+orangeCol=[237/255 94/255 48/255];
+plot(avshape, 'color', orangeCol,'LineWidth',3)
+axis equal
+
+h2=figure(11);
+clf;
+%set(0, 'currentfigure', h);  %# for figures
+N = length(SCORE);
+mk = getMarkerSize(N);
+plot(SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', mk)
+hold on
+%plotScore(SCORE, axes1);
+plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
+hold off
+%clf(h);
     
 function filleDoesNotexist(filename)
 display('-------');
@@ -324,25 +344,30 @@ end
 
 % --------------------------------------------------------------------
 function save_ClickedCallback(hObject, eventdata, handles)
+global h1
+global h2
 % hObject    handle to save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 [filename, pathname, filterindex]=uiputfile({'*.eps'; '*.fig'},'Save Average Shape Files');
+filterindex
+pathname
+filename
 [~,name,ext] = fileparts(filename);
 %if ~(ishandle(11) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
 if filterindex==1
-   saveas(gcf, fullfile(pathname, filename), 'epsc');   
+   saveas(h1, fullfile(pathname, filename), 'epsc');   
 elseif filterindex==2
-    saveas(gcf, fullfile(pathname, filename), 'fig');  
+    saveas(h1, fullfile(pathname, filename), 'fig');  
 end
 % if avergage fig does not exist, we are done.
 %if ~(ishandle(10) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
 avgPath =[name '_Avg_Shape' ext];
 if filterindex==1
-   saveas(gcf, fullfile(pathname, avgPath), 'epsc');   
+   saveas(h2, fullfile(pathname, avgPath), 'epsc');   
 elseif filterindex==2
-   saveas(gcf, fullfile(pathname, filename), 'fig');  
-end      
+   saveas(h2, fullfile(pathname, filename), 'fig');  
+end    
 
 
 function mk = getMarkerSize(N)
