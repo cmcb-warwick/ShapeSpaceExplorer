@@ -337,16 +337,17 @@ size(T);
       %saveas(n, fPath, 'fig');
        h=figure(double(n));
       saveas(h, fPath, 'epsc');
+      close(h)
       
      n = int8(101);
      figure(double(n)), scatter(CellShapeData.set.SCORE(:,1),CellShapeData.set.SCORE(:,2),1,[0.5 0.5 0.5])
       h=figure(double(n));
-     
+    
      %% create contour images
       fPath=fullfile(groupPath, '_ShapeSpace_grey');
       %saveas(n, fPath, 'fig');
       saveas(h, fPath, 'epsc');
-     
+      close(h)
     % CreateContourImages(T,number)
      %%
 %%%%%%%%
@@ -406,7 +407,7 @@ groupPlots=zeros(number,length(items.groups));
      fPath=fullfile(groupPath, [char(items.groups{i}.name) '_ShapeSpace_group']);
     % saveas(h, fPath, 'fig');
      saveas(h, fPath, 'epsc');
-    
+    close(h)
       hold off,
      %length(T(ii));% max number to normalize plots
     for k=1:number
@@ -540,7 +541,7 @@ writePersitanceEucledianPerGroup(items.groups,BigCellDataStruct,cell_indices,Cel
 %%
      h=figure(51), 
      scatter(CellShapeData.set.SCORE(:,1),CellShapeData.set.SCORE(:,2),1,T)
-      %colormap(colourW(:,:))
+     colormap(colourW(:,:))
       button = 1;
     x=[];
     y=[];
@@ -593,11 +594,12 @@ k2=1;%% plot the path of the cells from one cluster to another
      figure(1), scatter(CellShapeData.set.SCORE(:,1),CellShapeData.set.SCORE(:,2),1,[0.5 0.5 0.5])
      hold on
      h1=figure(1);
-     
+     %close(h1)
   % n2 = int8(1022);
      figure(2), scatter(CellShapeData.set.SCORE(:,1),CellShapeData.set.SCORE(:,2),1,[0.5 0.5 0.5])
      hold on
-     h2=figure(2);   
+     h2=figure(2);  
+     %close(h2)
 %%
 %%
 [fId, v]=find(A);%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -758,13 +760,13 @@ end
 fPath = fullfile(groupPath, ['Paths_from_Region_' num2str(T(IDX(1))) '_to_Region_' num2str(T(IDX(2)))]);
      saveas(h1, fPath, 'fig');
      saveas(h1, fPath, 'epsc');
-
+    %close(h1)
 hold off,
 
 fPath = fullfile(groupPath, ['Paths_from_Region_' num2str(T(IDX(2))) '_to_Region_' num2str(T(IDX(1)))]);
      saveas(h2, fPath, 'fig');
      saveas(h2, fPath, 'epsc');
-
+    %close(h2)
 hold off,
 if (~isempty(d1))
 fPath = fullfile(groupPath, ['Speed_from_Region_' num2str(T(IDX(1))) '_to_Region_' num2str(T(IDX(2)))]);
@@ -774,6 +776,7 @@ figure(601), bar(d1)
   %   fPath=fullfile(groupPath, [char(items.groups{i}.name) '_ShapeSpace_group']);
      saveas(h, fPath, 'fig');
      saveas(h, fPath, 'epsc');
+     close(h)
 end
 hold off,
 if (~isempty(d2))
@@ -785,6 +788,7 @@ figure(602), bar(d2)
   %   fPath=fullfile(groupPath, [char(items.groups{i}.name) '_ShapeSpace_group']);
      saveas(h, fPath, 'fig');
      saveas(h, fPath, 'epsc');
+     close(h)
 end
      
 % % trans speed from T(2) to T(1)
@@ -1027,7 +1031,7 @@ for i =1:s(1)
     set(gca, 'XTick', 1:length(array), 'XTickLabel', labels);
     saveas(h, fPath, 'fig');
     saveas(h, fPath, 'epsc');
-    
+    close(f)
     % percentual
     
     clf;
@@ -1318,7 +1322,7 @@ for i=1:s(2)
         pM(j)=mean(tmp);
         pSt(j)=std(tmp);
     end
-    figure(21);
+    h=figure(21);
     clf;
     x = 1:s(2);
     
@@ -1328,7 +1332,7 @@ for i=1:s(2)
     fPath = fullfile(groupPath, [char(item.name) '_Directionality']);
     saveas(gcf, fPath, 'fig');
     saveas(gcf, fPath, 'epsc');
-    
+    close(h)
 end 
 
 
