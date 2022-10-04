@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: Getting Started
 permalink: /getting_started/
 ---
@@ -28,18 +28,22 @@ The ShapeSpaceExplorer package has been tested with MatlabR2017b. If you are usi
 - NOTE: This facility is not available for Student Version or trials since they are version specific. 
 
 To run the program, you need the folder ShapeSpaceExplorer containing all files. Within the Matlab program go to the folder “ShapeSpaceExplorer” (see figure below).\
-<img align="center" width=300px src="./img/add_folder_to_path1.png">
+<img align="center" width=500px src="./img/add_folder_to_path1.png">
 
 Then, right click on ShapeSpaceExplorer folder, and select “Add to Path” > Selected Folders and Subfolders (see below) \
-<img align="center" width=300px src="./img/add_folder_to_path2.png">
+<img align="center" width=500px src="./img/add_folder_to_path2.png">
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+This adds the ShapeSpaceExplorer to the Matlab paths, which means, the programs are easy to execute. The ShapeSpaceExplorer folder should appear as active (see figure below) \
+<img align="center" width=500px src="./img/add_folder_to_path3.png">
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+To run a script, open ShapeSpaceExplorer > 1-ImageSegmentationFull and select the File “Run_CellSegmentation.m” with a double click (see below). Then click on the “Run” button in the Toolbar.  The first line in the command window  should then contain the line 
+```matlab
+>> Run_CellSegmentation
+```
+<img align="center" width=500px src="./img/run_script.png">
 
+Once a script has finished properly, the Command Line shows a new line:
+```matlab
+>> 
+```
 
-[jekyll-organization]: https://github.com/jekyll

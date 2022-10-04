@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Cell Segmentation | Shape Space Explorer</title>
+<meta name="generator" content="Jekyll v3.9.2" />
+<meta property="og:title" content="Cell Segmentation" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<link rel="canonical" href="http://localhost:4000/cell_segmentation/" />
+<meta property="og:url" content="http://localhost:4000/cell_segmentation/" />
+<meta property="og:site_name" content="Shape Space Explorer" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Cell Segmentation" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"Cell Segmentation","url":"http://localhost:4000/cell_segmentation/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Shape Space Explorer" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Shape Space Explorer</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/cell_segmentation/">Cell Segmentation</a><a class="page-link" href="/display_shape_features/">Display Shape Features</a><a class="page-link" href="/extended_affinity_propagation/">Extended Affinity Propagation</a><a class="page-link" href="/getting_started/">Getting Started</a><a class="page-link" href="/group_analysis/">Group Analysis</a><a class="page-link" href="/inspect_shape_space/">Inspect Shape Space</a><a class="page-link" href="/out_of_sample_extension/">Out of Sample Extension</a><a class="page-link" href="/shape_manifold_embedding/">Shape Manifold Embedding</a><a class="page-link" href="/shape_space_dynamic/">Shape Space Dynamic</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <h1 id="cell-segmentation">Cell Segmentation</h1>
+
+<p>Cell Segmentation starts with the microscopy data in your Movie folder saved in Deltavision “.dv” file format.</p>
+
+<p>To run cell segmentation, go to ShapeSpaceExplorer &gt; 1-ImageSegmentationFull, open the file “Run_CellSegmentation.m” and click on “Run” which should show the interface below: <br />
+<img align="center" width="500px" src="./img/select_data_folder.png" /></p>
+
+<p>Select your Movie folder containing your microscopy data, which should show all files in a selectable list (see below). <br />
+<img align="center" width="500px" src="./img/select_data_files.png" /></p>
+
+<p>Select all movies that should be analysed. Note that at least one file must be selected to continue which should lead to the next interface (see next page). Note, the loading of the interface is slow, because it calculates the number of frames of your shortest movie from all movies files.</p>
+
+<p>The interface offers two choices: first to analyse all movies from start to end (default choice) and second to select a substack of your frames, which might be helpful if your data went out of focus. Should you select a substack from frame A to frame B, this selection is automatically applied to all movies in your analysis. <br />
+<img align="center" width="500px" src="./img/substack_choice.png" /></p>
+
+<p>The final interface asks you for the Analysis folder to save the output of the cell segmentation (see below).  Clicking on Start Pre-processing starts automatic cell segmentation. This is a time intensive task and can take several hours to a few days depending on your data size. Segmentation parameters ideally be optimised on a typical movie before running a large dataset (see <a href="#troubleshooting">Troubleshooting</a> for more information). <br />
+<img align="center" width="500px" src="./img/select_analysis_folder.png" /></p>
+
+<p>Two progress bars indicate the movie and frame that are currently processed. At the end, the commando line prints a note when the program finishes successfully (see example below). <br />
+<img align="center" width="500px" src="./img/progress_bar1.png" /> <br />
+<img align="center" width="500px" src="./img/progress_bar2.png" /> <br />
+<img align="center" width="500px" src="./img/segmentation_finished.png" /></p>
+
+<p>After cell segmentation, the Analysis folder should have the following new files:</p>
+<ul>
+  <li>ImageStackXXX.mat for each selected movie</li>
+  <li>ImageStackXXXCurveData.mat for each selected movie</li>
+  <li>FileMapping.csv: contains the mapping between the new movie names and the original movie names from the Movie folder. Excel can import CSV files.</li>
+</ul>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<p>The cell segmentation in ShapeSpaceExplorer uses an implementation of the Mean Shift Algorithm with the EDISON wrapper (Edge Detection and Image SegmentatiON), The reference and details of the algorithm can be found in: D. Comanicu, P. Meer: “Mean shift: A robust approach toward feature space analysis.” IEEE Trans. Pattern Anal. Machine Intell., 24, 603-619, May 2002.</p>
+
+<p>NOTE: Should the segmentation produce strange outputs, then there are two parameters to adjust the algorithm:  Spatial Bandwidth and Range Bandwidth. 
+These parameters are ideally optimised on a typical example image before attempting segmentation of a large dataset.</p>
+
+<p>Generally speaking, the range bandwidth influences how much noise the cell segmentation picks up. Should there be too many smalls blobs recognized as cells, this parameter should be increased.</p>
+
+<p>The spatial bandwidth, influences on how large the  radius of a detected shape can be as smallest possible radius. Depending on your imaging conditions and average size of your cell, the interface permits to fine tune the cell segmentation step. Though, the proposed default values worked for a white range of cases.</p>
+
+<p>An excellent detailed explanation on how the parameter influence cell segmentation can be found on <a href="http://en.wikipedia.org/wiki/Mean_shift">Wikipedia</a></p>
+
+<h2 id="manual-correction-of-cell-segmentation">Manual Correction of Cell Segmentation</h2>
+
+<p>To inspect the cell segmentation results, run the file 1-ImageSegmentationFull &gt; Inspect_Shapes.m in the ShapeSpaceExplorer folder producing the interface below: <br />
+<img align="center" width="500px" src="./img/open_manual_inspect.png" /></p>
+
+<p>Click on the folder icon in the toolbar and select one of the files with the name format ImageStackXXX.mat, for example ImageStack001.mat. The program highlights the contours of the detected cells. The toolbar offers zoom in, zoom out and pan operations. The 8th icon from the left is the legend icons and permits you to see the id assigned to detected shapes. 
+<img align="center" width="500px" src="./img/contour_highlights.png" /></p>
+
+<p>There are a variety of operations that permit to correct the automatic cell segmentation manually. Each of the operations is explained in the following sections.</p>
+
+<h3 id="delete-a-single-shape">Delete a Single Shape</h3>
+<p><img align="center" width="500px" src="./img/delete_single1.png" /></p>
+
+<p>Selecting the Cursor and clicking on a shape removes the shape from the detected cells, indicated by a grey outline. To remove a shape from a frame plus all future frame you need to hold down the key CTRL and click on the shape. To add the shape back to detected shapes, simply click with the Cursor selected inside the shape, which should re-colour the shape in a bright colour.</p>
+
+<h3 id="filter-out-shapes-with-small-area-size">Filter Out Shapes With Small Area Size</h3>
+<p><img align="center" width="500px" src="./img/filter_small.png" /></p>
+
+<h3 id="filter-out-shapes-with-small-life-span">Filter Out Shapes With Small Life Span</h3>
+<p><img align="center" width="500px" src="./img/filter_short.png" /></p>
+
+<h3 id="merge">Merge</h3>
+<p><img align="center" width="500px" src="./img/merge.png" /></p>
+
+<h3 id="manual-drawing">Manual Drawing</h3>
+<p><img align="center" width="500px" src="./img/manual_drawing.png" /></p>
+
+<p>You have the full functionality of the Matlab ROI tool, 
+Full Description here: http://uk.mathworks.com/help/images/ref/roipoly.html</p>
+<ul>
+  <li>Delete: Backspace</li>
+  <li>Adding a new vertex: Key A</li>
+  <li>Delete vertex: right click, and select delete</li>
+  <li>Closing Polygon: Move to an existing point and click on it.</li>
+</ul>
+
+<h3 id="continues-tracks">Continues Tracks</h3>
+<p>For the analysis presented in this tutorial, continuous tracks are cell tracks that stretch from a start frame to an end frame, without any interruption. The cell with id one, appearing from frame one to five [1, 2, 3, 4, 5] would be an example. 
+However, if the track would have a missing frame, say at frame three, so that the sequence is [1, 2, 4, 5], then when the program saves your modification, it will assign a new id to the second part of the track.</p>
+
+<p>When you save 3 new files should be produced:</p>
+<ul>
+  <li>CellAray001.mat</li>
+  <li>CellFrameData001.mat</li>
+  <li>ManCorrtdCurves001.mat</li>
+</ul>
+
+<h2 id="after-manual-correction">After Manual Correction</h2>
+
+<p>The tutorial expects you to open each stack in InspectShape.m program and save it from there. For each stack ImageStackXXX.mat, the program creates two files, namely CellArayXXX.mat, and CellFrameDataXXX.mat. The analysis integrates only stacks that have those two files generated. To proceed run 1-ImageSegmentationFull &gt; MakeBigStructs.m
+<img align="center" width="500px" src="./img/run_MakeBigStructs.png" /></p>
+
+<p>After selecting the Analysis folder, the program generates two files:</p>
+<ul>
+  <li>Bigcellarrayandindex.mat</li>
+  <li>BigCellDataStruct.mat</li>
+</ul>
+
+<p>Note: you can construct the “Bigcellarrayandindex.m” and  “BigCellDataStruct.mat” without manual correction; to do so, run 1-ImageSegmentationFull &gt; MakeBigStructsWithoutManual.m</p>
+
+<p>Note: running the program MakeBigStructsWithoutManual.m will not include any existing manual corrections!</p>
+
+<h2 id="manual-segmentation">Manual Segmentation</h2>
+
+<p>Manually segmented shapes (for example by drawing outlines using the freehand tool in ImageJ and exporting the xy coordinates into individual textfiles) can be imported into the Cell Shape Explorer.
+Please note that files will be expected to be a tab-separated file with 3 columns. Following the header line these should contain only numbers. Point ID in the first column, x coordinates in the second column and y coordinates in the third column. These should be arranged in a folder structure as this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
++-- Stack_001
+|	+-- Cell_001
+	|	+-- Results_1.txt
+	|	+-- Results_2.txt
+	|	+-- Results_3.txt
+|	+-- Cell_002
+	|	+-- Results_1.txt
+	|	+-- Results_2.txt
+	|	+-- Results_3.txt
+|	+-- Cell_003
+	|	+-- Results_1.txt
+	|	+-- Results_2.txt
+	|	+-- Results_3.txt
++-- Stack_002
+|	+-- Cell_001
+	|	+-- Results_1.txt
+	|	+-- Results_2.txt
+	|	+-- Results_3.txt
+|	+-- Cell_002
+	|	+-- Results_1.txt
+	|	+-- Results_2.txt
+	|	+-- Results_3.txt
+|	+-- Cell_003
+	|	+-- Results_1.txt
+	|	+-- Results_2.txt
+	|	+-- Results_3.txt
+</code></pre></div></div>
+
+<p>Use the following Macro in ImageJ</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//Macro allows manual extraction of cell shape and saves these as textfiles in the image folder.</span>
+
+<span class="nx">macro</span> <span class="dl">"</span><span class="s2">Get cell shape [1]</span><span class="dl">"</span> <span class="p">{</span>
+
+	<span class="nx">run</span><span class="p">(</span><span class="dl">"</span><span class="s2">Clear Results</span><span class="dl">"</span><span class="p">);</span>
+		<span class="nx">getSelectionCoordinates</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">);</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">x</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+<span class="nx">setResult</span><span class="p">(</span><span class="dl">"</span><span class="s2">y</span><span class="dl">"</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">y</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="nx">setResult</span><span class="p">(</span><span class="dl">"</span><span class="s2">x</span><span class="dl">"</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">x</span><span class="p">[</span><span class="nx">i</span><span class="p">]);}</span>
+
+<span class="nx">updateResults</span><span class="p">();</span>
+
+<span class="nx">dir</span><span class="o">=</span><span class="nx">getDirectory</span><span class="p">(</span><span class="dl">"</span><span class="s2">image</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="nx">roiManager</span><span class="p">(</span><span class="dl">"</span><span class="s2">Add</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">nROI</span> <span class="o">=</span> <span class="nx">roiManager</span><span class="p">(</span><span class="dl">"</span><span class="s2">count</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="nx">selectWindow</span><span class="p">(</span><span class="dl">"</span><span class="s2">Results</span><span class="dl">"</span><span class="p">);</span>
+
+   <span class="nx">name</span> <span class="o">=</span> <span class="nx">dir</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">Results_</span><span class="dl">"</span> <span class="o">+</span> <span class="nx">nROI</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">.txt</span><span class="dl">"</span><span class="p">;</span>
+   <span class="nx">saveAs</span><span class="p">(</span><span class="dl">"</span><span class="s2">Results</span><span class="dl">"</span><span class="p">,</span> <span class="nx">name</span><span class="p">);</span>
+
+<span class="nx">setForegroundColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="nx">run</span><span class="p">(</span><span class="dl">"</span><span class="s2">Draw</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">slice</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, run 1-ImageSegmentationFull &gt; ImportManual_Segs_plus_Struct.m, which asks for the data folder as input. If run successful it will generate these two files:</p>
+<ul>
+  <li>Bigcellarrayandindex.mat</li>
+  <li>BigCellDataStruct.mat</li>
+</ul>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Shape Space Explorer</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Shape Space Explorer</li><li><a class="u-email" href="mailto:camdu@warwick.ac.uk">camdu@warwick.ac.uk</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/warwickcamdu"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">warwickcamdu</span></a></li><li><a href="https://www.twitter.com/warwickcamdu"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">warwickcamdu</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
