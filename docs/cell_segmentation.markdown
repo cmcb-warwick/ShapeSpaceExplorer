@@ -2,6 +2,7 @@
 layout: default
 title: Cell Segmentation
 permalink: /cell_segmentation/
+nav_order: 3
 ---
 
 # Cell Segmentation

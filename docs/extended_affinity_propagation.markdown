@@ -2,6 +2,7 @@
 layout: default
 title: Extended Affinity Propagation
 permalink: /extended_affinity_propagation/
+nav_order: 7
 ---
 
 # Extended Affinity Propagation

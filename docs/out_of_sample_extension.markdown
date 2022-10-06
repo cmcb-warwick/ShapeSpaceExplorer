@@ -2,6 +2,7 @@
 layout: default
 title: Out of Sample Extension
 permalink: /out_of_sample_extension/
+nav_order: 9
 ---
 
 # Out of Sample Extension

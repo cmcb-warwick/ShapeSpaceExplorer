@@ -2,6 +2,7 @@
 layout: default
 title: Inspect Shape Space
 permalink: /inspect_shape_space/
+nav_order: 6
 ---
 
 # Inspect Shape Space

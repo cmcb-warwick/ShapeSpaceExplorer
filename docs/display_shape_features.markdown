@@ -2,6 +2,7 @@
 layout: default
 title: Display Shape Features
 permalink: /display_shape_features/
+nav_order: 5
 ---
 
 # Display Shape Features

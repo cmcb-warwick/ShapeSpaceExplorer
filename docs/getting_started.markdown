@@ -2,6 +2,7 @@
 layout: default
 title: Getting Started
 permalink: /getting_started/
+nav_order: 2
 ---
 
 # Terminologies for the Tutorial

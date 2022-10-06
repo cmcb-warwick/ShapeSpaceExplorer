@@ -2,6 +2,7 @@
 layout: default
 title: Shape Space Dynamic
 permalink: /shape_space_dynamic/
+nav_order: 10
 ---
 
 # Shape Space Dynamic

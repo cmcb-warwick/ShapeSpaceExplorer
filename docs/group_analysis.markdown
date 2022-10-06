@@ -2,6 +2,7 @@
 layout: default
 title: Group Analysis
 permalink: /group_analysis/
+nav_order: 8
 ---
 
 # Group Analysis
