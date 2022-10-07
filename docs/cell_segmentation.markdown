@@ -13,7 +13,7 @@ To run cell segmentation, run <code>ShapeSpaceExplorer > 1-ImageSegmentationFull
 <img align="center" width=500px src="cell_segmentation/img/select_data_folder.png">
 
 Select your Movie folder containing your microscopy data, which should show all files in a selectable list. \
-<img align="center" width=500px src="./img/select_data_files.png">
+<img align="center" width=500px src="cell_segmentation/img/select_data_files.png">
 
 Select all movies that should be analysed. Note that at least one file must be selected to continue. The loading of the next interface can be slow, because it calculates the number of frames of your shortest movie from all movies files. 
 
@@ -21,15 +21,15 @@ The interface offers two choices:
 - Analyse all movies from start to end (default choice) 
 - Select a substack of your frames, which might be helpful if your data went out of focus. If you select a substack from frame A to frame B, this selection will automatically be applied to all movies in your analysis.
 
-<img align="center" width=500px src="./img/substack_choice.png">
+<img align="center" width=500px src="cell_segmentation/img/substack_choice.png">
 
 The final interface asks you for the Analysis folder to save the output of the cell segmentation.  Clicking on <code>Start Pre-processing</code> begins the automatic cell segmentation. This is a time intensive task and can take hours to days depending on your data size and available computing power. The segmentation parameters should optimised on a typical movie before running a large dataset. See [Troubleshooting](#troubleshooting) for more information. \
-<img align="center" width=500px src="./img/select_analysis_folder.png">
+<img align="center" width=500px src="cell_segmentation/img/select_analysis_folder.png">
 
 Two progress bars indicate the movie and frame that are currently processed. At the end, the command line prints a note when the program finishes successfully. \
-<img align="center" width=500px src="./img/progress_bar1.png"> \
-<img align="center" width=500px src="./img/progress_bar2.png"> \
-<img align="center" width=500px src="./img/segmentation_finished.png">
+<img align="center" width=500px src="cell_segmentation/img/progress_bar1.png"> \
+<img align="center" width=500px src="cell_segmentation/img/progress_bar2.png"> \
+<img align="center" width=500px src="cell_segmentation/img/segmentation_finished.png">
 
 After cell segmentation, the Analysis folder should have the following new files:
 - ImageStackXXX.mat for each analysed movie
@@ -51,29 +51,29 @@ An excellent detailed explanation on how the parameters influence cell segmentat
 ## Manual Correction of Cell Segmentation
 
 To inspect the cell segmentation results, run the file <code>1-ImageSegmentationFull > Inspect\_Shapes.m </code> in the ShapeSpaceExplorer folder, which will open the Inspect_Shapes interface \
-<img align="center" width=500px src="./img/open_manual_inspect.png">
+<img align="center" width=500px src="cell_segmentation/img/open_manual_inspect.png">
 
 Click on the folder icon in the toolbar and select one of the files with the name format <code>ImageStackXXX.mat</code>, for example <code>ImageStack001.mat</code>. The program highlights the contours of the detected cells. The toolbar offers zoom in, zoom out and pan operations. The 8th icon from the left is the legend icons and permits you to see the id assigned to detected shapes. 
-<img align="center" width=500px src="./img/contour_highlights.png">
+<img align="center" width=500px src="cell_segmentation/img/contour_highlights.png">
 
 There are a variety of operations that permit to correct the automatic cell segmentation manually. Each of the operations is explained in the following sections. 
 
 ### Delete a Single Shape
-<img align="center" width=500px src="./img/delete_single1.png">
+<img align="center" width=500px src="cell_segmentation/img/delete_single1.png">
 
 Selecting the Cursor and clicking on a shape removes the shape from the detected cells, indicated by a grey outline. To remove a shape from a frame plus all future frame you need to hold down the key CTRL and click on the shape. To add the shape back to detected shapes, simply click with the Cursor selected inside the shape, which should re-colour the shape in a bright colour.
 
 ### Filter Out Shapes With Small Area Size
-<img align="center" width=500px src="./img/filter_small.png">
+<img align="center" width=500px src="cell_segmentation/img/filter_small.png">
 
 ### Filter Out Shapes With Small Life Span
-<img align="center" width=500px src="./img/filter_short.png">
+<img align="center" width=500px src="cell_segmentation/img/filter_short.png">
 
 ### Merge
-<img align="center" width=500px src="./img/merge.png">
+<img align="center" width=500px src="cell_segmentation/img/merge.png">
 
 ### Manual Drawing
-<img align="center" width=500px src="./img/manual_drawing.png">
+<img align="center" width=500px src="cell_segmentation/img/manual_drawing.png">
 
 You have the full functionality of the [MATLAB ROI tool](https://uk.mathworks.com/help/images/ref/roipoly.html). Here is a basic guide:
 - Delete: Backspace
@@ -92,7 +92,7 @@ When you save 3 new files should be produced:
 ## After Manual Correction
 
 The program expects you to open each stack with the <code>InspectShape.m</code> program and save it from there. For each stack ImageStackXXX.mat, the program creates two files, namely CellArayXXX.mat, and CellFrameDataXXX.mat. The analysis integrates only stacks that have those two files generated. To proceed run <code>1-ImageSegmentationFull > MakeBigStructs.m</code>.
-<img align="center" width=500px src="./img/run_MakeBigStructs.png">
+<img align="center" width=500px src="cell_segmentation/img/run_MakeBigStructs.png">
 
 After selecting the Analysis folder, the program generates two files:
 - Bigcellarrayandindex.mat
