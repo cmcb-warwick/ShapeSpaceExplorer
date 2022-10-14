@@ -14,11 +14,11 @@ function [ BigCellArray, cell_indices ] = Import_Manual_Segs_plus_Struct
 %
 
 Experiment_folder = uigetdir(pwd,'Select Data Folder');
+Analysis_folder = uigetdir(pwd,'Select Analysis Folder');
 
 D=dir(Experiment_folder);
 D(~[D.isdir])= []; %Remove all non directories.
 stack_folder_names = setdiff({D.name},{'.','..'}); %Remove '.' and '..' anomalies
-
 num_stacks=length(stack_folder_names);
 stack_folder_names=sort_nat(stack_folder_names);
 
@@ -69,8 +69,8 @@ for i=1:num_stacks
     
 end
 
-save([Experiment_folder '/Bigcellarrayandindex.mat'], 'BigCellArray', 'cell_indices', '-v7.3')
-save([Experiment_folder '/BigCellDataStruct.mat'], 'BigCellDataStruct', '-v7.3')
+save([Analysis_folder '/Bigcellarrayandindex.mat'], 'BigCellArray', 'cell_indices', '-v7.3')
+save([Analysis_folder '/BigCellDataStruct.mat'], 'BigCellDataStruct', '-v7.3')
 
 end
 
