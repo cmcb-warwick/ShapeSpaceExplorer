@@ -173,6 +173,6 @@ run("Draw", "slice");
 }
 ```
 
-Now, run <code>1-ImageSegmentationFull > ImportManual_Segs_plus_Struct.m</code>, which asks for the Analysis folder as input. If successful, it will generate these two files:
+Now, run <code>1-ImageSegmentationFull > ImportManual_Segs_plus_Struct.m</code>, which asks for the Experiment folder and then the Analysis folder as input. If successful, it will generate these two files:
 - Bigcellarrayandindex.mat
 - BigCellDataStruct.mat
