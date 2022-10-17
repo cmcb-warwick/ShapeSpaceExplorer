@@ -11,10 +11,10 @@ nav_order: 10
 
 First, please make sure that the Neural Network Toolbox is already installed. If not install it by clicking on the Home tab, click Add-Ons (stacked cubes icon) -> Get Add-Ons. This launches the Add-On Explorer that lists all toolboxes from MATLAB -> search for Neural Network and install it. \
 
-Then, run 5-Extended_Affinity_Propagation > Run_GroupAnalysisNEW.m 
+Then, run <code>5-Extended_Affinity_Propagation > Run_GroupAnalysisNEW.m</code> 
 <img align="center" width=500px src="./img/group_analysis.png">
 
-Define the Groups by entering a group name, the stack number, and the associated analysis folder. A mapping between stack number and original file is in ‘FileMapping.csv’, generated in the cell segmentation step. 
+Define the Groups by entering a group name, the stack number, and the associated analysis folder. A mapping between stack number and original file is in <code>FileMapping.csv</code>, generated in the cell segmentation step. 
 Note: Avoid special characters and white space for group names as they are used later directly in figure paths, and may cause issues on some operating systems. 
 
 Note: stack numbers from one to five can be entered in several ways, such as
@@ -22,17 +22,17 @@ Note: stack numbers from one to five can be entered in several ways, such as
 - 1,2,3,4,5
 To delete a group, hold CTRL and click on the group, which produces a context menu with a delete option. 
 
-Now, configure the number of regions by selecting the number of rows and columns of the shape space to be divided (see figure below). \
+Now, configure the number of regions by selecting the number of rows and columns of the shape space to be divided. \
 <img align="center" width=500px src="./img/constrained_clustering.png">
 
-Once ‘Generate figures’ buttom is pressed, a GUI for Self Organizing Maps Neural Network for shape feature space clustering will be shown (see below) \
+Once <code>Generate figures</code> button is pressed, a GUI for Self Organizing Maps Neural Network for shape feature space clustering will be shown \
 <img align="center" width=500px src="./img/neural_net.png">
 
-For each group analysis, the program creates a new folder with time stamp, for example “GroupAnalysis_2015-04-15_095836”. The folder contains the following figures for each group: \
+For each group analysis, the program creates a new folder with time stamp, for example <code>GroupAnalysis_2015-04-15_095836</code>. The folder contains the following figures for each group: \
 <img align="center" width=500px src="./img/shape_space_grey.png">
 <img align="center" width=500px src="./img/shape_space_group.png">
 
-Top left images shows shape space in gray with all shapes from all groups. The Top right image shows all shapes in region colour. Second row (from left to right) show group elements in cluster colour and non-group elements in grey for three different groups: untreated, siControl, siKIF1C, receptively. There is also a number of figures that are generated for each group (see below). \ 
+Top left images shows shape space in gray with all shapes from all groups. The Top right image shows all shapes in region colour. Second row (from left to right) show group elements in cluster colour and non-group elements in grey for three different groups: untreated, siControl, siKIF1C, receptively. There is also a number of figures that are generated for each group. \ 
 <img align="center" width=500px src="./img/group_cluster.png">
 <img align="center" width=500px src="./img/nongroup_grey.png">
 <img align="center" width=500px src="./img/three_groups.png">
@@ -46,7 +46,7 @@ Left figure shows the relative amount of shapes in the clusters, while right fig
 
 Left figure shows relative count of all groups with respect to region 1 (red), while right figure shows bar plots with absolute counts. For all bar plots, the numbers are written in text format in the Group Analysis folder.
 
-Also, the averages speed in shape space is written in “AvgSpeedPerGroup.csv”. The unit of the speed is [unit in shape space/ time point difference]. If your movies took a frame every 5 minutes, than the respective unit would be 
+Also, the averages speed in shape space is written in <code>AvgSpeedPerGroup.csv</code>. The unit of the speed is [unit in shape space/ time point difference]. If your movies took a frame every 5 minutes, than the respective unit would be 
 [1 unit in shape space/ 5 minutes].
 
 |Groups | AvgSpeed |  Std | StandErr |
@@ -73,7 +73,7 @@ First row (from left to right) shows paths of cells form regionX (e.g., the firs
 
 ## Sliced Shape Dynamics
 
-For dynamic data, start with pre-processing and run 7-ShapeSpaceDynamics > Run_DynamicData_Generation.m and select the Analysis folder. 
+For dynamic data, start with pre-processing and run <code>7-ShapeSpaceDynamics > Run_DynamicData_Generation.m</code> and select the Analysis folder. 
 After successful completion, the program should have generated the file:
 - DynamicData.mat
 
