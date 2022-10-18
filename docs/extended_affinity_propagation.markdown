@@ -11,9 +11,9 @@ This step is optional.
 
 This step determines similarities between shapes. 
 In this step, similarities between shapes are determined. For pre-processing run 
-5-Extended_Affinity_Propagation > Run_Affinity_Propagation.m
+<code>5-Extended_Affinity_Propagation > Run_Affinity_Propagation.m</code>
 
-Note: this step needs first to load CellShapeData.mat; when this file is large, say about 20 GB, loading the file may take half an hour where the computer gives no feedback. Once loaded, the program prints progress on the console. \
+Note: this step needs first to load <code>CellShapeData.mat</code>; when this file is large, say about 20 GB, loading the file may take half an hour where the computer gives no feedback. Once loaded, the program prints progress on the console. \
 <img align="center" width=500px src="./img/progress.png">
 
 After successful completion, the following nine files should have been generated in the Analysis folder:
@@ -29,7 +29,7 @@ After successful completion, the following nine files should have been generated
 
 ## Inspecting Automatic Classification of Shapes
 
-To inspect the automatic classification, run 5-Extended_Affinity_Propagation > Inspect_ShapeAffinity.m , select the Analysis folder, and then the program produces two figures (see below) \
+To inspect the automatic classification, run <code>5-Extended_Affinity_Propagation > Inspect_ShapeAffinity.m</code>, select the Analysis folder, and then the program produces two figures (see below) \
 <img align="center" width=10px src="./img/column_shapes.png">
 <img align="center" width=500px src="./img/matrix_shapes.png">
 
@@ -38,13 +38,13 @@ The left figure shows the unordered exemplars with one example highlighted for e
 ## Dendrogram of Shapes
 
 Often, the program produces to many clusters and it is desirable to constraint the number of clusters. To make an informed choice, the cluster dendrogram should be consulted. 
-Run 5-Extended_Affinity_Propagation > Run_Dendogram_of_Shapes.m, select Analysis folder, and then the program produces the cluster dendrogram (see below). Use this to decide how many clusters are appropriate for the dataset. \
+Run <code>5-Extended_Affinity_Propagation > Run_Dendogram_of_Shapes.m</code>, select Analysis folder, and then the program produces the cluster dendrogram (see below). Use this to decide how many clusters are appropriate for the dataset. \
 <img align="center" width=500px src="./img/dendrogram.png">
 
 ## Constrained Clustering
 
 Then run
-5-Extended_Affinity_Propagation > Run_constrained_Clustering.m, 
+<code>5-Extended_Affinity_Propagation > Run_constrained_Clustering.m</code>, 
 select the Analysis folder and configure the number of clusters based on your choice made above (see figure below). \
 <img align="center" width=500px src="./img/contrained_clustering_interface.png">
 
