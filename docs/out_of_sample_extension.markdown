@@ -29,8 +29,10 @@ To compare the OOSE sample within the shape parameters and cluster parameters of
 
 For clusters, select the best numbers from the reference (Analysis) sample. The new subset will be plotted in shape space using the two most distinctive features for x- and y-axis from the larger sample in Analysis. Also, for the clustering, the sample in Analysis is used as ‘reference’ clusters, and this permits to see how this sample extension compares to a larger sample or a control sample. \
 <img align="center" width=500px src="./img/abs_clusters.png">
+Bar graphs for clusters with absolute numbers \
 <img align="center" width=500px src="./img/shape_space_ref_grey.png">
+Shape space with reference dots in grey and sample extension in colour \
 <img align="center" width=500px src="./img/shape_space_ref_empty.png">
+Extension shapes in full circles and reference shapes in empty circles.
 
-Left: shows bar graphs for clusters with absolute numbers, middle shows shape space with reference dots in grey and sample extension in colour, right figure plots extension shapes in full circles and reference shapes in empty circles. 
 Note: All Figures are plotted in OOSE/Figures, with numbers of bar graphs written in CVS files.

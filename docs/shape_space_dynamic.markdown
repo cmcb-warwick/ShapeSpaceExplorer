@@ -9,7 +9,7 @@ nav_order: 10
 
 ## Group analysis including OoSE data and cluster to cluster speed
 
-First, please make sure that the Neural Network Toolbox is already installed. If not install it by clicking on the Home tab, click Add-Ons (stacked cubes icon) -> Get Add-Ons. This launches the Add-On Explorer that lists all toolboxes from MATLAB -> search for Neural Network and install it. \
+First, please make sure that the Neural Network Toolbox is already installed. If not install it by clicking on the Home tab, click Add-Ons (stacked cubes icon) -> Get Add-Ons. This launches the Add-On Explorer that lists all toolboxes from MATLAB -> search for Neural Network and install it.
 
 Then, run <code>5-Extended_Affinity_Propagation > Run_GroupAnalysisNEW.m</code> 
 <img align="center" width=500px src="./img/group_analysis.png">
@@ -88,10 +88,10 @@ Note: InspectData  from 1st step, permits only cells with continuous detection t
 
 ## Sliced Shape Space Average Dynamics
 
-This program permits to see the average behaviour of slices in shape space. Run 7-ShapeSpaceDynamics > Run_Sliced_Dynamics.m \
+This program permits to see the average behaviour of slices in shape space. Run <code>7-ShapeSpaceDynamics > Run_Sliced_Dynamics.m</code> \
 <img align="center" width=500px src="./img/dynamics_data.png">
 
-Select the Analysis folder and the number of slices for the x- and y-coordinate in shape space before clicking on “Generate Figures”
+Select the Analysis folder and the number of slices for the x- and y-coordinate in shape space before clicking on <code>Generate Figures</code>
 
 The program produces a figure, where for each slice in shape space a rose plot is plotted (see example below). \
 <img align="center" width=500px src="./img/rose_per_group.png">
@@ -102,6 +102,7 @@ To see the rose plots per group, tick the last choice box (Analysis by Groups). 
 The left figure shows the shape dynamics for the first group (siControl) while the right figure is for the second group (siKIF1C), where for each slice in shape space a rose plot is plotted.
 
 ## Explore Average Behaviour of Clusters
+Run <code>7-ShapeSpaceDynamics > Run_Clustered_Dynamics.m</code> \
 <img align="center" width=500px src="./img/constrained_clustering_average.png">
 An example graph could look similar to the image below: \
 <img align="center" width=500px src="./img/rose_average_clusters.png">
