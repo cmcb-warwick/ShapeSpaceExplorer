@@ -130,14 +130,14 @@ hLine=plot(axes1,SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', m
 
 %%
 brush on
-f = figure;
-h = uicontrol('Position',[20 20 200 40],'String','Continue',...
+%f = figure;
+h = uicontrol('Position',[20 0 200 40],'String','Continue',...
               'Callback','uiresume(gcf)');
 disp('This will print immediately');
 uiwait(gcf);
 
 disp('This will print after you click Continue');
-close(f);
+%close(f);
 
 brushedIdx = logical(hLine.BrushData);  % logical array
  x = hLine.XData(brushedIdx);
