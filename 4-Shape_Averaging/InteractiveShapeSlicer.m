@@ -77,7 +77,7 @@ function varargout = InteractiveShapeSlicer_OutputFcn(hObject, eventdata, handle
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+%varargout{1} = handles.output;
 
 
 % --------------------------------------------------------------------
