@@ -47,6 +47,12 @@ The spatial bandwidth, influences on how large the  radius of a detected shape c
 
 An excellent detailed explanation on how the parameters influence cell segmentation can be found on [Wikipedia](http://en.wikipedia.org/wiki/Mean_shift)
 
+If when running <code>ShapeSpaceExplorer > 1-ImageSegmentationFull > Run_CellSegmentation.m</code> you get an error starting 
+```
+'edison_wrapper_mex' is not found in the current folder or on the MATLAB path, but exists in:
+```
+In Matlab navigate to <code>1-ImageSegmentationFull > New_Download > edison_matlab_interface</code> and run <code>compile_edison_wrapper</code>. You may then need to restart Matlab.
+
 ## Manual Correction of Cell Segmentation
 
 To inspect the cell segmentation results, run the file <code>1-ImageSegmentationFull > Inspect\_Shapes.m </code> in the ShapeSpaceExplorer folder, which will open the Inspect_Shapes interface \
