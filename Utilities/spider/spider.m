@@ -133,7 +133,7 @@ if ~exist('f','var')
 elseif ismember(f,get(0,'children')')
 	% existing figure - clear and set up
 	ca = gca(f); hold on;
-elseif isint(f)
+elseif isnumeric(f) && isint(f)
 	% generating a new figure
 	figure(f); ca = gca(f); cla(ca); hold on
 else

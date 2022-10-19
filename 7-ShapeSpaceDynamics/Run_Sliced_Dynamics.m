@@ -38,7 +38,8 @@ if (out.groups)
         filleDoesNotexistGroup(grFile)
     else 
         dt=load(grFile);
-        group.items=dt.groups.groups;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+        %group.items=dt.groups.groups;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+        group.items=dt.groups;
     end
     
     bigMatrixPath = fullfile(out.path, 'Bigcellarrayandindex.mat');
