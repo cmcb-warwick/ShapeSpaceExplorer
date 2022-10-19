@@ -49,7 +49,7 @@ display('Oose distance matrix sucessfully generated');
 % display('Oose CDS is sucessfully generated');
 
 %%%%%%%%%%%
-RunCreateCellShapeDataforOoSE()
+RunCreateCellShapeDataforOoSE(path.OosFolder)
 %%%%%%%%%%%
 
 end
