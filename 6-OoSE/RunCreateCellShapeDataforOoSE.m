@@ -1,17 +1,17 @@
-function RunCreateCellShapeDataforOoSE()
+function RunCreateCellShapeDataforOoSE(folder)
 
 
-out=SelectFolder();
-dataFile = fullfile(out.folder, 'Bigcellarrayandindex.mat');
+%out=SelectFolder();
+dataFile = fullfile(folder, 'Bigcellarrayandindex.mat');
 
-oPath = fullfile(out.folder, 'OoSE_embedding.mat');
+oPath = fullfile(folder, 'OoSE_embedding.mat');
 OoSEscores= load(oPath);
 
 global PATH;
-PATH=out.folder;
+PATH=folder;
 if exist(dataFile, 'file')
     data = load(dataFile);
-    CreatcellShapeDataForOoSE(OoSEscores, data.BigCellArray, out.folder, out.sparse);
+    CreatcellShapeDataForOoSE(OoSEscores, data.BigCellArray, folder, 0);
 else 
     display('-------')
     display('The file "Bigcellarrayandindex.mat" does not exist in your Analysis folder.');
