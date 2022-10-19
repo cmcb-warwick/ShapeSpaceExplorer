@@ -58,7 +58,6 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 cPath=mfilename('fullpath');
-disp(cPath)
 [subfolder,~,~] = fileparts(cPath);
 [folder,~,~] = fileparts(subfolder);
 imFile = fullfile(folder, 'UiComponents/img/', 'header.png');

@@ -23,13 +23,6 @@ To generate various shape feature plot, run <code>3-ShapeFeatures > generateShap
 After successful generation, the programs plots all figures in the Analysis folder <code>Figures/3_ShapeFeature_<property>.eps</code> e.g. for Circularity, the file name is <code>3_ShapeFeature_ Circularity.eps</code> \
 <img align="center" width=500px src="./img/circularity_plot.png">
 
-As a validation step, run <code>3-ShapeFeatures > Run_PlotBAMvsSCORES</code> and select the analysis folder, then program will produce the following figures: \
-<img align="center" width=500px src="./img/bam_plot.png">
-
-First and second rows (from left to right) show a comparison between ‘Score’ and ‘Solidity and DistRatio’ distributions, respectively, while third row shows regression lines on top of the shape distributions.
-
-Note: please make sure that the BAM distance matrix (named ‘Dist_mat.mat’) is stored in the same analysis folder otherwise you can copy-past it to the same folder. 
-
 ## Interactive Shape Explorer
 
 The interactive shape explorer permits to inspect the track of a single cell in shape space over time. Run <code>3-ShapeFeatures > CellTrackViewer</code> \

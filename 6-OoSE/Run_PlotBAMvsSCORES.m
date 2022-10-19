@@ -1,17 +1,22 @@
 function   Run_PlotBAMvsSCORES()
 
-config1=DataSelection();
-global PATH;
-PATH=config1.fpath;
-if strcmp(config1.fpath, '...')==1, return; end
-inputFolder =  config1.fpath;
-BPath=fullfile(inputFolder, 'Figures','Validation');
+path=OoseConfig();
+try if isempty(path.anaFolder) || isempty(path.OosFolder)||...
+    strcmp(path.anaFolder,path.OosFolder)==1 ||...
+    ~exist(path.anaFolder, 'dir') || ~exist(path.OosFolder, 'dir')
+    return;
+    end
+catch
+    return;
+end
+
+BPath=fullfile(path.anaFolder, 'Figures','Validation');
 if ~exist(BPath,'dir'),mkdir(BPath);end
 %----------------------%
 display('Files are loading ... ');
-load(fullfile(inputFolder, '/CellShapeData.mat'));
-load(fullfile(inputFolder, '/Morphframe.mat'));
-load(fullfile(inputFolder, '/Dist_mat.mat'));
+load(fullfile(path.anaFolder, '/CellShapeData.mat'));
+load(fullfile(path.anaFolder, '/Morphframe.mat'));
+load(fullfile(path.OosFolder, '/Dist_mat.mat'));
 display('Files loaded ');
 
 %%
