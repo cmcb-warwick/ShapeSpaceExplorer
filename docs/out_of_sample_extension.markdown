@@ -24,6 +24,11 @@ After correctly finishing, there will be one new file in the OOSE folder:
 - Dist_mat.mat
 - OoSE_embedding.mat
 
+As a validation step, run <code>3-ShapeFeatures > Run_PlotBAMvsSCORES</code> and select the analysis and OsSE folders, then the program will produce the following figures: \
+<img align="center" width=500px src="./img/bam_plot.png">
+
+First and second rows (from left to right) show a comparison between 'Score' and 'Solidity and DistRatio' distributions, respectively, while third row shows regression lines on top of the shape distributions.
+
 To compare the OOSE sample within the shape parameters and cluster parameters of say the control sample, <code>run 6_OoSE > createBargraphs.m</code> \
 <img align="center" width=500px src="./img/oose_config3.png">
 
