@@ -13,7 +13,7 @@ First step: create a folder called OOSE (possibly inside Analysis folder), then 
 <code>1-ImageSegmentationFull > MakeBigStructs.m</code> or continue without inspection running
 <code>1-ImageSegmentationFull > MakeBigStructsWithoutManual.m</code>.
 
-Now, <code>run 6_OoSE > run_OoSE_training</code> and configure the next step \
+Now, run <code>6_OoSE > run_OoSE_training</code> and configure the next step \
 <img align="center" width=500px src="./img/oose_config.png">
 
 Once completed successfully, the OOSE folder contains the new file:
@@ -29,7 +29,7 @@ As a validation step, run <code>3-ShapeFeatures > Run_PlotBAMvsSCORES</code> and
 
 First and second rows (from left to right) show a comparison between 'Score' and 'Solidity and DistRatio' distributions, respectively, while third row shows regression lines on top of the shape distributions.
 
-To compare the OOSE sample within the shape parameters and cluster parameters of say the control sample, <code>run 6_OoSE > createBargraphs.m</code> \
+To compare the OOSE sample within the shape parameters and cluster parameters of say the control sample, run <code>6_OoSE > createBargraphs.m</code> \
 <img align="center" width=500px src="./img/oose_config3.png">
 
 For clusters, select the best numbers from the reference (Analysis) sample. The new subset will be plotted in shape space using the two most distinctive features for x- and y-axis from the larger sample in Analysis. Also, for the clustering, the sample in Analysis is used as ‘reference’ clusters, and this permits to see how this sample extension compares to a larger sample or a control sample. \

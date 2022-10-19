@@ -20,7 +20,7 @@ After successful completion, the program should have created the file
 To generate various shape feature plot, run <code>3-ShapeFeatures > generateShapeFeature</code> and select the type of graphs the program should create (the example below selected Area and Circularity): \
 <img align="center" width=500px src="./img/select_features.png">
 
-After successful generation, the programs plots all figures in the Analysis folder <code>Figures/3_ShapeFeature_<property>.eps</code> e.g. for Circularity, the file name is <code>3_ShapeFeature_ Circularity.eps</code> \
+After successful generation, the programs plots all figures in the Analysis folder <code>Figures/3_ShapeFeature_property.eps</code> e.g. for Circularity, the file name is <code>3_ShapeFeature_ Circularity.eps</code> \
 <img align="center" width=500px src="./img/circularity_plot.png">
 
 ## Interactive Shape Explorer

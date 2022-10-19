@@ -25,6 +25,7 @@ To make the documentation easy to read, some terms are introduced:
 	- MATLAB Coder
 	- MATLAB Compiler
 	- Deep Learning (optional, only required for group analysis of regions)
+	- Statistics and Machine Learning
 
 All figures produced by the scripts are automatically saved in the folder Analysis > Figures unless otherwise stated.
 
