@@ -28,7 +28,7 @@ Now, configure the number of regions by selecting the number of rows and columns
 Once <code>Generate figures</code> button is pressed, a GUI for Self Organizing Maps Neural Network for shape feature space clustering will be shown \
 <img align="center" width=500px src="./img/neural_net.png">
 
-For each group analysis, the program creates a new folder with time stamp, for example <code>GroupAnalysis_2015-04-15_095836</code>. The folder contains the following figures for each group: \
+For each group analysis, the program creates a subfolder within a folder called <code>GroupAnalysis</code> in the Figures folder. The subfolder is named <code>Region_a_Groups_b</code> where <code>a</code> is the number of regions defined and <code>b</code> is the number of groups. The folder contains the following figures for each group: \
 <img align="center" width=500px src="./img/shape_space_grey.png">
 <img align="center" width=500px src="./img/shape_space_group.png">
 
@@ -64,12 +64,14 @@ Once done, the figure will be updated to show the number of regions that have be
 Note that the cluster numbers will be shown on the clustered shape space once you do click-right.
 
 Also, the system will produce four figures as demonstrated below \
-<img align="center" width=500px src="./img/x_to_y.png">
-<img align="center" width=500px src="./img/y_to_x.png">
-<img align="center" width=500px src="./img/speed_x_to_y.png">
+<img align="center" width=500px src="./img/x_to_y.png"> \
+shows paths of cells form regionX (e.g., the first selected region) to regionY \
+<img align="center" width=500px src="./img/y_to_x.png"> \
+shows paths of cells form regionY to regionX \
+<img align="center" width=500px src="./img/speed_x_to_y.png"> \
+shows the speed of cells from regionX to regionY \
 <img align="center" width=500px src="./img/speed_y_to_x.png">
-
-First row (from left to right) shows paths of cells form regionX (e.g., the first selected region) to regionY and from regionY to regionX, respectively. Second row (from left to right) shows the speed of cells from regionX to regionY and vise versa, respectively.
+shows the speed of cells from regionY to regionX.
 
 ## Sliced Shape Dynamics
 
