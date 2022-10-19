@@ -55,7 +55,7 @@ In Matlab navigate to <code>1-ImageSegmentationFull > New_Download > edison_matl
 
 ## Manual Correction of Cell Segmentation
 
-To inspect the cell segmentation results, run the file <code>1-ImageSegmentationFull > Inspect\_Shapes.m </code> in the ShapeSpaceExplorer folder, which will open the Inspect_Shapes interface \
+To inspect the cell segmentation results, run the file <code>1-ImageSegmentationFull > Inspect_Shapes.m </code> in the ShapeSpaceExplorer folder, which will open the Inspect_Shapes interface \
 <img align="center" width=500px src="/cell_segmentation/img/open_manual_inspect.png">
 
 Click on the folder icon in the toolbar and select one of the files with the name format <code>ImageStackXXX.mat</code>, for example <code>ImageStack001.mat</code>. The program highlights the contours of the detected cells. The toolbar offers zoom in, zoom out and pan operations. The 8th icon from the left is the legend icons and permits you to see the id assigned to detected shapes. 
@@ -96,7 +96,7 @@ When you save 3 new files should be produced:
 
 ## After Manual Correction
 
-The program expects you to open each stack with the <code>InspectShape.m</code> program and save it from there. For each stack ImageStackXXX.mat, the program creates two files, namely CellArayXXX.mat, and CellFrameDataXXX.mat. The analysis integrates only stacks that have those two files generated. To proceed run <code>1-ImageSegmentationFull > MakeBigStructs.m</code>.
+The program expects you to open each stack with the <code>Inspect_Shape.m</code> program and save it from there. For each stack ImageStackXXX.mat, the program creates two files, namely CellArayXXX.mat, and CellFrameDataXXX.mat. The analysis integrates only stacks that have those two files generated. To proceed run <code>1-ImageSegmentationFull > MakeBigStructs.m</code>.
 <img align="center" width=500px src="/cell_segmentation/img/run_MakeBigStructs.png">
 
 After selecting the Analysis folder, the program generates two files:
