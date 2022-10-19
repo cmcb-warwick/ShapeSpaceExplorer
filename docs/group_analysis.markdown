@@ -22,19 +22,19 @@ Note: stack numbers from one to five can be entered in several ways, such as
 - 1,2,3,4,5
 To delete a group, hold CTRL and click on the group, which produces a context menu with a delete option. 
 
-For each group analysis, the program creates a new folder with time stamp, for example <code>GroupAnalysis_2015-04-15_095836</code>. The folder contains the following results for each group: \
-<img align="center" width=500px src="./img/shape_space_grey.png">
-<img align="center" width=500px src="./img/group_elements.png">
-
-Left images shows shape space in gray, with group elements in cluster colour, while right image shows group elemetns as full circles and non-group elements as empty circles in shape space. \
-<img align="center" width=500px src="./img/relative_amount_shapes.png">
-<img align="center" width=500px src="./img/euclidean_ratio.png">
-
-Left figure shows the relative amount of shapes in the clusters, while right figure shows Eucledian ratio persistency of the group,  a ratio between accumulated distance and shortest possible distance over different time lags. \
-<img align="center" width=500px src="./img/relative_count_resp1.png">
-<img align="center" width=500px src="./img/abs_count.png">
-
-Left figure shows relative count of all groups with respect to cluster 1 (red), while right figure shows bar plots with absolute counts. For all bar plots, the numbers are written in text format in the Group Analysis folder.
+For each group analysis, the program creates a subfolder within a folder called <code>GroupAnalysis</code> in the Figures folder. The subfolder is named <code>Cluster_a_Groups_b</code> where <code>a</code> is the number of clusters selected and <code>b</code> is the number of groups defined. The folder contains the following results for each group: \
+<img align="center" width=500px src="./img/shape_space_grey.png"> \
+shows shape space in gray, with group elements in cluster colour
+<img align="center" width=500px src="./img/group_elements.png"> \
+shows group elements as full circles and non-group elements as empty circles in shape space. \
+<img align="center" width=500px src="./img/relative_amount_shapes.png"> \
+shows the relative amount of shapes in the clusters \
+<img align="center" width=500px src="./img/euclidean_ratio.png"> \
+shows Eucledian ratio persistency of the group,  a ratio between accumulated distance and shortest possible distance over different time lags. \
+<img align="center" width=500px src="./img/relative_count_resp1.png"> \
+shows relative count of all groups with respect to cluster 1 (red) \
+<img align="center" width=500px src="./img/abs_count.png"> \
+shows bar plots with absolute counts. For all bar plots, the numbers are written in text format in the Group Analysis folder.
 
 Finally, the averages speed in shape space is written in <code>AvgSpeedPerGroup.csv</code>. The unit of the speed is [unit in shape space/ time point difference]. If your movies took a frame every 5 minutes, than the respective unit would be 
 [1 unit in shape space/ 5 minutes].
@@ -56,9 +56,6 @@ To make the results graphically more appealing, the program writes the single it
 ## Shape Slicer with Group Analysis
 <img align="center" width=500px src="./img/gui_shape_slicer_with_group.png">
 
-To see the group distribution in space slicer, tick the last choice box (load group analysis). Then, the program ask for a group folder (see below) \
-select_folder
-
-Below is the shape space sliced, with the coloring of the group analysis and the associated histograms for the defined groups. \
+To see the group distribution in space slicer, tick the last choice box (load group analysis). Below is the shape space sliced, with the coloring of the group analysis and the associated histograms for the defined groups. \
 <img align="center" width=500px src="./img/shape_space_groups.png">
 <img align="center" width=500px src="./img/group_histograms.png">
