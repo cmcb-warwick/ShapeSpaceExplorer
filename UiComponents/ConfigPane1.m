@@ -64,7 +64,7 @@ axis('off')
 set(handles.edit1, 'String','...') 
 % show path from last time.
 global PATH
-if ((length(PATH)>2)&& ~(PATH==0))
+if ((length(PATH)>2)&& ~(all(PATH)==0))
 set(handles.edit1, 'String', PATH);
 end
 % Update handles structure
