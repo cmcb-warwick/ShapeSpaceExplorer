@@ -117,7 +117,7 @@ for i=0:root.getChildCount()-1
     
     s= root.getChildAt(i).toString();
     C=regexp(char(s),':','split');
-    item.path=strtrim(C(3));
+    item.path=strtrim(strjoin(C(3:end),':'));
     
     items{end+1}=item;
 end
