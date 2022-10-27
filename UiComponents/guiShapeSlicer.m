@@ -87,16 +87,19 @@ function varargout = guiShapeSlicer_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
+if isvalid(hObject)
 struc.pathAna= get(handles.edit1, 'String');
 struc.xSlice=get(handles.popupmenu2,'Value');
 struc.ySlice=get(handles.popupmenu3,'Value');
 struc.axesEqual=get(handles.checkbox1,'Value');
 struc.Group=get(handles.checkbox2,'Value');
 struc.handle = handles.figure1;
-varargout{1} = struc;
+varargout{1}=struc;
 h= handles.figure1;
 delete(h);
-
+else
+    varargout{1}=-1;
+end
 
 
 function edit1_Callback(hObject, eventdata, handles)
@@ -236,7 +239,7 @@ else
     h= handles.figure1;
     delete(h);
 end
-
+delete(hObject)
 
 % --- Executes on button press in checkbox2.
 function checkbox2_Callback(hObject, eventdata, handles)
