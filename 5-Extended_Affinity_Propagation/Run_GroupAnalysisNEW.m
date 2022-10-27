@@ -8,8 +8,8 @@ clear groups;
 grFile =fullfile(O, 'groups.mat');
 items=load(grFile);
 %%
-GM=items.groups{1}.path;
-for i=2:length(items.groups)
+GM={};
+for i=1:length(items.groups)
    GM=[GM; items.groups{i}.path];
     
 end
