@@ -1,11 +1,11 @@
 function [ d, q, sig_naught ] = LP_OoSE_train(trainingCellShapeData, savedestination)
-%LAPLACIANPYRAMIDS Summary of this function goes here
-%   Detailed explanation goes here
+%LP_OoSE_train Train Laplacian Pyramids for original analysis data set
+%   Implementation of Laplacian Pyramids method from Rabin and Coifman 2012
+%   used to extend current data embedding to new points. This calculate the
+%   LPs for original data set.
 
 %trainingCellShapeData should be the output of BAM DM through the
 %ShapeManifoldEmbedding code of your training data.
-
-
 
 %shape_distance_vector should be a long (Lx1) vector of shape distances
 %   (Found in CellShapeData.set.Long_D if ShapeManifoldEmbedding has been
@@ -44,49 +44,36 @@ if size(D,1)~=size(D,2) % when D is not a square matrix
     clear('D2')
 end
 
+dist2 = D.^2;
 
-
-dims=size(target_func,2);
-
-for m=1:dims
-    f=target_func(:,m);
-    f=f';
-    Err=1;
-    l=-1;
-
-    
-    while abs(Err)>Adm_Err
-        l=l+1;
-        %    [num,l]
-        %     clear('D')
-        %     load(D_path)
-
-        sig=sig_naught/(2^l);
-        D2=D.^2;
-        %   D2=D;
-        D2=D2./sig;
-        D2=-D2;
-        D2=exp(D2);
-        q{m}{l+1}=sum(D2);
-        Q=q{m}{l+1}.^(-1);
-        for i=1:nobs
-            D2(i,:)=Q(i)*D2(i,:);
-        end;
-        clear('Q')
-        if l==0;
-            d_l=f;
-        else
-            d_l=d{m}{l}-s_l;
-        end
-        s_l=d_l*D2;
-        d{m}{l+1}=d_l;
-        Err=norm(d_l-s_l);
+%train
+l = -1;
+err = 100;
+sig0 = 1;
+adm_err = 10^-5;
+while err >= adm_err
+    l=l+1;
+    sig = sig0/(2^l);
+    %equation 3.17
+    gl = exp(-dist2/sig);
+    ql = sum(gl);
+    kl = (ql'.^(-1)).*gl;
+    if l==0
+        fl = sum(kl.*ftrain,2)';
+        d = ftrain-fl;
+        dims=ndims(d);
+        otherdims = repmat({':'},1,ndims(d));
+    else
+        fl = fl+sum(kl.*d(otherdims{:},l),2)';
+        d(otherdims{:},l+1) = ftrain - fl;
     end
-    
-    
+    %mse is half mean square error
+    err = mse(d(otherdims{:},l+1))*2;
 end
+    
+
 filedir = fullfile(savedestination, 'LP_trained.mat');
-save(filedir, 'd','q','sig_naught','-v7.3');
+save(filedir, 'd','sig0','-v7.3');
 
 
 end
