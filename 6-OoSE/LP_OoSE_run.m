@@ -82,20 +82,17 @@ sum_sk=zeros(N,ndims);
 filedir = fullfile(new_unique_savedestination, 'Dist_mat.mat');
 save(filedir, 'D','-v7.3');
 D=D.^2;
-for n=1:N
-    for m=1:ndims
-        K=length(d{m});
-        for i=1:K
-            k=zeros(1,train_nobs);
-            sig=sig_naught/(2^(i-1));
-            D2=D(:,n)./sig;
-            D2=-D2;
-            D2=exp(D2);
-            for j=1:train_nobs
-                k(j)=D2(j)/q{m}{i}(j);          
-            end
-            sum_sk(n,m)=sum_sk(n,m)+k*d{m}{i}';
-        end
+[l,~]=size(d);
+for m=0:l
+    sig = sig0/(2^m);
+    %equation 3.17
+    gly = exp(-zdist2/sig);
+    qly = sum(gly,2);
+    kly = (qly.^(-1)).*gly;
+    if m==0
+        fy = sum(kly.*ftrain,2)';
+    else
+        fy = fy+sum(kly.*d(otherdims{:},m),2)';
     end
 end
 
