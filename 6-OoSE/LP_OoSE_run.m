@@ -96,7 +96,7 @@ for m=0:l
     end
 end
 
-OoSE_emb=sum_sk;
+OoSE_emb=fy;
 
 save([new_unique_savedestination '/OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
 h=waitbar(1,h,'Complete');

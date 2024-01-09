@@ -46,31 +46,35 @@ end
 
 dist2 = D.^2;
 
-%train
-l = -1;
-err = 100;
-sig0 = 1;
-adm_err = 10^-5;
-while err >= adm_err
-    l=l+1;
-    sig = sig0/(2^l);
-    %equation 3.17
-    gl = exp(-dist2/sig);
-    ql = sum(gl);
-    kl = (ql'.^(-1)).*gl;
-    if l==0
-        fl = sum(kl.*ftrain,2)';
-        d = ftrain-fl;
-        dims=ndims(d);
-        otherdims = repmat({':'},1,ndims(d));
-    else
-        fl = fl+sum(kl.*d(otherdims{:},l),2)';
-        d(otherdims{:},l+1) = ftrain - fl;
+for tf=1:nobs
+    ftrain = target_func(:,nobs);
+    %train
+    l = -1;
+    err = 100;
+    sig0 = 1;
+    adm_err = 10^-5;
+    while err >= adm_err
+        l=l+1;
+        sig = sig0/(2^l);
+        %equation 3.17
+        gl = exp(-dist2/sig);
+        ql = sum(gl);
+        kl = (ql'.^(-1)).*gl;
+        if l==0
+            fl = sum(kl.*ftrain,2)';
+            d = ftrain-fl;
+            dims=ndims(d);
+            otherdims = repmat({':'},1,ndims(d));
+        else
+            fl = fl+sum(kl.*d(otherdims{:},l),2)';
+            d(otherdims{:},l+1) = ftrain - fl;
+        end
+        %mse is half mean square error
+        err = mse(d(otherdims{:},l+1))*2;
     end
-    %mse is half mean square error
-    err = mse(d(otherdims{:},l+1))*2;
+    LP{tf}=d;
 end
-    
+d=LP;
 
 filedir = fullfile(savedestination, 'LP_trained.mat');
 save(filedir, 'd','sig0','-v7.3');
