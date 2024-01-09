@@ -46,8 +46,8 @@ end
 
 dist2 = D.^2;
 
-for tf=1:nobs
-    ftrain = target_func(:,nobs);
+for tfi=1:nobs
+    ftrain = target_func(:,tfi);
     %train
     l = -1;
     err = 100;
@@ -63,7 +63,6 @@ for tf=1:nobs
         if l==0
             fl = sum(kl.*ftrain,2)';
             d = ftrain-fl;
-            dims=ndims(d);
             otherdims = repmat({':'},1,ndims(d));
         else
             fl = fl+sum(kl.*d(otherdims{:},l),2)';
@@ -72,7 +71,7 @@ for tf=1:nobs
         %mse is half mean square error
         err = mse(d(otherdims{:},l+1))*2;
     end
-    LP{tf}=d;
+    LP{tfi}=d;
 end
 d=LP;
 
