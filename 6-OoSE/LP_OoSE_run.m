@@ -78,7 +78,7 @@ load(path_to_LPtrained);
 ndims=length(d);
 
 %train_nobs=length(D);
-sum_sk=zeros(N,ndims);
+%sum_sk=zeros(N,ndims);
 filedir = fullfile(new_unique_savedestination, 'Dist_mat.mat');
 save(filedir, 'D','-v7.3');
 D=D.^2;
@@ -86,13 +86,13 @@ D=D.^2;
 for m=0:l
     sig = sig0/(2^m);
     %equation 3.17
-    gly = exp(-zdist2/sig);
+    gly = exp(-D/sig);
     qly = sum(gly,2);
     kly = (qly.^(-1)).*gly;
     if m==0
         fy = sum(kly.*ftrain,2)';
     else
-        fy = fy+sum(kly.*d(otherdims{:},m),2)';
+        fy = fy+sum(kly.*d(m,:),2)';
     end
 end
 

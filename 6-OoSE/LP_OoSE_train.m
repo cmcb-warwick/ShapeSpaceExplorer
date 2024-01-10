@@ -1,4 +1,4 @@
-function [ d, q, sig_naught ] = LP_OoSE_train(trainingCellShapeData, savedestination)
+function [ d, sig0 ] = LP_OoSE_train(trainingCellShapeData, adm_err, savedestination)
 %LP_OoSE_train Train Laplacian Pyramids for original analysis data set
 %   Implementation of Laplacian Pyramids method from Rabin and Coifman 2012
 %   used to extend current data embedding to new points. This calculate the
@@ -23,8 +23,6 @@ function [ d, q, sig_naught ] = LP_OoSE_train(trainingCellShapeData, savedestina
 shape_distance_vector=trainingCellShapeData.set.Long_D;
 target_func=trainingCellShapeData.set.SCORE;
 
-Adm_Err=10^(-8);
-sig_naught=1;
 D=shape_distance_vector;
 clear('shape_distance_vector');
 
@@ -46,13 +44,12 @@ end
 
 dist2 = D.^2;
 
-for tfi=1:nobs
-    ftrain = target_func(:,tfi);
+for tfi=1:size(target_func,2)
+    ftrain = target_func(:,tfi)';
     %train
     l = -1;
     err = 100;
     sig0 = 1;
-    adm_err = 10^-5;
     while err >= adm_err
         l=l+1;
         sig = sig0/(2^l);
@@ -63,13 +60,17 @@ for tfi=1:nobs
         if l==0
             fl = sum(kl.*ftrain,2)';
             d = ftrain-fl;
-            otherdims = repmat({':'},1,ndims(d));
+            %otherdims = repmat({':'},1,ndims(d));
         else
-            fl = fl+sum(kl.*d(otherdims{:},l),2)';
-            d(otherdims{:},l+1) = ftrain - fl;
+            fl = fl+sum(kl.*d(l,:),2)';
+            %d(otherdims{:},l+1) = ftrain' - fl;
+            d(l+1,:) = ftrain - fl;
         end
         %mse is half mean square error
-        err = mse(d(otherdims{:},l+1))*2;
+        %err = mse(d(otherdims{:},l+1))*2;
+        err = mse(d(l+1,:))*2;
+        sterr(l+1)=err;
+        semilogy(sterr);
     end
     LP{tfi}=d;
 end

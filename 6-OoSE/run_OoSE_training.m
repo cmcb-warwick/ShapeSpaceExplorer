@@ -14,6 +14,7 @@ end
 cellShapePath=fullfile(path.anaFolder, 'CellShapeData.mat');
 display('File is loading ... ');
 data= load(cellShapePath);
-LP_OoSE_train(data.CellShapeData, path.OosFolder);
+adm_err = 10^-35;
+LP_OoSE_train(data.CellShapeData, adm_err, path.OosFolder);
 display('Oose training completed sucessfully');
 end
