@@ -81,7 +81,7 @@ ndims=length(d);
 %sum_sk=zeros(N,ndims);
 filedir = fullfile(new_unique_savedestination, 'Dist_mat.mat');
 save(filedir, 'D','-v7.3');
-D=D.^2;
+D=D'.^2;
 
 target_func=trainingCellShapeData.set.SCORE;
 for n=1:length(d)
@@ -91,7 +91,7 @@ for m=0:l
 %for m=0:12
     sig = sig0/(2^m);
     %equation 3.17
-    gly = exp(-D'/sig);
+    gly = exp(-D/sig);
     qly = sum(gly,2);
     kly = (qly.^(-1)).*gly;
     if m==0

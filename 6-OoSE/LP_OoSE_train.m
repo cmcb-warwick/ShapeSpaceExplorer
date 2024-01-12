@@ -1,4 +1,4 @@
-function [ d, sig0 ] = LP_OoSE_train(trainingCellShapeData, adm_err, savedestination)
+function [ d, sig0, final_err, fl ] = LP_OoSE_train(trainingCellShapeData, savedestination)
 %LP_OoSE_train Train Laplacian Pyramids for original analysis data set
 %   Implementation of Laplacian Pyramids method from Rabin and Coifman 2012
 %   used to extend current data embedding to new points. This calculate the
@@ -48,9 +48,12 @@ for tfi=1:size(target_func,2)
     ftrain = target_func(:,tfi)';
     %train
     l = -1;
-    err = 100;
-    sig0 = 8;
-    while err >= adm_err && l<=20
+    sig0 = max(max(dist2))*512;
+    min_err = 100;
+    current_err = 10;
+    sterr=100;
+    while current_err <= min_err && l<=20
+        min_err = min(sterr);
         l=l+1;
         sig = sig0/(2^l);
         %equation 3.17
@@ -59,27 +62,26 @@ for tfi=1:size(target_func,2)
         ql = sum(gl);
         kl = (ql'.^(-1)).*gl;
         if l==0
-            fl = sum(kl.*ftrain,2)';
-            d = ftrain-fl;
+            fl{tfi} = sum(kl.*ftrain,2)';
+            d = ftrain-fl{tfi};
             %otherdims = repmat({':'},1,ndims(d));
         else
-            fl(l+1,:) = fl(l,:)+sum(kl.*d(l,:),2)';
+            fl{tfi}(l+1,:) = fl{tfi}(l,:)+sum(kl.*d(l,:),2)';
             %d(otherdims{:},l+1) = ftrain' - fl;
-            d(l+1,:) = ftrain - fl(l,:);
+            d(l+1,:) = ftrain - fl{tfi}(l,:);
         end
         %mse is half mean square error
-        %err = mse(d(otherdims{:},l+1))*2;
-        err = mse(d(l+1,:))*2;
-        sterr(l+1)=err;
-        figure; semilogy(sterr);
+        current_err = mse(d(l+1,:))*2; 
+        sterr(l+1) = current_err;
     end
-    [~,im] = min(sterr);
-    LP{tfi}=d(1:im,:);
+    figure; semilogy(sterr);
+    final_err{tfi} = sterr(end-1);
+    LP{tfi}=d(1:l,:);
 end
 d=LP;
 
-filedir = fullfile(savedestination, 'LP_trained.mat');
-save(filedir, 'd','sig0','-v7.3');
+filedir = fullfile(savedestination, 'LP_trained_scaledsig0512[ .mat');
+save(filedir, 'd','sig0','final_err','fl', '-v7.3');
 
 
 end
