@@ -88,6 +88,7 @@ for n=1:length(d)
 [l,~]=size(d{n});
 ftrain = target_func(:,n)';
 for m=0:l
+%for m=0:12
     sig = sig0/(2^m);
     %equation 3.17
     gly = exp(-D'/sig);

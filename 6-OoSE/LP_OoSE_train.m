@@ -49,12 +49,13 @@ for tfi=1:size(target_func,2)
     %train
     l = -1;
     err = 100;
-    sig0 = 1;
-    while err >= adm_err
+    sig0 = 8;
+    while err >= adm_err && l<=20
         l=l+1;
         sig = sig0/(2^l);
         %equation 3.17
         gl = exp(-dist2/sig);
+        gl = gl-diag(diag(gl));
         ql = sum(gl);
         kl = (ql'.^(-1)).*gl;
         if l==0
@@ -62,17 +63,18 @@ for tfi=1:size(target_func,2)
             d = ftrain-fl;
             %otherdims = repmat({':'},1,ndims(d));
         else
-            fl = fl+sum(kl.*d(l,:),2)';
+            fl(l+1,:) = fl(l,:)+sum(kl.*d(l,:),2)';
             %d(otherdims{:},l+1) = ftrain' - fl;
-            d(l+1,:) = ftrain - fl;
+            d(l+1,:) = ftrain - fl(l,:);
         end
         %mse is half mean square error
         %err = mse(d(otherdims{:},l+1))*2;
         err = mse(d(l+1,:))*2;
         sterr(l+1)=err;
-        semilogy(sterr);
+        figure; semilogy(sterr);
     end
-    LP{tfi}=d;
+    [~,im] = min(sterr);
+    LP{tfi}=d(1:im,:);
 end
 d=LP;
 
