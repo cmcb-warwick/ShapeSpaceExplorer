@@ -1,4 +1,4 @@
-function [ d, sig0, final_err, fl ] = LP_OoSE_train(trainingCellShapeData, savedestination)
+function [ d, sig0, fl ] = LP_OoSE_train(trainingCellShapeData, savedestination)
 %LP_OoSE_train Train Laplacian Pyramids for original analysis data set
 %   Implementation of Laplacian Pyramids method from Rabin and Coifman 2012
 %   used to extend current data embedding to new points. This calculate the
@@ -18,7 +18,6 @@ function [ d, sig0, final_err, fl ] = LP_OoSE_train(trainingCellShapeData, saved
 %your training data set, d is the dimensionality For Out-of-Sample
 %Extension embedding, this should be one of the Diffusion dimensions
 %(stored as SCORE), created by ShapeManifoldEmbedding. 
-
 
 shape_distance_vector=trainingCellShapeData.set.Long_D;
 target_func=trainingCellShapeData.set.SCORE;
@@ -43,17 +42,15 @@ if size(D,1)~=size(D,2) % when D is not a square matrix
 end
 
 dist2 = D.^2;
-
 for tfi=1:size(target_func,2)
     ftrain = target_func(:,tfi)';
     %train
     l = -1;
-    sig0 = max(max(dist2))*512;
-    min_err = 100;
-    current_err = 10;
-    sterr=100;
-    while current_err <= min_err && l<=20
-        min_err = min(sterr);
+    last_error = 100;
+    current_error = 100;
+    sig0 = 1;
+    while current_error <= last_error
+        last_error = current_error;
         l=l+1;
         sig = sig0/(2^l);
         %equation 3.17
@@ -62,26 +59,23 @@ for tfi=1:size(target_func,2)
         ql = sum(gl);
         kl = (ql'.^(-1)).*gl;
         if l==0
-            fl{tfi} = sum(kl.*ftrain,2)';
-            d = ftrain-fl{tfi};
-            %otherdims = repmat({':'},1,ndims(d));
+            fl = sum(kl.*ftrain,2)';
+            d = ftrain-fl;
         else
-            fl{tfi}(l+1,:) = fl{tfi}(l,:)+sum(kl.*d(l,:),2)';
-            %d(otherdims{:},l+1) = ftrain' - fl;
-            d(l+1,:) = ftrain - fl{tfi}(l,:);
+            fl(l+1,:) = fl(l,:)+sum(kl.*d(l,:),2)';
+            d(l+1,:) = ftrain - fl(l,:);
         end
         %mse is half mean square error
-        current_err = mse(d(l+1,:))*2; 
-        sterr(l+1) = current_err;
+        current_error = mse(d(l+1,:))*2;
+        display(current_error)
     end
-    figure; semilogy(sterr);
-    final_err{tfi} = sterr(end-1);
-    LP{tfi}=d(1:l,:);
+    fprintf('Training for %d/%d complete\n', tfi,size(target_func,2));
+    LP{tfi}=d;
 end
 d=LP;
 
-filedir = fullfile(savedestination, 'LP_trained_scaledsig0512[ .mat');
-save(filedir, 'd','sig0','final_err','fl', '-v7.3');
+filedir = fullfile(savedestination, 'LP_trained.mat');
+save(filedir, 'd','sig0','fl', '-v7.3');
 
 
 end
