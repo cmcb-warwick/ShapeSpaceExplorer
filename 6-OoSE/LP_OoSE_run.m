@@ -70,36 +70,42 @@ for i=1:train_nobs
     for j=1:N
         D(i,j)=BAM(trainingCellShapeData.point(i).sum_curve,CSD.point(j).sum_curve,trainingCellShapeData.point(i).fft_conj,CSD.point(j).fft_flip);
     end
-    waitbar(i/N,h,sprintf('OoSE Step 2. Computing distances: %5.2f%% completed ..',100*i/N));
+    waitbar(i/train_nobs*N,h,sprintf('OoSE Step 2. Computing distances: %5.2f%% completed ..',100*i/N));
     
 end
+D=D./sqrt(nodes);
 waitbar(1,h,'OoSE Step 3. Embedding, please wait.');
 load(path_to_LPtrained);
 ndims=length(d);
 
 %train_nobs=length(D);
-sum_sk=zeros(N,ndims);
+%sum_sk=zeros(N,ndims);
 filedir = fullfile(new_unique_savedestination, 'Dist_mat.mat');
 save(filedir, 'D','-v7.3');
-D=D.^2;
-for n=1:N
-    for m=1:ndims
-        K=length(d{m});
-        for i=1:K
-            k=zeros(1,train_nobs);
-            sig=sig_naught/(2^(i-1));
-            D2=D(:,n)./sig;
-            D2=-D2;
-            D2=exp(D2);
-            for j=1:train_nobs
-                k(j)=D2(j)/q{m}{i}(j);          
-            end
-            sum_sk(n,m)=sum_sk(n,m)+k*d{m}{i}';
+dist2=D'.^2;
+
+OoSE_emb=[];
+target_func=trainingCellShapeData.set.SCORE;
+for n=1:length(d)
+    [l,~]=size(d{n});
+    ftrain = target_func(:,n)';
+    for m=0:l
+        %for m=0:12
+        sig = sig0/(2^m);
+        %equation 3.17
+        gly = exp(-dist2/sig);
+        qly = sum(gly,2);
+        kly = (qly.^(-1)).*gly;
+        if m==0
+            fy{n} = sum(kly.*ftrain,2)';
+        else
+            fy{n} = fy{n}+sum(kly.*d{n}(m,:),2)';
         end
     end
+    OoSE_emb=[OoSE_emb;fy{n}];
 end
 
-OoSE_emb=sum_sk;
+OoSE_emb=OoSE_emb';
 
 save([new_unique_savedestination '/OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
 h=waitbar(1,h,'Complete');
