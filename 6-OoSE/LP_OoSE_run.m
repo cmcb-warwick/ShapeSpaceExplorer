@@ -84,26 +84,28 @@ filedir = fullfile(new_unique_savedestination, 'Dist_mat.mat');
 save(filedir, 'D','-v7.3');
 dist2=D'.^2;
 
+OoSE_emb=[];
 target_func=trainingCellShapeData.set.SCORE;
 for n=1:length(d)
-[l,~]=size(d{n});
-ftrain = target_func(:,n)';
-for m=0:l
-%for m=0:12
-    sig = sig0/(2^m);
-    %equation 3.17
-    gly = exp(-dist2/sig);
-    qly = sum(gly,2);
-    kly = (qly.^(-1)).*gly;
-    if m==0
-        fy{n} = sum(kly.*ftrain,2)';
-    else
-        fy{n} = fy{n}+sum(kly.*d{n}(m,:),2)';
+    [l,~]=size(d{n});
+    ftrain = target_func(:,n)';
+    for m=0:l
+        %for m=0:12
+        sig = sig0/(2^m);
+        %equation 3.17
+        gly = exp(-dist2/sig);
+        qly = sum(gly,2);
+        kly = (qly.^(-1)).*gly;
+        if m==0
+            fy{n} = sum(kly.*ftrain,2)';
+        else
+            fy{n} = fy{n}+sum(kly.*d{n}(m,:),2)';
+        end
     end
-end
+    OoSE_emb=[OoSE_emb;fy{n}];
 end
 
-OoSE_emb=fy;
+OoSE_emb=OoSE_emb';
 
 save([new_unique_savedestination '/OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
 h=waitbar(1,h,'Complete');

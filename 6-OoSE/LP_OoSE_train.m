@@ -67,7 +67,7 @@ for tfi=1:size(target_func,2)
         end
         %mse is half mean square error
         current_error = mse(d(l+1,:))*2;
-        display(current_error)
+        %sdisplay(current_error)
     end
     fprintf('Training for %d/%d complete\n', tfi,size(target_func,2));
     LP{tfi}=d;
