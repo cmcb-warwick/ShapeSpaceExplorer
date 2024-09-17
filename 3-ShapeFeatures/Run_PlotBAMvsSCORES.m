@@ -57,7 +57,7 @@ clear('D2');
  f = polyval(p,X);
 h=figure(1);
 reduce_plot(X,Y,'.',X,f,'-');
-xlabel('BAM Diclose(h);stance')
+xlabel('BAM Distance')
 ylabel('Solidity and DistRatio Distance')
 mn=mean(Y);
 dot(Y-mn,Y-mn); 
