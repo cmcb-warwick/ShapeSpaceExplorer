@@ -1,4 +1,4 @@
-function [ OoSE_nn ] = nn_OoSE_run_new(trainingCellShapeData, DIST, new_unique_savedestination,K )
+function [ OoSE_embedding ] = LP_OoSE_run_new(trainingCellShapeData, DIST, new_unique_savedestination,K )
 
 h = waitbar(0,'Please wait...');
 waitbar(0,h,sprintf('%5.2f%% completed ..',0));
@@ -17,7 +17,7 @@ end
 
 %[r c]=size(X);
 
-OoSE_nn=[];
+OoSE_emb=[];
 MININDEX=MinDISTindex(1:K,:);
 [c r]=size(MININDEX);
 %first find the first nearest neighbors
@@ -32,10 +32,10 @@ MININDEX=MinDISTindex(1:K,:);
 for i=1:r
     %size(MININDEX(:,i))
     %mean(X(MININDEX(:,i),:))
-    OoSE_nn=[OoSE_nn ;mean(X(MININDEX(:,i),:))];
+    OoSE_emb=[OoSE_emb ;mean(X(MININDEX(:,i),:))];
   
 end
- save([new_unique_savedestination '/OoSE_nn.mat'], 'OoSE_nn','-v7.3');
+ save([new_unique_savedestination '/OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
  h=waitbar(1,h,'Complete');
  delete(h);
 
