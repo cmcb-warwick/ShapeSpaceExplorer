@@ -1,7 +1,8 @@
 function  generate_OoSe_distMatrix_new( )
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-K=3;
+K=5; %Nearest neighbers using K=5
+LP=0; %Don't use LPs
 path=OoseConfig();
 try if isempty(path.anaFolder) || isempty(path.OosFolder)||...
     strcmp(path.anaFolder,path.OosFolder)==1 ||...
@@ -12,7 +13,6 @@ catch
     return;
 end
 
-
 cPath=fullfile(path.anaFolder, 'CellShapeData.mat');
 cData= load(cPath);
 
@@ -20,19 +20,23 @@ cData= load(cPath);
 bPath1 = fullfile(path.OosFolder, 'Bigcellarrayandindex.mat');
 bData= load(bPath1);
 
-lPath=fullfile(path.OosFolder, 'LP_trained.mat');
-LP_OoSE_run(cData.CellShapeData, bData.BigCellArray, lPath, path.OosFolder)
-display('distance matrix sucessfully generated');
-%%
+BAM_for_OoSE(cData.CellShapeData, bData.BigCellArray, path.OosFolder)
+display('BAM values calculated');
 
+if LP
+lPath=fullfile(path.OosFolder, 'LP_trained.mat');
+LP_OoSE_run(cData.CellShapeData, bData.BigCellArray, lpath, path.OosFolder)
+else
+%%
 
 bPath = fullfile(path.OosFolder, 'Dist_mat.mat');
 DIST= load(bPath);
 
 
 %lPath=fullfile(path.OosFolder, 'LP_trained.mat');
-LP_OoSE_run_new(cData.CellShapeData, DIST, path.OosFolder,K)
+nn_OoSE_run(cData.CellShapeData, DIST, path.OosFolder,K)
 display('Oose distance matrix sucessfully generated');
+end
 
 %%%%%%%%%%%%%%%%%%
 % oPath = fullfile(path.OosFolder, 'OoSE_embedding.mat');
