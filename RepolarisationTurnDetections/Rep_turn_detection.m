@@ -15,21 +15,22 @@ function [ performance_out,perf_mat ] = Rep_turn_detection( varargin)
 %-'big_green_blob': a long (>8) section of green (and connected yellow and blue)
 %-'wrong_turns': turns identified, angle too low.
 
-load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/NecessaryData/cellarrayandindex.mat')
-load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/NecessaryData/refinedSCORE.mat')
-load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/NecessaryData/corrected_CoM.mat')
-load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/NecessaryData/corners_attempt1.mat')
-%load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/first_working_hmm_model')
-%load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/pmtk_SJanalysis/model_g10.mat')
+analysis_folder = uigetdir(pwd,"Select analysis folder");
+load(fullfile(analysis_folder, '/Bigcellarrayandindex.mat'));
+load(fullfile(analysis_folder, '/CellShapeData_slim.mat'));
+load('CoM.mat')
 
-L=length(NewCellArray);
+SCORE=CellShapeData.set.SCORE;
+clear('CellShapeData')
+L=length(BigCellArray);
 %model2=model_g;
 
 test_set=1:440;
 
 warning off
 ploton=2;
-model=gen_hmm_model4_design2(0);
+
+model=gen_hmm_model4_design2(SCORE,cell_indices,0);
 
 L2=length(test_set);
 perfect=zeros(L2,1);
@@ -38,11 +39,11 @@ vac_perf=zeros(L2,1);
 %big_green_blob=false(440,1);
 wrong_turn=zeros(L2,1);
 for i=1:L2
-    DM_path=(10^7)*SCORE(cell_idx==test_set(i),1:2)';
+    DM_path=(10^7)*SCORE(cell_indices==test_set(i),1:2)';
     logp(i)=hmmLogprob(model,DM_path);
     path{i}=hmmMap(model,DM_path);
     looong(i)=length(path{i});
-    [class(i),perf_score(i),turn_score(i),straight_score(i),first_point{i},before_point{i},last_point{i},after_point{i},first_point_glob{i},before_point_glob{i},last_point_glob{i},after_point_glob{i},Output_classes{i}] = model_perf(com(cell_idx==test_set(i),:)', path{i});
+    [class(i),perf_score(i),turn_score(i),straight_score(i),first_point{i},before_point{i},last_point{i},after_point{i},first_point_glob{i},before_point_glob{i},last_point_glob{i},after_point_glob{i},Output_classes{i}] = model_perf(com(cell_indices==test_set(i),:)', path{i});
     perfect(i)=class(i).perfect;
     vac_perf(i)=class(i).vac_perfect;
     wobbly(i)=class(i).wobbly;
@@ -67,39 +68,39 @@ perf_mat=[perfect vac_perf wobbly wrong_turn];
 %     m(i)=min(SCORE(:,i));
 % end
 % if ~isempty(varargin)
-%         view_list=find(ismember(cell_idx,varargin{1}));
+%         view_list=find(ismember(cell_indices,varargin{1}));
 %         view_list=view_list(:)';
 % else
-%     view_list=find(ismember(cell_idx,1:440));
+%     view_list=find(ismember(cell_indices,1:440));
 %     view_list=view_list(:)';
 % end
 % view_list=[];
-% cell_idx2=cell_idx;
+% cell_indices2=cell_indices;
 % if ~isempty(varargin)
 %     if isnumeric(varargin{1})
-%         cell_idx2(~ismember(cell_idx,varargin{1}))=0;
+%         cell_indices2(~ismember(cell_indices,varargin{1}))=0;
 %     else
 %         switch varargin{1}
 %             case 'perfect'
-%                 cell_idx2(~ismember(cell_idx,test_set(logical(perfect))))=0;
+%                 cell_indices2(~ismember(cell_indices,test_set(logical(perfect))))=0;
 %             case 'vac_perf'
-%                 cell_idx2(~ismember(cell_idx,test_set(logical(vac_perf))))=0;
+%                 cell_indices2(~ismember(cell_indices,test_set(logical(vac_perf))))=0;
 %             case 'wobbly'
-%                 cell_idx2(~ismember(cell_idx,test_set(logical(wobbly))))=0;
+%                 cell_indices2(~ismember(cell_indices,test_set(logical(wobbly))))=0;
 %                 %                 case 'big_green_blob'
-%                 %                     cell_idx2(~ismember(cell_idx,find(logical(big_green_blob))))=0;
+%                 %                     cell_indices2(~ismember(cell_indices,find(logical(big_green_blob))))=0;
 %             case 'wrong_turn'
-%                 cell_idx2(~ismember(cell_idx,test_set(logical(wrong_turn))))=0;
+%                 cell_indices2(~ismember(cell_indices,test_set(logical(wrong_turn))))=0;
 %             otherwise
 %                 error('Not accepted input')
 %         end
 %     end
 % end
 % for i=1:L2
-%     view_list=[view_list find(cell_idx2==test_set(i))'];
+%     view_list=[view_list find(cell_indices2==test_set(i))'];
 % end
 % 
-% cell_idx(end+1)=0;
+% cell_indices(end+1)=0;
 hax=figure('units','normalized','outerposition',[0 0 1 1]);
 if ~isempty(varargin)
     cellnum=varargin{1};
@@ -108,7 +109,7 @@ else
 end
 
 
-plotstuff_init(cellnum,cell_idx,test_set,Output_classes,NewCellArray,class,hax)
+plotstuff_init(cellnum,cell_indices,test_set,Output_classes,BigCellArray,class,hax)
 
 end
 
@@ -310,13 +311,13 @@ end
 
 end
 
-function plotstuff_init(cellnum,cell_idx,test_set,Output_classes,NewCellArray,class,hax)
+function plotstuff_init(cellnum,cell_indices,test_set,Output_classes,BigCellArray,class,hax)
 clf
 set(hax,'toolbar','figure');
 %  fullpos=fullpos+1;
-%cellnum=cell_idx(i);
+%cellnum=cell_indices(i);
 celltestsetidx=find(test_set==cellnum);
-L3=sum(cell_idx==cellnum);
+L3=sum(cell_indices==cellnum);
 
 
 colourscheme=zeros(L3,3);
@@ -326,8 +327,8 @@ colourscheme(Output_classes{celltestsetidx}==2,3)=1;
 colourscheme(Output_classes{celltestsetidx}==3,3)=1;
 colourscheme(Output_classes{celltestsetidx}==4,2)=1;
 
-temp=cell2mat(NewCellArray(cell_idx==cellnum));
-Cells_cell=NewCellArray(cell_idx==cellnum);
+temp=cell2mat(BigCellArray(cell_indices==cellnum));
+Cells_cell=BigCellArray(cell_indices==cellnum);
 xmin=min(temp(:,1));
 xmax=max(temp(:,1));
 ymin=min(temp(:,2));
@@ -356,22 +357,22 @@ uicontrol('Style', 'slider',...
 uicontrol('Style', 'pushbutton',...
     'String','Next',...
     'Position', [700 20 50 20],...
-    'Callback', {@plotstuff,min(cellnum+1,max(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,hax});
+    'Callback', {@plotstuff,min(cellnum+1,max(test_set)),cell_indices,test_set,Output_classes,BigCellArray,class,hax});
 
 uicontrol('Style', 'pushbutton',...
     'String','Last',...
     'Position', [470 20 50 20],...
-    'Callback', {@plotstuff,max(cellnum-1,min(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,hax});
+    'Callback', {@plotstuff,max(cellnum-1,min(test_set)),cell_indices,test_set,Output_classes,BigCellArray,class,hax});
 
 end
 
-function plotstuff(hObj, event, cellnum,cell_idx,test_set,Output_classes,NewCellArray,class,hax)
+function plotstuff(hObj, event, cellnum,cell_indices,test_set,Output_classes,BigCellArray,class,hax)
 clf
 set(hax,'toolbar','figure');
 %  fullpos=fullpos+1;
-%cellnum=cell_idx(i);
+%cellnum=cell_indices(i);
 celltestsetidx=find(test_set==cellnum);
-L3=sum(cell_idx==cellnum);
+L3=sum(cell_indices==cellnum);
 
 
 colourscheme=zeros(L3,3);
@@ -381,8 +382,8 @@ colourscheme(Output_classes{celltestsetidx}==2,3)=1;
 colourscheme(Output_classes{celltestsetidx}==3,3)=1;
 colourscheme(Output_classes{celltestsetidx}==4,2)=1;
 
-temp=cell2mat(NewCellArray(cell_idx==cellnum));
-Cells_cell=NewCellArray(cell_idx==cellnum);
+temp=cell2mat(BigCellArray(cell_indices==cellnum));
+Cells_cell=BigCellArray(cell_indices==cellnum);
 xmin=min(temp(:,1));
 xmax=max(temp(:,1));
 ymin=min(temp(:,2));
@@ -411,11 +412,11 @@ uicontrol('Style', 'slider',...
 uicontrol('Style', 'pushbutton',...
     'String','Next',...
     'Position', [700 20 50 20],...
-    'Callback', {@plotstuff,min(cellnum+1,max(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,hax});
+    'Callback', {@plotstuff,min(cellnum+1,max(test_set)),cell_indices,test_set,Output_classes,BigCellArray,class,hax});
 
 uicontrol('Style', 'pushbutton',...
     'String','Last',...
     'Position', [470 20 50 20],...
-    'Callback', {@plotstuff,max(cellnum-1,min(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,hax});
+    'Callback', {@plotstuff,max(cellnum-1,min(test_set)),cell_indices,test_set,Output_classes,BigCellArray,class,hax});
 
 end

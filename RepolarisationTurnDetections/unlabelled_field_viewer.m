@@ -1,6 +1,6 @@
 function [ performance_out,perf_mat ] = unlabelled_field_viewer( varargin)
-%CELLTRACKVIEWER Summary of this function goes here
-%   Detailed explanation goes here
+%unlabelled_field_viewer Display image next to outlines
+%   Displays images of turns next to unlabelled outlines
 
 %model needs to be an hmm model
 
@@ -15,21 +15,22 @@ function [ performance_out,perf_mat ] = unlabelled_field_viewer( varargin)
 %-'big_green_blob': a long (>8) section of green (and connected yellow and blue)
 %-'wrong_turns': turns identified, angle too low.
 
-load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/NecessaryData/cellarrayandindex.mat')
-load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/NecessaryData/refinedSCORE.mat')
-load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/NecessaryData/corrected_CoM.mat')
-load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/NecessaryData/corners_attempt1.mat')
-%load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/first_working_hmm_model')
-%load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/pmtk_SJanalysis/model_g10.mat')
+analysis_folder = uigetdir(pwd,"Select analysis folder");
+load(fullfile(analysis_folder, '/Bigcellarrayandindex.mat'));
+load(fullfile(analysis_folder, '/CellShapeData_slim.mat'));
+load('CoM.mat')
+NewCellArray=BigCellArray;
+cell_idx=cell_indices;
+SCORE=CellShapeData.set.SCORE;
 load('stack_data.mat')
 L=length(NewCellArray);
-%model2=model_g;
+
 
 test_set=301:400;
 
 warning off
 ploton=2;
-model=gen_hmm_model4_design2(0);
+model=gen_hmm_model4_design2(SCORE,cell_idx,0);
 
 L2=length(test_set);
 perfect=zeros(L2,1);
@@ -108,7 +109,7 @@ else
 end
 
 
-plotstuff_init(cellnum,cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax)
+plotstuff_init(cellnum,cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax, analysis_folder)
 
 end
 
@@ -312,7 +313,7 @@ end
 
 end
 
-function plotstuff_init(cellnum,cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax)
+function plotstuff_init(cellnum,cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax,analysis_folder)
 clf
 set(hax,'toolbar','figure');
 %  fullpos=fullpos+1;
@@ -344,7 +345,9 @@ celltestsetidx=find(test_set==cellnum);
 %L3=sum(cell_idx==cellnum);
 stacknum=unique(stack_idx(cell_idx==cellnum));
 
-load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ImageStacks/ImageStack%03d',stacknum))
+stacknum=unique(stack_idx(cell_idx==cellnum));
+image_stack_path = fullfile(analysis_folder, '/ImageStacks');
+load(fullfile(image_stack_path,sprintf('/ImageStack%03d',stacknum)))
 frames=frame_idx(cell_idx==cellnum);
 frames=frames(start:finish);
 Img2=eval(sprintf('ImageStack%03d(:,:,frames)',stacknum));
@@ -385,16 +388,16 @@ uicontrol('Style', 'slider',...
 uicontrol('Style', 'pushbutton',...
     'String','Next',...
     'Position', [700 20 50 20],...
-    'Callback', {@plotstuff,min(cellnum+1,max(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax});
+    'Callback', {@plotstuff,min(cellnum+1,max(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax,analysis_folder});
 
 uicontrol('Style', 'pushbutton',...
     'String','Last',...
     'Position', [470 20 50 20],...
-    'Callback', {@plotstuff,max(cellnum-1,min(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax});
+    'Callback', {@plotstuff,max(cellnum-1,min(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax,analysis_folder});
 
 end
 
-function plotstuff(hObj, event, cellnum,cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax)
+function plotstuff(hObj, event, cellnum,cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax,analysis_folder)
 clf
 set(hax,'toolbar','figure');
 %  fullpos=fullpos+1;
@@ -425,8 +428,8 @@ ymax=max(temp(:,2));
 celltestsetidx=find(test_set==cellnum);
 %L3=sum(cell_idx==cellnum);
 stacknum=unique(stack_idx(cell_idx==cellnum));
-
-load(sprintf('/Volumes/annelab/sam/Microscope_data/experiment3/ImageStacks/ImageStack%03d',stacknum))
+image_stack_path = fullfile(analysis_folder, '/ImageStacks');
+load(fullfile(image_stack_path,sprintf('/ImageStack%03d',stacknum)))
 frames=frame_idx(cell_idx==cellnum);
 frames=frames(start:finish);
 Img2=eval(sprintf('ImageStack%03d(:,:,frames)',stacknum));
@@ -467,11 +470,11 @@ uicontrol('Style', 'slider',...
 uicontrol('Style', 'pushbutton',...
     'String','Next',...
     'Position', [700 20 50 20],...
-    'Callback', {@plotstuff,min(cellnum+1,max(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax});
+    'Callback', {@plotstuff,min(cellnum+1,max(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax,analysis_folder});
 
 uicontrol('Style', 'pushbutton',...
     'String','Last',...
     'Position', [470 20 50 20],...
-    'Callback', {@plotstuff,max(cellnum-1,min(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax});
+    'Callback', {@plotstuff,max(cellnum-1,min(test_set)),cell_idx,test_set,Output_classes,NewCellArray,class,stack_idx,frame_idx,hax,analysis_folder});
 
 end
