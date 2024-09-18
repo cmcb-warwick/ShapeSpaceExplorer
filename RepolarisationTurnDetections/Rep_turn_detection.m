@@ -18,12 +18,7 @@ function [ performance_out,perf_mat ] = Rep_turn_detection( varargin)
 analysis_folder = uigetdir(pwd,"Select analysis folder");
 load(fullfile(analysis_folder, '/Bigcellarrayandindex.mat'));
 load(fullfile(analysis_folder, '/CellShapeData_slim.mat'));
-%load('Z:\Shared240\Archive\Sam_Jefferyes\Microscope_data\TemporalAnalysis\Turns\NecessaryData\cellarrayandindex.mat')
-%load('Z:\Shared240\Archive\Sam_Jefferyes\Microscope_data\TemporalAnalysis\Turns\NecessaryData\refinedSCORE.mat')
 load('CoM.mat')
-%load('Z:\Shared240\Archive\Sam_Jefferyes\Microscope_data\TemporalAnalysis\Turns\NecessaryData\corners_attempt1.mat')
-%load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/first_working_hmm_model')
-%load('/Volumes/annelab/sam/Microscope_data/TemporalAnalysis/Turns/pmtk_SJanalysis/model_g10.mat')
 
 SCORE=CellShapeData.set.SCORE;
 clear('CellShapeData')
