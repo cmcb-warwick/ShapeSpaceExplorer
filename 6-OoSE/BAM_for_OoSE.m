@@ -64,7 +64,7 @@ for i=1:train_nobs
     for j=1:N
         D(i,j)=BAM(trainingCellShapeData.point(i).sum_curve,CSD.point(j).sum_curve,trainingCellShapeData.point(i).fft_conj,CSD.point(j).fft_flip);
     end
-    waitbar(i/train_nobs*N,h,sprintf('OoSE Step 2. Computing distances: %5.2f%% completed ..',train_nobs*i/N));
+    waitbar(((i-1)*N+j)/(train_nobs*N),h,sprintf('OoSE Computing distances: %5.2f%% completed ..',(((i-1)*N+j)/(train_nobs*N))*100));
     
 end
 D=D./sqrt(nodes);
@@ -85,8 +85,8 @@ nodes=300;
 
 in = size(varargin,2);
 
-if(in == 0),
-elseif(in == 1),
+if(in == 0)
+elseif(in == 1)
     nodes = varargin{1,1};
 end
 
@@ -94,7 +94,7 @@ N=size(stack,1);%number of frames
 snakemat=zeros(2*nodes,N);%initialise new cell of outline frames
 
 
-for i=1:N;
+for i=1:N
     %L=length(stack{i}(:,1))+1;%old number of nodes plus one to plug the hole
     dx=[stack{i}(2:end,1); stack{i}(1,1)]-stack{i}(:,1);
     dy=[stack{i}(2:end,2); stack{i}(1,2)]-stack{i}(:,2);
@@ -113,7 +113,7 @@ for i=1:N;
     Xi=interp1(P,x,newP,'spline');%new node Xcoords
     Yi=interp1(P,y,newP,'spline');%new node Ycoords
     snakemat(:,i)=[Xi(1:nodes); Yi(1:nodes)];
-    waitbar(i/(N),h,sprintf('OoSE Step 1. Interpolation: %5.2f%% completed ..',i*100/(N)));
+    waitbar(i/(N),h,sprintf('OoSE Interpolation: %5.2f%% completed ..',i*100/(N)));
 end
 
 end

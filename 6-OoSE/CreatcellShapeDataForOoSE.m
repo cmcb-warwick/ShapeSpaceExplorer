@@ -5,8 +5,6 @@ function [ CellShapeData ] = CreatcellShapeDataForOoSE( scoress, Frames, savedes
 %output file. Default will be the current folder 
 %
 
-
-
 %CellShapeData is a structure containing information about the dataset, the Diffusion Maps analysis and intermediate steps.
 
 %The main output of this algorithm is the Diffusion Maps embedding of 

@@ -1,4 +1,4 @@
-function [ OoSE_embedding ] = LP_OoSE_run_new(trainingCellShapeData, DIST, new_unique_savedestination,K )
+function [ OoSE_emb ] = nn_OoSE_run(trainingCellShapeData, DIST, new_unique_savedestination,K )
 
 h = waitbar(0,'Please wait...');
 waitbar(0,h,sprintf('%5.2f%% completed ..',0));
@@ -15,11 +15,9 @@ end
 
 [MinDIST, MinDISTindex] = sort(double(DIST.D));
 
-%[r c]=size(X);
-
 OoSE_emb=[];
 MININDEX=MinDISTindex(1:K,:);
-[c r]=size(MININDEX);
+[~, r]=size(MININDEX);
 %first find the first nearest neighbors
 %second normalize each row to have sum of 1 and 
 %A=[1 2 0; 2 1 1;3 1 2];
