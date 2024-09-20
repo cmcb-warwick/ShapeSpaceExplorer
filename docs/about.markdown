@@ -7,11 +7,11 @@ nav_order: 1
 
 <img align="center" width=500px src="/assets/images/sse_logo.png">
 
-ShapeSpaceExplorer is a software package in [MATLAB](https://uk.mathworks.com/products/matlab.html). It uses a machine learning approach to understand the relationship of cell shape dynamics and cell migration behaviour. Our algorithm analyses cell shape from image timelapse sequences and learns the intrinsic low-dimensional structure of cell shape space. The resultant shape space map can be used to visualise differences in cell shape distribution following perturbation experiments and to analyse the quantitative relationships between shape and migration behaviour. The core of our software is a new, rapid, landmark-free shape difference measure that allows unbiased analysis of the widely varying morphologies exhibited by migrating epithelial cells. 
+Shape Space Explorer is a software package in [MATLAB](https://uk.mathworks.com/products/matlab.html). It uses a machine learning approach to understand the relationship of cell shape dynamics and cell migration behaviour. Our algorithm analyses cell shape from image timelapse sequences and learns the intrinsic low-dimensional structure of cell shape space. The resultant shape space map can be used to visualise differences in cell shape distribution following perturbation experiments and to analyse the quantitative relationships between shape and migration behaviour. The core of our software is a new, rapid, landmark-free shape difference measure that allows unbiased analysis of the widely varying morphologies exhibited by migrating epithelial cells. 
 
 If you use our software please cite LINK TO PAPER
 
-The developers of ShapeSpaceExplorer are grateful to the developers of the following tools which are used in this software package:
+The developers of Shape Space Explorer are grateful to the developers of the following tools which are used in this software package:
 
 # [Bio-Formats](https://www.openmicroscopy.org/bio-formats/downloads/)
 Melissa Linkert, Curtis T. Rueden, Chris Allan, Jean-Marie Burel, Will Moore, Andrew Patterson, Brian Loranger, Josh Moore, Carlos Neves, Donald MacDonald, Aleksandra Tarkowska, Caitlin Sticco, Emma Hill, Mike Rossner, Kevin W. Eliceiri, and Jason R. Swedlow (2010) Metadata matters: access to image data in the real world. The Journal of Cell Biology 189(5), 777-782. doi: 10.1083/jcb.201004104
@@ -31,3 +31,7 @@ Stefan Doerr (2012). Progress bar for matlab loops (incl. parfor) (https://www.m
 
 # [Spider](https://uk.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f)
 Michael Arant (2008). spider(data,tle,rng,lbl,leg,f) (https://www.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f), MATLAB Central File Exchange.
+
+# [pmtk3](https://github.com/probml/pmtk3)
+Matt Dunham, Kevin Murphy et al. (2019) Machine Learning: a Probabilistic Persepctive by Kevin Patrick Murphy, MIT Press (2012).
+
