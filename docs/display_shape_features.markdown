@@ -7,8 +7,6 @@ nav_order: 5
 
 # Display Shape Features
 
-To validate embedding, calculate and display shape features for all shapes. 
-
 To pre-process data for shape features run <code>3-ShapeFeatures > Run_ShapeFeature_Processing</code> select the Analysis folder. A progress bar should appear, indicating how long the program takes to complete. Took about 1.5 hours for 37818 shapes dataset. \
 <img align="center" width=500px src="./img/progress_bar.png">
 
@@ -22,6 +20,13 @@ To generate various shape feature plot, run <code>3-ShapeFeatures > generateShap
 
 After successful generation, the programs plots all figures in the Analysis folder <code>Figures/3_ShapeFeature_property.eps</code> e.g. for Circularity, the file name is <code>3_ShapeFeature_ Circularity.eps</code> \
 <img align="center" width=500px src="./img/circularity_plot.png">
+
+## Validate
+
+As a validation step, run <code>3-ShapeFeatures > Run_PlotBAMvsSCORES</code> and select the Analysis folder then the program will produce the following figures: \
+<img align="center" width=500px src="./img/bam_plot.png">
+
+First and second rows (from left to right) show a comparison between 'Score' and 'Solidity and DistRatio' distributions, respectively, while third row shows regression lines on top of the shape distributions.
 
 ## Interactive Shape Explorer
 
