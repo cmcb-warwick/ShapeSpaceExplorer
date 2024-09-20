@@ -42,7 +42,7 @@ bPath = fullfile(path.OosFolder, 'Dist_mat.mat');
 if path.chosen_method == 2
     LP_OoSE_train(cData.CellShapeData, path.OosFolder);
     lPath=fullfile(path.OosFolder, 'LP_trained.mat');
-    LP_OoSE_run(cData.CellShapeData, bData.BigCellArray, lpath, bpath, path.OosFolder);
+    LP_OoSE_run(cData.CellShapeData, lPath, bPath, path.OosFolder);
 else
     DIST= load(bPath);
     K=5; %Nearest neighbers using K=5
@@ -64,7 +64,7 @@ end
 % display('Oose CDS is sucessfully generated');
 
 %%%%%%%%%%%
-RunCreateCellShapeDataforOoSE(path.OosFolder)
+RunCreateCellShapeDataforOoSE(path.OosFolder);
 %%%%%%%%%%%
 
 end

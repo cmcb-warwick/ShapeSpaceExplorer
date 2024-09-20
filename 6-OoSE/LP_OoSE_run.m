@@ -1,4 +1,4 @@
-function [ OoSE_emb ] = LP_OoSE_run(trainingCellShapeData, OoSE_frames, path_to_LPtrained, path_to_dist, new_unique_savedestination )
+function [ OoSE_emb ] = LP_OoSE_run(trainingCellShapeData, path_to_LPtrained, path_to_dist, new_unique_savedestination )
 %LAPLACIANPYRAMIDS_OOSE Summary of this function goes here
 %   Detailed explanation goes here
 %trainingCellShapeData should be the output of BAM DM through the
@@ -16,9 +16,8 @@ function [ OoSE_emb ] = LP_OoSE_run(trainingCellShapeData, OoSE_frames, path_to_
 %previous runs.
 %
 
-DIST= load(bPath);
+DIST= load(path_to_dist);
 load(path_to_LPtrained);
-ndims=length(d);
 
 dist2=DIST.D'.^2;
 
@@ -46,7 +45,5 @@ end
 OoSE_emb=OoSE_emb';
 
 save([new_unique_savedestination '/OoSE_embedding.mat'], 'OoSE_emb','-v7.3');
-h=waitbar(1,h,'Complete');
-delete(h);
 
 end
