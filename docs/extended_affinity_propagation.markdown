@@ -13,7 +13,7 @@ This step determines similarities between shapes.
 In this step, similarities between shapes are determined. For pre-processing run 
 <code>5-Extended_Affinity_Propagation > Run_Affinity_Propagation.m</code>
 
-Note: this step needs first to load <code>CellShapeData.mat</code>; when this file is large, say about 20 GB, loading the file may take half an hour where the computer gives no feedback. Once loaded, the program prints progress on the console. \
+Note: this step first needs to load <code>CellShapeData.mat</code>. When this file is large, loading the file may take a long time. Once loaded, the program prints progress on the console. \
 <img align="center" width=500px src="./img/progress.png">
 
 After successful completion, the following nine files should have been generated in the Analysis folder:
