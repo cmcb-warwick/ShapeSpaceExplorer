@@ -1,4 +1,4 @@
-function  generate_OoSe_distMatrix_new( )
+function  generate_OoSe_distMatrix( )
 %generate_OoSe_distMatrix OoSE embedding
 %   Calculate distance matrix for addition data using a choice of two
 %   methods.
