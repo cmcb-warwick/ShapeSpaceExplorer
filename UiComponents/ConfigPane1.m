@@ -64,7 +64,7 @@ axis('off')
 set(handles.edit1, 'String','...') 
 % show path from last time.
 global PATH
-if ((length(PATH)>2)&& ~(PATH==0))
+if ((length(PATH)>2)&& ~(all(PATH)==0))
 set(handles.edit1, 'String', PATH);
 end
 % Update handles structure
@@ -103,7 +103,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 folder =uigetdir(matlabroot,'Select Video Directory');
 set(handles.edit1, 'String',folder)  
 dir_struct = dir(folder);
-dir_struct =filterFiles(dir_struct, '.dv');
+dir_struct =filterFiles(dir_struct);
 [sorted_names,sorted_index] = sortrows({dir_struct.name}');
 handles.file_names = sorted_names;
 handles.is_dir = [dir_struct.isdir];
@@ -172,18 +172,18 @@ function ValueChangedCheckbox(hObject, eventdata, handles)
 
 
 % remove hiden files and folders
-function dir_struct =filterFiles(dir_struct, fileSuff)
+function dir_struct =filterFiles(dir_struct)
 idx=[];
-suffLen=length(fileSuff);
+%suffLen=length(fileSuff);
 for i=1:length(dir_struct)
     st = dir_struct(i);
+    [~,~,ext]=fileparts(st.name);
     nameLen = length(st.name);
-    if nameLen<=suffLen, continue; end
+    if nameLen<=3, continue; end
     if st.isdir, continue; end
-    suff = st.name((nameLen-suffLen+1):end);
-    if strcmp(fileSuff, suff)
-        idx(end+1)=i;
-    end
+    %suff = st.name((nameLen-suffLen+1):end);
+    if strcmp('.log', ext), continue; end
+    idx(end+1)=i;
 end
 dir_struct = dir_struct(idx);
 

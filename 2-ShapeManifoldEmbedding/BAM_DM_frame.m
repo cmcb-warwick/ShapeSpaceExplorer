@@ -58,9 +58,9 @@ end
 
 %Find eigenvectors (V) and values (D)
 if doSparse
-    [Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
-else
     [Vect,Val]=eigs(D,(no_dims+1));
+else
+    [Vect,Val]=eig(D); %With large matrices this can be very slow, consider using sparse eigendecomp (eigs, as below) instead.
 end
 
 Frame.set.Vect=Vect; %With large matrices you might want to suppress this as it will take a lot of RAM

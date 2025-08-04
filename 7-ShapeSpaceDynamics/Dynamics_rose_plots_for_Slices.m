@@ -25,6 +25,7 @@ for g=1:length(groups.items)
     gIds=getIndicesForGroup(groups.BigCellDataStruct, item.tracks);
     finalIds=unique(gIds.*groups.cellIdxes);
     finalIds=finalIds(finalIds~=0);
+    if ~isempty(finalIds)
     groupDynamicData=DynamicData(finalIds);
     [angles_in_box, spiderPlot_in_box] = getDataForPlots(groupDynamicData, Nbins, minTrackLength);
     plotRoses(Nbins, angles_in_box, figPath, ['Group_' char(item.name) '_']);
@@ -37,6 +38,7 @@ for g=1:length(groups.items)
         save(fullfile(figPath, 'spiderPlot_in_box1.mat'), 'spiderPlot_in_box','-v7.3');
     else
          save(fullfile(figPath, 'spiderPlot_in_box2.mat'), 'spiderPlot_in_box','-v7.3');
+    end
     end
     
     

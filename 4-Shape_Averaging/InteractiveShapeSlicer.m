@@ -78,6 +78,7 @@ function varargout = InteractiveShapeSlicer_OutputFcn(hObject, eventdata, handle
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
+delete(hObject);
 
 
 % --------------------------------------------------------------------
@@ -105,7 +106,7 @@ end
 % now we are ready to plot
 
 SCORE = getScoreFrom(cellShapeData);
-plotScore(SCORE, handles.axes2);
+plotScore(SCORE, handles.axes2, path);
 %%
 
 %%
@@ -113,13 +114,15 @@ handles.score=SCORE;
 handles.path=path;
 handles.CSD=cellShapeData;
 guidata(handles.figure1,handles); 
+delete(hObject);
 
 
 
-function plotScore(SCORE, axes1)
+function plotScore(SCORE, axes1, path)
 global cellShapeData
-global h1
-global h2
+%global h1
+%global h2
+%global h3
 csd= cellShapeData;
 %set(0, 'currentfigure', fig);  %# for figures
 %set(f, 'currentaxes', axs);  %# for axes with handle axs on figure f
@@ -130,14 +133,14 @@ hLine=plot(axes1,SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', m
 
 %%
 brush on
-f = figure;
-h = uicontrol('Position',[20 20 200 40],'String','Continue',...
+%f = figure;
+h = uicontrol('Position',[20 0 200 40],'String','Continue',...
               'Callback','uiresume(gcf)');
 disp('This will print immediately');
 uiwait(gcf);
 
 disp('This will print after you click Continue');
-close(f);
+%close(f);
 
 brushedIdx = logical(hLine.BrushData);  % logical array
  x = hLine.XData(brushedIdx);
@@ -152,37 +155,70 @@ size(csd)
 if isempty(mIdx) || ~isempty(find(selectedIdx==0, 1)), return; end
 avshape=shapemean(csd,selectedIdx,mIdx,0);
 
-%figure(12)
-%clf;
+% h1=figure(10);
+% clf;
+% orangeCol=[237/255 94/255 48/255];
+% plot(avshape, 'color', orangeCol,'LineWidth',3)
+% axis equal
+% 
+% h2=figure(11);
+% clf;
+% %set(0, 'currentfigure', h);  %# for figures
+% N = length(SCORE);
+% mk = getMarkerSize(N);
+% plot(SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', mk)
+% hold on
+% %plotScore(SCORE, axes1);
+% plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
+% hold off
+% %clf(h);
+
+h3=figure(12);
+clf;
 hold on
+orangeCol=[237/255 94/255 48/255];
+N = length(SCORE);
+mk = getMarkerSize(N);
+plot(SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', mk)
+%plotScore(SCORE, axes1);
+plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
 axes('Position',[.7 .7 .2 .2])
 box on
-orangeCol=[237/255 94/255 48/255];
 ALine=plot(avshape, 'color', orangeCol,'LineWidth',3);
+hold off
 %axis equal
 %axis off
 set(gca,'YTickLabel',[]);
 set(gca,'XTickLabel',[]);
 
+%[filename, pathname, filterindex]=uiputfile({'*.eps'; '*.fig'},'Save Average Shape Files');
+%filterindex
+pathname = fullfile(path, "Figures");
+idString = strcat('ShapeSlicer', num2str(mIdx));
+filename = fullfile(pathname, idString);
+%[~,name,ext] = fileparts(filename);
+%if ~(ishandle(11) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
+%if filterindex==1
+%   saveas(h2, strcat(filename, '.eps'), 'epsc');   
+%elseif filterindex==2
+%    saveas(h2, strcat(filename, '.fig'), 'fig');  
+%end
+% if avergage fig does not exist, we are done.
+%if ~(ishandle(10) && sum(ismember( findall(0,'type','figure'),10))>0), return; end
+%avgPath = strcat(filename, '_Avg_Shape');
+%if filterindex==1
+%   saveas(h1, strcat(avgPath, '.eps'), 'epsc');   
+%elseif filterindex==2
+%   saveas(h1, strcat(avgPath, '.fig'), 'fig');  
+%end    
 
-h1=figure(10);
-clf;
-orangeCol=[237/255 94/255 48/255];
-plot(avshape, 'color', orangeCol,'LineWidth',3)
-axis equal
+CombPath = strcat(filename, '_Combine');
+%if filterindex==1
+   saveas(h3, strcat(CombPath, '.eps'), 'epsc');   
+%elseif filterindex==2
+   saveas(h3, strcat(CombPath, '.fig'), 'fig');  
+%end    
 
-h2=figure(11);
-clf;
-%set(0, 'currentfigure', h);  %# for figures
-N = length(SCORE);
-mk = getMarkerSize(N);
-plot(SCORE(:,1),SCORE(:,2),'.', 'color',[0.5,.5,.5], 'MarkerSize', mk)
-hold on
-%plotScore(SCORE, axes1);
-plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
-hold off
-%clf(h);
-    
 function filleDoesNotexist(filename)
 display('-------');
 display(['The file "' filename '" does not exist in your Analysis folder.']);
@@ -299,8 +335,8 @@ clf;
 set(0, 'currentfigure', h);  %# for figures
 N = length(handles.score);
 mk = getMarkerSize(N);
-plotScore(handles.score, gca);
-plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
+plotScore(handles.score, gca, path);
+%plot(x,y,'.', 'color',orangeCol, 'MarkerSize', mk);
 
 
 

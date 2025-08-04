@@ -139,10 +139,12 @@ s =size(bigStructure);
 struc={};
 for i=1:s(2)
     tmp = bigStructure(i);
-    if tmp.Stack_number==currentStackId && tmp.Cell_number==currentCellId
-       tmp.AbsIdx=i;
-       struc = tmp;
-       break
+    if ~(isempty(tmp.Stack_number) || isempty(tmp.Cell_number))
+        if tmp.Stack_number==currentStackId && any(tmp.Cell_number==currentCellId)
+            tmp.AbsIdx=i;
+            struc = tmp;
+            break
+        end
     end
 end
 % calculate center of mass

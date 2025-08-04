@@ -58,11 +58,12 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 cPath=mfilename('fullpath');
-[folder,~,~] = fileparts(cPath);
-imFile = fullfile(folder, 'img/', 'header.png');
+[subfolder,~,~] = fileparts(cPath);
+[folder,~,~] = fileparts(subfolder);
+imFile = fullfile(folder, 'UiComponents/img/', 'header.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes1)
-imFile = fullfile(folder, 'img/', 'cluster.png');
+imFile = fullfile(folder, 'UiComponents/img/', 'cluster.png');
 img=imread(imFile);
 imshow(img,'Parent',handles.axes2)
 
