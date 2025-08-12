@@ -30,11 +30,11 @@ twitter_username: warwickcamdu
 github_username:  warwickcamdu
 
 # Build settings
-theme: just-the-docs
-#remote_theme: just-the-docs/just-the-docs #uncomment for github
+#theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs #uncomment for github
 plugins:
-  - jekyll-feed
-#  - jekyll-remote-theme # uncomment for github
+#  - jekyll-feed
+  - jekyll-remote-theme # uncomment for github
 
 permalink: pretty
 
