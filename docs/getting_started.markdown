@@ -8,7 +8,7 @@ nav_order: 2
 # Installation
 
 Click here to download Shape Space Explorer: \
-[<button type="button" name="button" class="btn">Download</button>](https://github.com/rosegostner/shape/archive/refs/heads/master.zip)
+[<button type="button" name="button" class="btn">Download</button>](https://github.com/cmcb-warwick/ShapeSpaceExplorer/archive/refs/heads/master.zip)
 
 Unzip the downloaded folder and add it to your MATLAB path. 
 
