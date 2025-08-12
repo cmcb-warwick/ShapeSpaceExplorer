@@ -34,11 +34,15 @@ P. Meer, B. Georgescu: "Edge detection with embedded confidence". IEEE Trans. Pa
 
 C. Christoudias, B. Georgescu, P. Meer: "Synergism in low level vision". 16th International Conference of Pattern Recognition, Track 1 - Computer Vision and Robotics, Quebec City, Canada, August 2001.
 
+### [pmtk3](https://github.com/probml/pmtk3)
+Probabilistic Modeling Toolkit for Matlab/Octave.
+
 ### [ProgressBar](https://uk.mathworks.com/matlabcentral/fileexchange/43872-progress-bar-for-matlab-loops-incl-parfor)
 Stefan Doerr (2012). Progress bar for matlab loops (incl. parfor) (https://www.mathworks.com/matlabcentral/fileexchange/43872-progress-bar-for-matlab-loops-incl-parfor), MATLAB Central File Exchange.
 
 ### [Spider](https://uk.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f)
 Michael Arant (2008). spider(data,tle,rng,lbl,leg,f) (https://www.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f), MATLAB Central File Exchange.
+
 
 
 
