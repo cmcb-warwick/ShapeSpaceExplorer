@@ -1,6 +1,6 @@
-# Shape Space Explorer
+# ShapeSpaceExplorer
 
-Shape Space Explorer is a software package in [MATLAB](https://uk.mathworks.com/products/matlab.html). It uses a machine learning approach to understand the relationship of cell shape dynamics and cell migration behaviour. Our algorithm analyses cell shape from image timelapse sequences and learns the intrinsic low-dimensional structure of cell shape space. The resultant shape space map can be used to visualise differences in cell shape distribution following perturbation experiments and to analyse the quantitative relationships between shape and migration behaviour. The core of our software is a new, rapid, landmark-free shape difference measure that allows unbiased analysis of the widely varying morphologies exhibited by migrating epithelial cells. 
+ShapeSpaceExplorer is a software package in [MATLAB](https://uk.mathworks.com/products/matlab.html). It uses a machine learning approach to understand the relationship of cell shape dynamics and cell migration behaviour. Our algorithm analyses cell shape from image timelapse sequences and learns the intrinsic low-dimensional structure of cell shape space. The resultant shape space map can be used to visualise differences in cell shape distribution following perturbation experiments and to analyse the quantitative relationships between shape and migration behaviour. The core of our software is a new, rapid, landmark-free shape difference measure that allows unbiased analysis of the widely varying morphologies exhibited by migrating epithelial cells. 
 
 The software has been tested with Matlab R2022b and 2024b on Windows 10 and requires the following toolboxes:
 - Image Processing
@@ -10,7 +10,7 @@ The software has been tested with Matlab R2022b and 2024b on Windows 10 and requ
 - Deep Learning (optional, only required for group analysis of regions)
 
 ## Usage
-To learn how to use Shape Space Explorer, please read the [documentation](https://cmcb-warwick.github.io/ShapeSpaceExplorer/).
+To learn how to use ShapeSpaceExplorer, please read the [documentation](https://cmcb-warwick.github.io/ShapeSpaceExplorer/).
 
 If you use our software please cite the paper (link coming soon)
 
@@ -19,7 +19,7 @@ Please submit an issue or email camdu@warwick.ac.uk
 
 ## Third party tools
 
-The developers of Shape Space Explorer are grateful to the developers of the following tools which are used in this software package:
+The developers of ShapeSpaceExplorer are grateful to the developers of the following tools which are used in this software package:
 
 ### [Bio-Formats](https://www.openmicroscopy.org/bio-formats/downloads/)
 Melissa Linkert, Curtis T. Rueden, Chris Allan, Jean-Marie Burel, Will Moore, Andrew Patterson, Brian Loranger, Josh Moore, Carlos Neves, Donald MacDonald, Aleksandra Tarkowska, Caitlin Sticco, Emma Hill, Mike Rossner, Kevin W. Eliceiri, and Jason R. Swedlow (2010) Metadata matters: access to image data in the real world. The Journal of Cell Biology 189(5), 777-782. doi: 10.1083/jcb.201004104
@@ -42,6 +42,7 @@ Stefan Doerr (2012). Progress bar for matlab loops (incl. parfor) (https://www.m
 
 ### [Spider](https://uk.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f)
 Michael Arant (2008). spider(data,tle,rng,lbl,leg,f) (https://www.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f), MATLAB Central File Exchange.
+
 
 
 
