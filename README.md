@@ -1,4 +1,4 @@
-<img align="center" width=500px src="{{ site.baseurl }}/assets/images/sse_logo.png">
+<img align="center" width=500px src="./assets/images/sse_logo.png">
 
 Shape Space Explorer is a software package in [MATLAB](https://uk.mathworks.com/products/matlab.html). It uses a machine learning approach to understand the relationship of cell shape dynamics and cell migration behaviour. Our algorithm analyses cell shape from image timelapse sequences and learns the intrinsic low-dimensional structure of cell shape space. The resultant shape space map can be used to visualise differences in cell shape distribution following perturbation experiments and to analyse the quantitative relationships between shape and migration behaviour. The core of our software is a new, rapid, landmark-free shape difference measure that allows unbiased analysis of the widely varying morphologies exhibited by migrating epithelial cells. 
 
@@ -39,3 +39,4 @@ Stefan Doerr (2012). Progress bar for matlab loops (incl. parfor) (https://www.m
 
 ### [Spider](https://uk.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f)
 Michael Arant (2008). spider(data,tle,rng,lbl,leg,f) (https://www.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f), MATLAB Central File Exchange.
+
