@@ -15,4 +15,4 @@ Shape Space Explorer is a software package in MATLAB. It uses a machine learning
 
 To find out more visit [About](/about) or to start using Shape Space Explorer visit [Getting Started](/getting_started)
 
-You can find the code for this project on [Github](https://github.com/annestraube/shape).
+You can find the code for this project on [Github](https://github.com/cmcb-warwick/ShapeSpaceExplorer).
