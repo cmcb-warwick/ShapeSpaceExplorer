@@ -9,7 +9,7 @@ nav_order: 3
 Cell Segmentation starts with the microscopy data in your Movie folder. ShapeSpaceExplorer uses [Bioformats](https://www.openmicroscopy.org/bio-formats/downloads/) to read in the data. Check the [list of supported formats](https://docs.openmicroscopy.org/bio-formats/6.10.1/supported-formats.html) to see if your data are supported.
 
 To run cell segmentation, run <code>ShapeSpaceExplorer > 1-ImageSegmentationFull > Run_CellSegmentation.m</code> which should show the interface below: \
-<img align="center" width=500px src="./cell_segmentation/img/select_data_folder.png">
+<img align="center" width=500px src="img/select_data_folder.png">
 
 Select your Movie folder containing your microscopy data, which should show all files in a selectable list. \
 <img align="center" width=500px src="./cell_segmentation/img/select_data_files.png">
