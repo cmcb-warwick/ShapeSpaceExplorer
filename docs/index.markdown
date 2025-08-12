@@ -7,7 +7,7 @@ title: Home
 
 ---
 
-<img align="center" width=500px src="/assets/images/sse_logo.png">
+<img align="center" width=500px src="{{ site.baseurl }}/assets/images/sse_logo.png">
 
 # Shape Space Explorer
 
