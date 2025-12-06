@@ -9,6 +9,17 @@ The software has been tested with Matlab R2022b and 2024b on Windows 10 and requ
 - Statistics and Machine Learning
 - Deep Learning (optional, only required for group analysis of regions)
 
+Copyright (C) 2025  Samuel Jefferyes, Roswitha Gostner, Laura Cooper, Mohammed Abdelsamea and Anne Straube
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 2.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
 ## Usage
 To learn how to use ShapeSpaceExplorer, please read the [documentation](https://cmcb-warwick.github.io/ShapeSpaceExplorer/).
 
@@ -46,6 +57,7 @@ Stefan Doerr (2012). Progress bar for matlab loops (incl. parfor) (https://www.m
 
 ### [Spider](https://uk.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f)
 Michael Arant (2008). spider(data,tle,rng,lbl,leg,f) (https://www.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f), MATLAB Central File Exchange.
+
 
 
 
