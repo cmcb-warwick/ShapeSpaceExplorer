@@ -19,7 +19,7 @@ To learn how to use ShapeSpaceExplorer, please read the [documentation](https://
 
 If you use our software please cite our paper:
 
-Samuel D.R. Jefferyes, Roswitha Gostner, Laura Cooper, Mohammed M Abdelsamea, Elly Straube, Nasir Rajpoot, David B.A. Epstein, and Anne Straube (2025).
+Samuel D.R. Jefferyes, Roswitha Gostner, Laura Cooper, Mohammed M Abdelsamea, Elly Straube, Nasir Rajpoot, David B.A. Epstein, and Anne Straube (2026).
 ShapeSpaceExplorer: Analysis of morphological transitions in migrating cells using similarity-based shape space mapping. PLoS Comput Biol 22(1): e1013864. https://doi.org/10.1371/journal.pcbi.1013864
 
 ## Contact
@@ -50,6 +50,7 @@ Stefan Doerr (2012). Progress bar for matlab loops (incl. parfor) (https://www.m
 
 ### [Spider](https://uk.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f)
 Michael Arant (2008). spider(data,tle,rng,lbl,leg,f) (https://www.mathworks.com/matlabcentral/fileexchange/22708-spider-data-tle-rng-lbl-leg-f), MATLAB Central File Exchange.
+
 
 
 
