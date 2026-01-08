@@ -9,7 +9,11 @@ nav_order: 1
 
 Shape Space Explorer is a software package in [MATLAB](https://uk.mathworks.com/products/matlab.html). It uses a machine learning approach to understand the relationship of cell shape dynamics and cell migration behaviour. Our algorithm analyses cell shape from image timelapse sequences and learns the intrinsic low-dimensional structure of cell shape space. The resultant shape space map can be used to visualise differences in cell shape distribution following perturbation experiments and to analyse the quantitative relationships between shape and migration behaviour. The core of our software is a new, rapid, landmark-free shape difference measure that allows unbiased analysis of the widely varying morphologies exhibited by migrating epithelial cells. 
 
-If you use our software please cite the paper (link coming soon)
+If you use our software please cite the paper:
+
+Jefferyes, S.D.R., Gostner, R., Cooper, L., Abdelsamea, M.M., Straube, E., Rajpoot, N., Epstein, D.B.A. and Straube, A. (2026)
+ShapeSpaceExplorer: Analysis of morphological transitions in migrating cells using similarity-based shape space mapping.
+PLoS Computational Biology, 22(1): e1013864, doi: 10.1371/journal.pcbi.1013864
 
 The developers of Shape Space Explorer are grateful to the developers of the following tools which are used in this software package:
 
